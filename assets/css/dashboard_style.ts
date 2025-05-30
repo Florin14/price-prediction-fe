@@ -1,4 +1,4 @@
-import { drawerWidth, transition, container } from "./material-dashboard-react";
+import { transition, container } from "./material-dashboard-react";
 import cssVariables from "./variables";
 
 export interface DashboardStyles {
@@ -28,7 +28,7 @@ const appStyle = (theme: any): DashboardStyles => ({
         ...transition,
         maxHeight: "100%",
         height: "100%",
-        width: `calc(100% - 192px)`, // Default width for larger screens
+        width: `100%`, // Default width for larger screens
         marginLeft: "0", // Remove the margin to eliminate the gap
         overflowScrolling: "touch",
         [theme.breakpoints.down(960)]: {
@@ -60,7 +60,7 @@ const appStyle = (theme: any): DashboardStyles => ({
     },
     [theme.breakpoints.up(960)]: {
         mainPanel: {
-            width: `calc(100% - ${drawerWidth}px)`,
+            width: `100%`,
         },
     },
 });

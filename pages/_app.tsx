@@ -16,17 +16,17 @@ import { websiteActions } from "../store/slices/website/website-slice";
 import Layout from "../containers/Layout";
 import DashboardLayout from "../containers/DashboardLayout";
 import SnackbarProvider from "../components/generic-components/SnackbarProvider/SnackbarProvider";
-import { checkRouteAccessibleOrRedirect, deviceType, getRoleRoutes } from "../utils/app-functions";
+import { deviceType } from "../utils/app-functions";
 import ErrorHandler from "../utils/error-handler";
 import en from "../assets/language/en";
 import ro from "../assets/language/ro";
 import createEmotionCache from "../utils/createEmotionCache";
 
-import{ darkTheme, lightTheme } from "../utils/theme";
+import { darkTheme, lightTheme } from "../utils/theme";
 
 const clientSideEmotionCache = createEmotionCache();
 
-Axios.defaults.baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+Axios.defaults.baseURL = "http://localhost:8002";
 Axios.defaults.withCredentials = true;
 
 interface UrlObject {
@@ -36,11 +36,9 @@ interface UrlObject {
 const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlObject: UrlObject }> = ({ Component, pageProps, urlObject }) => {
     const route = useRouter();
     const { pathname, locale } = route;
-    const [cookies, setCookie] = useCookies(["id", "name", "role", "validationNaturalPersons", "validationLegalEntities"]);
+    const [cookies] = useCookies(["id", "name", "role", "validationNaturalPersons", "validationLegalEntities"]);
     const [loaded, setLoaded] = useState(true);
-      const { theme, languageData } = useSelector((state: RootState) => state.website);
-
-
+    const { theme, languageData } = useSelector((state: RootState) => state.website);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -51,6 +49,21 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
         if (jssStyles) {
             jssStyles.parentElement?.removeChild(jssStyles);
         }
+
+        // Simplified navigation without account endpoint check
+        if (pathname === "/home" && cookies.role && cookies.role !== "") {
+            route.push("/dashboard/control-panel").then((_) => {
+                setLoaded(true);
+            });
+        } else if (pathname === "/") {
+            route.push("/guest/home").then((_) => {
+                setLoaded(true);
+            });
+        } else {
+            setLoaded(true);
+        }
+
+        /* Original authentication logic commented out
         if (
             pathname !== "/login" &&
             pathname !== "/home" &&
@@ -133,6 +146,7 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
                 });
             }
         }
+        */
     }, []);
 
     useEffect(() => {
@@ -168,8 +182,8 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
                     ) : loaded ? (
                         <Layout>
                             <Head>
-                                <title>Primaria Vad</title>
-                                <meta name="description" content="Primaria Vad" />
+                                <title>Predict Real Estate Prices</title>
+                                <meta name="description" content="Predict Real Estate Prices" />
                             </Head>
                             <SnackbarProvider>
                                 <Component {...pageProps} />

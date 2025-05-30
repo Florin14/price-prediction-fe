@@ -124,10 +124,8 @@ const ro = {
     },
     ConsentMessage: "Consent message",
     Planning: "Planificare",
-    ClujCounty: "Judetul Cluj",
-    VadCity: "Comuna Vad",
-    DigitalHall: "Primaria digitala",
-    VadCityHall: "Primaria comunei Vad",
+    History: "Istoric",
+    PredictRealEstatePrices: "Predict Real Estate Prices",
 
     //Sidebar categories
     Taxes: "Taxe & impozite",
@@ -138,6 +136,7 @@ const ro = {
     ControlPanel: "Panou de control",
     Registry: "Registratura",
     Communications: "Comunicari",
+    Prediction: "Predictie",
     ValidateAccounts: "Validare conturi",
     ValidAccounts: "Conturi valide",
     ManageCommunications: "Gestionare comunicari",

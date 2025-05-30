@@ -1,4 +1,4 @@
-import { container, drawerWidth, transition } from "./material-dashboard-react";
+import { container, transition } from "./material-dashboard-react";
 
 export interface LayoutStyles {
     wrapper: any;
@@ -51,7 +51,7 @@ const appStyle = (theme: any): LayoutStyles => ({
     },
     [theme.breakpoints.up(960)]: {
         mainPanel: {
-            width: `calc(100% - ${drawerWidth}px)`,
+            width: `100%`,
         },
     },
 });

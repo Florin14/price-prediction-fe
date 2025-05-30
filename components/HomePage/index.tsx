@@ -225,10 +225,7 @@ const HomePage: React.FC = () => {
                 <div className={classes.leftSection} data-testid="home-page-left-section">
                     <div className={classes.titlesSection} data-testid="home-page-titles-section">
                         <Typography className={classes.title} data-testid="home-page-title">
-                            {languageData?.DigitalHall || "Primaria digitala"}
-                        </Typography>
-                        <Typography className={classes.subtitle} data-testid="home-page-subtitle">
-                            {languageData?.VadCityHall || "Primaria comunei Vad"}
+                            {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
                         </Typography>
                         <Typography className={classes.text}>{languageData?.HomePageMessage}</Typography>
                         <br></br>

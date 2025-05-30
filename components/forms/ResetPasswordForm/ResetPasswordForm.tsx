@@ -367,10 +367,7 @@ const ResetPasswordForm: React.FC = () => {
                 <div className={classes.leftSection} data-testid="reset-password-form-left-section">
                     <div className={classes.titlesSection} data-testid="reset-password-form-titles-section">
                         <Typography className={classes.title} data-testid="reset-password-form-title">
-                            {languageData?.DigitalHall || "Primaria digitala"}
-                        </Typography>
-                        <Typography className={classes.subtitle} data-testid="reset-password-form-subtitle">
-                            {languageData?.VadCityHall || "Primaria comunei Vad"}
+                            {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
                         </Typography>
                     </div>
                     <div className={classes.formCard} data-testid="reset-password-form-card">

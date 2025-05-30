@@ -217,7 +217,7 @@ const ErrorHandler: FC = () => {
                     }
                 }
             } else {
-                router.push("/platform-in-work");
+                // router.push("/platform-in-work");
             }
             return Promise.reject(error);
         }

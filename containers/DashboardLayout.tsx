@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
 
-import Sidebar from "../components/generic-components/Sidebar/Sidebar";
 import Navbar from "../components/generic-components/Navbar/Navbar";
-
 import { RootState } from "../store";
 
 import adminRoutes from "../utils/admin-routes";
@@ -21,14 +19,9 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     const classes = useClasses(appStyle, { name: "DashboardStyles" });
-    const [mobileOpen, setMobileOpen] = useState(false);
     const [cookies] = useCookies(["name", "role"]);
     const loading = useSelector((state: any) => state.loading.loading);
     const languageData = useSelector((state: RootState) => state.website.languageData);
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const getRoleRoutes = (role: string | undefined) => {
         switch (role) {
@@ -37,16 +30,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             case languageData?.Roles.CUSTOMER:
                 return customerRoutes;
             default:
-                return guestRoutes; //asta trebuie modificata in guestRoutes in momentul in care se adauga rolurile pe backend!!!!
+                return guestRoutes;
         }
     };
 
     return (
         <LoadingOverlay active={loading}>
             <div className={classes.wrapper}>
-                <Sidebar routes={getRoleRoutes(cookies?.role)} handleDrawerToggle={handleDrawerToggle} open={mobileOpen} />
                 <div className={classes.mainPanel}>
-                    <Navbar handleDrawerToggle={handleDrawerToggle} />
+                    <Navbar routes={getRoleRoutes(cookies?.role)} />
                     <div className={classes.content} id="root">
                         {children}
                     </div>
