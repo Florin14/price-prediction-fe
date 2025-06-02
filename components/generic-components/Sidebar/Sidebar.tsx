@@ -101,8 +101,7 @@ export default function Sidebar(props: Props) {
 
     var brand = (
         <div className={classes.countyWrapper}>
-            <div className={classes.county}>{languageData?.ClujCounty}</div>
-            <div className={classes.city}>{languageData?.VadCity}</div>
+           
         </div>
     );
 

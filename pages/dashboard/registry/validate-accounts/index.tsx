@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { websiteActions } from "../../../../store/slices/website/website-slice";
-import ValidateAccountsComponent from "../../../../components/ValidateAccountsComponent";
 import { RootState } from "../../../../store";
 
 const ValidateAccounts: React.FC = () => {
@@ -13,11 +12,7 @@ const ValidateAccounts: React.FC = () => {
         dispatch(websiteActions.setTitle({ title: "ValidateAccounts" }));
     }, [dispatch]);
 
-
-
-    return <div style={{ height: "100%" }}>
-        <ValidateAccountsComponent />
-    </div>;
+    return <div style={{ height: "100%" }}></div>;
 };
 
 export default ValidateAccounts;

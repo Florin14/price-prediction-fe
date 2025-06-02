@@ -34,10 +34,7 @@ const RegisterComponent: React.FC = () => {
                 <div className={classes.leftSection} data-testid="register-form-left-section">
                     <div className={classes.titlesSection} data-testid="register-form-titles-section">
                         <Typography className={classes.title} data-testid="register-form-title">
-                            {languageData?.DigitalHall || "Primaria digitala"}
-                        </Typography>
-                        <Typography className={classes.subtitle} data-testid="register-form-subtitle">
-                            {languageData?.VadCityHall || "Primaria comunei Vad"}
+                            {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
                         </Typography>
                     </div>
                     <div className={classes.formCard} data-testid="register-form-card">

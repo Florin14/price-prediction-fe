@@ -1,4 +1,4 @@
-export const PLATFORM_NAME: string = "Primaria Vad";
+export const PLATFORM_NAME: string = "Predict Real Estate Prices";
 
 export const upperCaseRegex = new RegExp("(?=.*[A-Z])");
 export const lowerCaseRegex = new RegExp("(?=.*[a-z])");

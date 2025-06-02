@@ -15,6 +15,9 @@ import legalEntityProfileReducer from "./slices/legal-entity-profile/legal-entit
 import inputChannelsReducer from "./slices/input-channels/input-channels-slice";
 import addEditCommunicationTypeReducer from "./slices/add-edit-communication-type/add-edit-communication-type-slice";
 import labelsReducer from "./slices/labels/labels-slice";
+import listingReducer from "./slices/listing/listing-slice";
+import propertyReducer from "./slices/property/property-slice";
+import predictionReducer from "./slices/prediction/prediction-slice";
 
 // Configure the store
 export const store = configureStore({
@@ -34,6 +37,9 @@ export const store = configureStore({
         inputChannels: inputChannelsReducer,
         communicationType: addEditCommunicationTypeReducer,
         labels: labelsReducer,
+        listing: listingReducer,
+        property: propertyReducer,
+        prediction: predictionReducer,
     },
 });
 

@@ -235,10 +235,7 @@ const ForgotPasswordForm: React.FC = () => {
                 <div className={classes.leftSection} data-testid="forgot-password-form-left-section">
                     <div className={classes.titlesSection} data-testid="forgot-password-form-titles-section">
                         <Typography className={classes.title} data-testid="forgot-password-form-title">
-                            {languageData?.DigitalHall || "Primaria digitala"}
-                        </Typography>
-                        <Typography className={classes.subtitle} data-testid="forgot-password-form-subtitle">
-                            {languageData?.VadCityHall || "Primaria comunei Vad"}
+                            {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
                         </Typography>
                     </div>
                     <div className={classes.formCard} data-testid="forgot-password-form-card">

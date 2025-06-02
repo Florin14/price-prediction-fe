@@ -80,7 +80,7 @@ const PlatformInWork: React.FC = () => {
     return (
         <React.Fragment>
             <Head>
-                <title>Primaria Vad | {languageData?.WebsiteInWork}</title>
+                <title>Predict Real Estate Prices | {languageData?.WebsiteInWork}</title>
             </Head>
             <div className={classes.outerWrapper}>
                 <div className={classes.wrapper}>

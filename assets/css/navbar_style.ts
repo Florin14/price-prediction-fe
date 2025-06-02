@@ -53,8 +53,6 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
     navbarWrapper: {
         boxShadow: "none !important",
         height: cssVariables.headerHeight,
-        width: `calc(100% - ${drawerWidth}px)`, // Adjust width to account for Sidebar width
-        marginLeft: drawerWidth, // Ensure it aligns next to the Sidebar
         display: "flex",
         backgroundColor: theme.palette.common.white,
         borderBottom: "1px solid #E5E7EB",
@@ -212,15 +210,7 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
             width: "100%",
         },
     },
-    [theme.breakpoints.down(960)]: {
-        navbarWrapper: {
-            width: "100%",
-        },
-    },
     [theme.breakpoints.down(600)]: {
-        navbarWrapper: {
-            width: "100%",
-        },
         registrationButtonsWrapper: {
             gap: cssVariables.smallestMargin,
         },

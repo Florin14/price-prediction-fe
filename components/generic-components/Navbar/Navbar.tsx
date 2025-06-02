@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
 
-import { Button, Tooltip, Popper, ClickAwayListener, Grow, Paper, MenuList, MenuItem, AppBar, Toolbar, IconButton } from "@mui/material";
+import { Button, Tooltip, Popper, ClickAwayListener, Grow, Paper, MenuList, MenuItem, AppBar, Toolbar, IconButton, Icon } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Menu from "@mui/icons-material/Menu";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
@@ -21,6 +21,7 @@ import StyledButton from "../StyledButton";
 import { LanguageDataTypes } from "../../../assets/language/ro";
 
 import navbar_style, { NavbarStyle } from "../../../assets/css/navbar_style";
+import { RouteModel } from "../../../models/generic/routes";
 
 export function AccountData() {
     const classes = useClasses(navbar_style, { name: "NavbarStyle" }) as NavbarStyle;
@@ -144,7 +145,7 @@ export function AccountData() {
     );
 }
 
-const Header = (props: { handleDrawerToggle: () => void }) => {
+const Header = (props: { routes: RouteModel[] }) => {
     const classes = useClasses(navbar_style, { name: "NavbarStyle" }) as NavbarStyle;
     const router = useRouter();
 
@@ -155,20 +156,38 @@ const Header = (props: { handleDrawerToggle: () => void }) => {
     return (
         <AppBar className={classes.navbarWrapper}>
             <Toolbar className={classes.toolbarWrapper}>
-                <IconButton aria-label="open drawer" onClick={props.handleDrawerToggle} sx={{ display: { md: "none" } }}>
-                    <Menu />
-                </IconButton>
                 <Grid container className={classes.gridStyle} component="div">
-                    <div style={{ width: "auto" }}>
+                    <div style={{ width: "auto", display: "flex", alignItems: "center" }}>
                         {goBack && (
                             <Button className={classes.backButton} onClick={() => router.push(goBack)}>
                                 <ArrowBackIosIcon className={classes.backIcon} />
                             </Button>
                         )}
+                        <div className={classes.titleWrapper}>{languageData ? (languageData[title as keyof LanguageDataTypes] as string) || title : ""}</div>
                     </div>
-                    <div className={classes.titleWrapper}>{languageData ? (languageData[title as keyof LanguageDataTypes] as string) || title : ""}</div>
+
+                    {/* Navigation Menu */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        {props.routes
+                            .filter((route) => route.isOnMenu)
+                            .map((route, index) => (
+                                <Button
+                                    key={index}
+                                    onClick={() => router.push(route.path)}
+                                    style={{
+                                        color: router.pathname.includes(route.path) ? "#primary" : "#666",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "8px",
+                                    }}
+                                >
+                                    {typeof route.icon === "string" ? <Icon>{route.icon}</Icon> : <route.icon />}
+                                    <span>{(languageData && (languageData[route.name as keyof LanguageDataTypes] as string)) || route.name}</span>
+                                </Button>
+                            ))}
+                    </div>
+
                     <div className={classes.rightCompWrapper}>
-                        {/* Ensure AccountData is aligned to the right */}
                         <AccountData />
                     </div>
                 </Grid>

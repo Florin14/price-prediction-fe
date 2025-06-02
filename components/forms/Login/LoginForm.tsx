@@ -299,10 +299,7 @@ const LoginForm: React.FC = () => {
                 <div className={classes.leftSection} data-testid="login-form-left-section">
                     <div className={classes.titlesSection} data-testid="login-form-titles-section">
                         <Typography className={classes.title} data-testid="login-form-title">
-                            {languageData?.DigitalHall || "Primaria digitala"}
-                        </Typography>
-                        <Typography className={classes.subtitle} data-testid="login-form-subtitle">
-                            {languageData?.VadCityHall || "Primaria comunei Vad"}
+                            {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
                         </Typography>
                     </div>
                     <div className={classes.formCard} data-testid="login-form-card">
@@ -336,13 +333,6 @@ const LoginForm: React.FC = () => {
                                 required
                                 data-testid="login-form-password-input"
                             />
-                            {showCaptcha && (
-                                <ReCAPTCHA
-                                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_TOKEN as string}
-                                    onChange={captchaOnChange}
-                                    data-testid="login-form-captcha"
-                                />
-                            )}
                             <div className={classes.forgotPassword} data-testid="login-form-forgot-password">
                                 <Link href="/forgot-password">{languageData?.ForgotPassword || "Ai uitat parola?"}</Link>
                             </div>
