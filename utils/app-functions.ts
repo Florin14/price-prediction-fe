@@ -79,22 +79,6 @@ export const getRoleRoutes = (role: string | undefined) => {
 };
 
 export const inputHasValue = (field: any): boolean => !(field === "" || field === null || field === undefined);
-// Helper functions for mock data
-export const calculateMockPrice = (property: Property): number => {
-    const basePrice = 150000;
-    const locationMultiplier = property.city === "San Francisco" ? 3.5 : property.city === "New York" ? 3.2 : property.city === "Los Angeles" ? 2.8 : 1.2;
-    const bedroomValue = 50000;
-    const bathroomValue = 25000;
-    const sqftValue = 100;
-    const ageDeduction = 1000;
-
-    const age = new Date().getFullYear() - property.yearBuilt;
-
-    return (
-        Math.round(basePrice + property.bedrooms * bedroomValue + property.bathrooms * bathroomValue + property.squareFeet * sqftValue - age * ageDeduction) *
-        locationMultiplier
-    );
-};
 
 export const generateMockSimilarProperties = (property: Property, basePrice: number) => {
     const streets = ["Maple", "Oak", "Pine", "Cedar", "Elm", "Willow"];

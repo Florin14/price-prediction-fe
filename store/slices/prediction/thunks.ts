@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 // import type { PredictionResult, Property } from "./prediction-slice";
 import { setPrediction, setLoading, setError, deletePrediction } from "./prediction-slice";
-import { calculateMockPrice, generateMockFactors, generateMockMarketTrends, generateMockSimilarProperties } from "../../../utils/app-functions";
+import {generateMockFactors, generateMockMarketTrends, generateMockSimilarProperties } from "../../../utils/app-functions";
 import { PredictionResult } from "./prediction-slice";
 import { Property } from "../property/property-slice";
 
@@ -13,27 +13,8 @@ export const predictPropertyPrice = createAsyncThunk<PredictionResult, Property,
         dispatch(setLoading(true));
         dispatch(setError(null));
         try {
-            // const response = await Axios.post<PredictionResult>(`/predictions`, property)
-            // const result = response.data
-            // MOCK: Remove below when BE is ready
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const predictedPrice = calculateMockPrice(property);
-            const predictionId = Date.now().toString();
-            const result: PredictionResult = {
-                id: predictionId,
-                propertyId: property.id || "temp-id",
-                predictedPrice,
-                priceRange: {
-                    min: predictedPrice * 0.9,
-                    max: predictedPrice * 1.1,
-                },
-                confidence: 0.85 + Math.random() * 0.1,
-                similarProperties: generateMockSimilarProperties(property, predictedPrice),
-                createdAt: new Date().toISOString(),
-                marketTrends: generateMockMarketTrends(predictedPrice),
-                propertyDetails: { ...property },
-                factors: generateMockFactors(),
-            };
+            const response = await Axios.post<PredictionResult>(`/prediction-predict`, property);
+            const result = response.data;
             // END MOCK
             dispatch(setPrediction(result));
             dispatch(setLoading(false));
@@ -77,20 +58,32 @@ export interface ErrorResponse {
     message: string;
 }
 
-export const addPrediction = createAsyncThunk<AddPredictionPayload, { payload: AddPredictionPayload }, { rejectValue: ErrorResponse }>(
-    "prediction/addPrediction",
-    async ({ payload }, thunkAPI) => {
-        const options = {
-            url: `/sections`,
-            method: "POST",
-            data: payload,
-        };
-        try {
-            const response = await Axios.post<AddPredictionPayload>(options.url, options.data);
-            const data = response.data;
-            return data;
-        } catch (e) {
-            return thunkAPI.rejectWithValue({ error: true, message: "Failed to add section" });
-        }
+export const addPrediction = createAsyncThunk<boolean, {}, { rejectValue: ErrorResponse }>("listing/import", async ({}, { dispatch, rejectWithValue }) => {
+    const options = {
+        url: `/prediction`,
+        method: "POST",
+        data: {},
+    };
+    try {
+        const response = await Axios.post(options.url, options.data);
+        const data = response.data;
+        return data;
+    } catch (e) {
+        return rejectWithValue({ error: true, message: "Failed to add section" });
     }
-);
+});
+
+export const addPredictionV2 = createAsyncThunk<boolean, {}, { rejectValue: ErrorResponse }>("listing/import", async ({}, { dispatch, rejectWithValue }) => {
+    const options = {
+        url: `/prediction-v2`,
+        method: "POST",
+        data: {},
+    };
+    try {
+        const response = await Axios.post(options.url, options.data);
+        const data = response.data;
+        return data;
+    } catch (e) {
+        return rejectWithValue({ error: true, message: "Failed to add section" });
+    }
+});

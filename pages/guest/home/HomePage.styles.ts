@@ -36,6 +36,7 @@ export const HeroSection = styled("section")(({ theme }) => ({
             marginBottom: theme.spacing(5),
             color: theme.palette.text.primary,
             animation: "fadeIn 0.8s ease-out",
+            lineHeight: "35px",
         },
         p: {
             fontSize: theme.typography.body1.fontSize,
@@ -58,6 +59,7 @@ export const HeroSection = styled("section")(({ theme }) => ({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        width: "100%",
         animation: "fadeIn 0.8s ease-out 0.6s both",
         ".image-placeholder": {
             width: "100%",

@@ -59,22 +59,41 @@ export const addListings = createAsyncThunk<Listing, {}, { rejectValue: ErrorRes
     }
 });
 
-export const importListings = createAsyncThunk<boolean, {  }, { rejectValue: ErrorResponse }>(
+export const importListings = createAsyncThunk<boolean, {}, { rejectValue: ErrorResponse }>("listing/import", async ({}, { dispatch, rejectWithValue }) => {
+    const options = {
+        url: `/listing-import`,
+        method: "POST",
+        data: {},
+    };
+    try {
+        const response = await Axios.post<Listing>(options.url, options.data);
+        console.log(response);
+        // const data = response.data;
+        // dispatch(listingActions.addListing({ ...payload, id: new Date().getTime() }));
+        // return { ...payload, id: new Date().getTime() };
+        return true;
+    } catch (e) {
+        return rejectWithValue({ error: true, message: "Failed to add listing" });
+    }
+});
+
+export const fetchImobiliareRoData = createAsyncThunk<boolean, {}, { rejectValue: ErrorResponse }>(
     "listing/import",
-    async ({  }, { dispatch, rejectWithValue }) => {
+    async ({}, { dispatch, rejectWithValue }) => {
         const options = {
-            url: `/listing-import`,
-            method: "POST",
-            data: {},
+            url: `/listing-search`,
+            method: "GET",
+            
         };
         try {
-            const response = await Axios.post<Listing>(options.url, options.data);
+            const response = await Axios.get(options.url);
             console.log(response);
             // const data = response.data;
             // dispatch(listingActions.addListing({ ...payload, id: new Date().getTime() }));
             // return { ...payload, id: new Date().getTime() };
             return true;
         } catch (e) {
+            console.log(e);
             return rejectWithValue({ error: true, message: "Failed to add listing" });
         }
     }

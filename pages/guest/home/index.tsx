@@ -6,12 +6,86 @@ import { HomeContainer, HeroSection, FeaturesSection, FeatureCard, HowItWorksSec
 import { FiBarChart2, FiZap, FiSmartphone, FiSearch, FiArrowRight } from "react-icons/fi";
 import StyledButton from "../../../components/generic-components/StyledButton";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../../store";
+import { importListings } from "../../../store/slices/listing/thunks";
+import { addPrediction, addPredictionV2 } from "../../../store/slices/prediction/thunks";
+import AITrainingOverlay from "../../../components/generic-components/AITrainingOverlay";
+import { useState, useEffect } from "react";
 
 const HomePage: React.FC = () => {
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
+    const [showTrainingOverlay, setShowTrainingOverlay] = useState(false);
+    const [trainingStats, setTrainingStats] = useState({
+        epochsCompleted: 0,
+        totalEpochs: 100,
+        accuracy: 0,
+        loss: 0,
+        timeElapsed: "0:00",
+        estimatedTimeRemaining: "calculating...",
+        samplesProcessed: 0,
+        learningRate: 0.001,
+    });
+
+    let trainingStartTime: number;
+
+    useEffect(() => {
+        const socket = new WebSocket("ws://localhost:8000/ws/training");
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === "training_stats") {
+                const elapsedSeconds = Math.floor((Date.now() - trainingStartTime) / 1000);
+                const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+                const remainingSeconds = elapsedSeconds % 60;
+
+                setTrainingStats((prev) => ({
+                    ...prev,
+                    ...data.stats,
+                    timeElapsed: `${elapsedMinutes}:${remainingSeconds.toString().padStart(2, "0")}`,
+                }));
+            }
+        };
+
+        return () => {
+            socket.close();
+        };
+    }, []);
+
+    const handleImport = () => {
+        dispatch(importListings({}));
+    };
+
+    const handleTrain = async () => {
+        setShowTrainingOverlay(true);
+        trainingStartTime = Date.now();
+        try {
+            await dispatch(addPrediction({}));
+        } finally {
+            // Keep the overlay visible for 2 more seconds after training completes
+            setTimeout(() => {
+                setShowTrainingOverlay(false);
+            }, 2000);
+        }
+    };
+
+    const handleTrainVersion2 = async () => {
+        setShowTrainingOverlay(true);
+        trainingStartTime = Date.now();
+        try {
+            await dispatch(addPredictionV2({}));
+        } finally {
+            // Keep the overlay visible for 2 more seconds after training completes
+            setTimeout(() => {
+                setShowTrainingOverlay(false);
+            }, 2000);
+        }
+    };
 
     return (
         <HomeContainer>
+            <AITrainingOverlay active={showTrainingOverlay} stats={trainingStats} />
             <HeroSection>
                 <div className="hero-content">
                     <h1>Predict Real Estate Prices with AI</h1>
@@ -25,6 +99,15 @@ const HomePage: React.FC = () => {
                         </StyledButton>
                         <StyledButton variant="outlined" size="large" onClick={() => router.push("/guest/how-it-works")}>
                             Learn More
+                        </StyledButton>
+                        <StyledButton variant="outlined" size="large" onClick={handleImport}>
+                            Import data
+                        </StyledButton>
+                        <StyledButton variant="outlined" size="large" onClick={handleTrain}>
+                            Train AI
+                        </StyledButton>
+                        <StyledButton variant="outlined" size="large" onClick={handleTrainVersion2}>
+                            Train AI V2
                         </StyledButton>
                     </div>
                 </div>
