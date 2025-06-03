@@ -7,7 +7,7 @@ const pulseAnimation = keyframes`
   100% { transform: scale(1); opacity: 1; }
 `;
 
-const floatAnimation = keyframes`
+export const floatAnimation = keyframes`
   0% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(10deg); }
   100% { transform: translateY(0px) rotate(0deg); }
