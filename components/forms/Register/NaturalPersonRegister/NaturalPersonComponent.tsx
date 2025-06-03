@@ -77,15 +77,6 @@ const NaturalPersonComponent = () => {
                         label={languageData?.forms.register.naturalPerson.email ?? "Email"}
                         borderError={globalError === "email"}
                     />
-
-                    <FormFileUpload
-                        accept=".pdf, .jpg, .jpeg, .png"
-                        isViewable={false}
-                        name="identityCard"
-                        buttonClassName={classes.uploadButton}
-                        buttonLabel={languageData?.forms.register.naturalPerson.uploadIdentityCard || "Upload Identity Card"}
-                    />
-
                     <div className={classes.forgotPassword}>
                         <Link href="/login">{languageData?.BackToAuthentication}</Link>
                     </div>

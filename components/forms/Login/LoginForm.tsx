@@ -48,7 +48,7 @@ const useStyles = (theme: any): StyleClasses => ({
         position: "relative", // <-- pentru poziționare absolută a imaginii
         justifyContent: "center",
     },
-    leftSection: {
+    rightSection: {
         flex: 1,
         display: "flex",
         flexDirection: "column",
@@ -68,9 +68,8 @@ const useStyles = (theme: any): StyleClasses => ({
         gap: cssVariables.smallMargin,
         maxWidth: 500,
     },
-    rightSection: {
+    leftSection: {
         flex: 1,
-        paddingRight: 60,
         width: "100%",
     },
     rightImage: {
@@ -87,10 +86,12 @@ const useStyles = (theme: any): StyleClasses => ({
         padding: "0 60px",
     },
     title: {
+        textAlign: "center",
         fontSize: "33px",
         fontWeight: 700,
         lineHeight: "45px",
         color: "#21272A",
+        marginBottom: 10,
     },
     subtitle: {
         fontSize: "33px",
@@ -129,11 +130,11 @@ const useStyles = (theme: any): StyleClasses => ({
         wrapper: {
             width: "90%",
         },
-        leftSection: {
+        rightSection: {
             padding: "0 30px",
         },
-        rightSection: {
-            paddingRight: 30,
+        leftSection: {
+            // paddingRight: 30,
         },
         titlesSection: {
             padding: "0 30px",
@@ -144,7 +145,7 @@ const useStyles = (theme: any): StyleClasses => ({
     },
 
     [theme.breakpoints.down(900)]: {
-        leftSection: {
+        rightSection: {
             padding: "0 25px",
             paddingTop: cssVariables.defaultMargin,
         },
@@ -171,7 +172,7 @@ const useStyles = (theme: any): StyleClasses => ({
             paddingRight: 0,
         },
 
-        rightSection: {
+        leftSection: {
             position: "absolute",
             top: `calc(${cssVariables.defaultMargin} + 7em)`, // sub titlu + mic offset
             left: "50%",
@@ -296,10 +297,14 @@ const LoginForm: React.FC = () => {
     return (
         <div className={classes.container} data-testid="login-form-container">
             <div className={classes.wrapper}>
-                <div className={classes.leftSection} data-testid="login-form-left-section">
+                <div className={classes.leftSection} data-testid="login-form-right-section">
+                    <div className={classes.rightImage} data-testid="login-form-right-image-section"></div>
+                </div>
+                <div className={classes.rightSection} data-testid="login-form-left-section">
                     <div className={classes.titlesSection} data-testid="login-form-titles-section">
                         <Typography className={classes.title} data-testid="login-form-title">
                             {languageData?.PredictRealEstatePrices || "Predict Real Estate Prices"}
+                            🏠
                         </Typography>
                     </div>
                     <div className={classes.formCard} data-testid="login-form-card">
@@ -351,7 +356,7 @@ const LoginForm: React.FC = () => {
                             >
                                 {languageData?.Login || "Autentifica-te"}
                             </StyledButton>
-                            <Divider style={{ margin: "35px 0", borderColor: "#DDE1E6" }} data-testid="login-form-divider" />
+                            <Divider style={{ margin: "15px 0", borderColor: "#DDE1E6" }} data-testid="login-form-divider" />
                             <StyledButton
                                 variant="outlined"
                                 fullWidth
@@ -363,9 +368,6 @@ const LoginForm: React.FC = () => {
                             </StyledButton>
                         </FormLayout>
                     </div>
-                </div>
-                <div className={classes.rightSection} data-testid="login-form-right-section">
-                    <div className={classes.rightImage} data-testid="login-form-right-image-section"></div>
                 </div>
             </div>
         </div>
