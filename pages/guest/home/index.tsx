@@ -30,28 +30,28 @@ const HomePage: React.FC = () => {
 
     let trainingStartTime: number;
 
-    useEffect(() => {
-        const socket = new WebSocket("ws://localhost:8000/ws/training");
+    // useEffect(() => {
+    //     const socket = new WebSocket("ws://localhost:8000/ws/training");
 
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === "training_stats") {
-                const elapsedSeconds = Math.floor((Date.now() - trainingStartTime) / 1000);
-                const elapsedMinutes = Math.floor(elapsedSeconds / 60);
-                const remainingSeconds = elapsedSeconds % 60;
+    //     socket.onmessage = (event) => {
+    //         const data = JSON.parse(event.data);
+    //         if (data.type === "training_stats") {
+    //             const elapsedSeconds = Math.floor((Date.now() - trainingStartTime) / 1000);
+    //             const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+    //             const remainingSeconds = elapsedSeconds % 60;
 
-                setTrainingStats((prev) => ({
-                    ...prev,
-                    ...data.stats,
-                    timeElapsed: `${elapsedMinutes}:${remainingSeconds.toString().padStart(2, "0")}`,
-                }));
-            }
-        };
+    //             setTrainingStats((prev) => ({
+    //                 ...prev,
+    //                 ...data.stats,
+    //                 timeElapsed: `${elapsedMinutes}:${remainingSeconds.toString().padStart(2, "0")}`,
+    //             }));
+    //         }
+    //     };
 
-        return () => {
-            socket.close();
-        };
-    }, []);
+    //     return () => {
+    //         socket.close();
+    //     };
+    // }, []);
 
     const handleImport = () => {
         dispatch(importListings({}));

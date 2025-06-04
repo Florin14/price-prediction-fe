@@ -90,7 +90,7 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
                         "/forgot-password",
                         "/user/reset-password",
                         "/dashboard/control-panel",
-                        "/dashboard/user/change-password",
+                        "/citizen/change-password",
                         "/platform-in-work",
                         "/guest/communications",
                         "/guest/complaints",
@@ -135,7 +135,7 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
                     "/forgot-password",
                     "/user/reset-password",
                     "/dashboard/control-panel",
-                    "/dashboard/user/change-password",
+                    "/citizen/change-password",
                     "/guest/communications",
                     "/guest/complaints",
                     "/platform-in-work",
@@ -173,7 +173,7 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
             <CacheProvider value={clientSideEmotionCache}>
                 <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
                     <CssBaseline />
-                    {(route.pathname.includes("dashboard") || route.pathname.includes("guest")) && loaded ? (
+                    {(route.pathname.includes("citizen") || route.pathname.includes("guest")) && loaded ? (
                         <DashboardLayout>
                             <SnackbarProvider>
                                 <Component {...pageProps} />

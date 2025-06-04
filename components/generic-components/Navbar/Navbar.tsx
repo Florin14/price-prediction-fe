@@ -67,26 +67,9 @@ export function AccountData() {
 
     return (
         <div>
-            {cookies["name"] && !router.pathname.includes("guest") ? (
-                <Tooltip title={cookies["name"]} className={classes.tooltipWrapper}>
-                    <Button
-                        aria-owns={openProfile ? "profile-menu-list-grow" : undefined}
-                        aria-haspopup="true"
-                        onClick={handleClickProfile}
-                        classes={{ root: classes.accountButtonWrapper }}
-                    >
-                        <div className={classes.accountIcon}>
-                            <PersonIcon />
-                        </div>
-                        <p className={classes.linkText}>{cookies["name"]}</p>
-                        <div>
-                            <ArrowDownIcon />
-                        </div>
-                    </Button>
-                </Tooltip>
-            ) : (
-                router.pathname.includes("guest") && (
-                    <div className={classes.registrationButtonsWrapper}>
+            {router.pathname.includes("guest") && !cookies['name']? (
+                
+                <div className={classes.registrationButtonsWrapper}>
                         <StyledButton
                             className={classes.navbarButton}
                             variant="contained"
@@ -106,7 +89,23 @@ export function AccountData() {
                             {languageData?.CreateAccount}
                         </StyledButton>
                     </div>
-                )
+            ) : (
+                <Tooltip title={cookies["name"]} className={classes.tooltipWrapper}>
+                    <Button
+                        aria-owns={openProfile ? "profile-menu-list-grow" : undefined}
+                        aria-haspopup="true"
+                        onClick={handleClickProfile}
+                        classes={{ root: classes.accountButtonWrapper }}
+                    >
+                        <div className={classes.accountIcon}>
+                            <PersonIcon />
+                        </div>
+                        <p className={classes.linkText}>{cookies["name"]}</p>
+                        <div>
+                            <ArrowDownIcon />
+                        </div>
+                    </Button>
+                </Tooltip>
             )}
             <Popper open={Boolean(openProfile)} anchorEl={openProfile} transition disablePortal className={classNames({ [classes.popperClose]: !openProfile })}>
                 {({ TransitionProps, placement }) => (
@@ -122,7 +121,7 @@ export function AccountData() {
                                 <MenuList role="menu">
                                     <MenuItem
                                         onClick={() => {
-                                            router.push("/dashboard/user/change-password").then((_) => {
+                                            router.push("/citizen/change-password").then((_) => {
                                                 handleCloseProfile();
                                             });
                                         }}

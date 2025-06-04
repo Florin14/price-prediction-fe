@@ -5,7 +5,7 @@ import { Property } from "../property/property-slice"
 export interface PredictionResult {
   id: string
   propertyId: string
-  predictedPrice: number
+  predicted_price: number
   priceRange: {
     min: number
     max: number

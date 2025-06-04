@@ -151,7 +151,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
     textAlign,
     placeholder = "Scrie",
     endAdornment,
-    showHidePassword,
+    showHidePassword = type === "password",
     min = type === "number" ? 0 : null,
     max,
     format,

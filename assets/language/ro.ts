@@ -281,6 +281,8 @@ const ro = {
                 name: "Nume si prenume",
                 email: "Email",
                 phoneNumber: "Nr. de telefon",
+                password: "Parola",
+                confirmPassword: "Confirma parola",
             },
         },
     },
@@ -323,11 +325,11 @@ const ro = {
 
     Roles: {
         ADMIN: "ADMIN",
-        CUSTOMER: "CUSTOMER",
+        CLIENT: "CLIENT",
     },
     RolesPretty: {
         ADMIN: "Administrator",
-        CUSTOMER: "Client",
+        CLIENT: "Client",
     },
     TotalQuantityOnPeriod: "Total cantitate/perioada si filtrele selectate",
     TableWithHideableCells: "Tabel",
@@ -504,7 +506,7 @@ const ro = {
 
     ComplaintsFilterDrawer: {
         name: "Sesizare",
-        applicantType: "Solicitant"
+        applicantType: "Solicitant",
     },
 
     NaturalPersonProfileFields: {
@@ -560,18 +562,8 @@ const ro = {
             E0018: "UTilizatorul este deja deconectat.",
             E0019: "Operatie interzisa.",
             E0020: "Utilizator invalid.",
-            E0030: {
-                post: {
-                    "/legal-entities/register": "Numele companiei trebuie sa contina intre 3 si 500 de caractere.",
-                    "/natural-persons/register": "Numele si prenumele trebuie sa contina intre 3 si 500 de caractere.",
-                    default: "Operatiunea contine date invalide.",
-                },
-                put: {
-                    "/legal-entities/[0-9]+": "Numele companiei trebuie sa contina intre 3 si 500 de caractere.",
-                    "/natural-persons/[0-9]+": "Numele si prenumele trebuie sa contina intre 3 si 500 de caractere.",
-                    default: "Operatiunea contine date invalide.",
-                },
-            },
+            E0030: "Operatiunea contine date invalide.",
+
             E0031: "Trimiterea emailului a esuat.",
             E0032: "Fisierul specificat nu exista.",
             E0101: "Inserarea in baza de date esuata.",
@@ -601,12 +593,8 @@ const ro = {
                 },
             },
             E0105: {
-                post: {
-                    "/users/admin": "Numele sau email-ul adminului este prea lung.",
-                    "/legal-entities/register": "Numele sau email-ul este prea lung.",
-                    "/natural-persons/register": "Numele sau email-ul este prea lung.",
-                    default: "Unul dintre campurile entitatii este prea lung.",
-                },
+                post: "Unul dintre campurile entitatii este prea lung.",
+
                 put: {
                     "/users/admin/[0-9]+": "Numele adminului este prea lung.",
                     default: "Unul dintre campurile entitatii este prea lung.",
@@ -614,20 +602,12 @@ const ro = {
             },
             E0106: {
                 post: {
-                    "/input-channel": "Exista deja un canal de intrare cu aceasta denumire.",
                     "/users/admins": "Email-ul adminului este folosit deja.",
-                    "/category": "Aceasta categorie exista deja.",
-                    "/legal-entities/register": "Adresa de email introdusa apartine deja unui cont existent.",
-                    "/natural-persons/register": "Adresa de email introdusa apartine deja unui cont existent.",
-                    "/sections": "Acest nume de compartiment este deja utilizat.",
+                    "/clients/register": "Adresa de email introdusa apartine deja unui cont existent.",
                     default: "Unul dintre campurile entitatii este folosit deja.",
                 },
                 put: {
-                    "/input-channel/[0-9]+": "Exista deja un canal de intrare cu aceasta denumire.",
-                    "/legal-entities/[0-9]+": "Numele companiei trebuie sa contina intre 3 si 500 de caractere.",
-                    "/natural-persons/[0-9]+": "Numele si prenumele trebuie sa contina intre 3 si 500 de caractere.",
-                    "/category": "Aceasta categorie exista deja.",
-                    "/sections": "Acest nume de compartiment este deja utilizat.",
+                    "/clients/[0-9]+": "Numele trebuie sa contina intre 3 si 500 de caractere.",
                     default: "Unul dintre campurile entitatii este folosit deja.",
                 },
             },
@@ -640,11 +620,8 @@ const ro = {
                 },
             },
             E0304: {
-                post: {
-                    "/legal-entities/register": "Formatul fisierului trebuie sa fie .pdf, .jpg, .jpeg sau .png.",
-                    "/natural-persons/register": "Formatul fisierului trebuie sa fie .pdf, .jpg, .jpeg sau .png.",
-                    default: "Formatul fisierului nu este valid.",
-                },
+                post: "Formatul fisierului nu este valid.",
+
                 put: {
                     default: "Formatul fisierului nu este valid.",
                 },

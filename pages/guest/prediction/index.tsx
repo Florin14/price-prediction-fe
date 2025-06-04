@@ -79,7 +79,7 @@ const PredictionPage: React.FC = () => {
     const validateStep2 = (property: Property): boolean => {
         const errors: string[] = [];
         if (!property.usefulAreaTotal) errors.push("Total usable area is required");
-        if (!property.numRooms) errors.push("Number of rooms is required");
+        if (!property.num_rooms) errors.push("Number of rooms is required");
         if (!property.comfort) errors.push("Comfort level is required");
         setValidationErrors(errors);
         return errors.length === 0;
@@ -179,7 +179,7 @@ const PredictionPage: React.FC = () => {
                     label="Street Frontage (m)"
                     inputName="streetFrontage"
                     type="number"
-                    value={currentProperty.streetFrontage?.toString() || ""}
+                    value={currentProperty.street_frontage?.toString() || ""}
                     onChange={(value) => {
                         dispatch(updateProperty({ type: "streetFrontage", value: Number(value) }));
                     }}
@@ -280,11 +280,11 @@ const PredictionPage: React.FC = () => {
 
                 <StyledInput
                     label="Number of rooms"
-                    inputName="numRooms"
+                    inputName="num_rooms"
                     type="number"
-                    value={currentProperty.numRooms?.toString() || ""}
+                    value={currentProperty.num_rooms?.toString() || ""}
                     onChange={(value) => {
-                        dispatch(updateProperty({ type: "numRooms", value: Number(value) }));
+                        dispatch(updateProperty({ type: "num_rooms", value: Number(value) }));
                     }}
                     placeholder="Number of rooms..."
                     variant="filled"
@@ -311,6 +311,28 @@ const PredictionPage: React.FC = () => {
                         dispatch(updateProperty({ type: "landArea", value: Number(value) }));
                     }}
                     placeholder="Land area..."
+                    variant="filled"
+                />
+                <StyledInput
+                    label="Number of garages"
+                    inputName="num_garages"
+                    type="number"
+                    value={currentProperty.num_garages?.toString() || ""}
+                    onChange={(value) => {
+                        dispatch(updateProperty({ type: "num_garages", value: Number(value) }));
+                    }}
+                    placeholder="Number of garages..."
+                    variant="filled"
+                />
+                <StyledInput
+                    label="Street Frontage (m)"
+                    inputName="street_frontage"
+                    type="number"
+                    value={currentProperty.street_frontage?.toString() || ""}
+                    onChange={(value) => {
+                        dispatch(updateProperty({ type: "street_frontage", value: Number(value) }));
+                    }}
+                    placeholder="Street Frontage..."
                     variant="filled"
                 />
             </FormRow>
@@ -345,7 +367,7 @@ const PredictionPage: React.FC = () => {
                         <div className="confidence">Confidence: {(currentPrediction.confidence * 100).toFixed(0)}%</div>
                     </div>
 
-                    <div className="predicted-price">{formatCurrency(currentPrediction.predictedPrice)}</div>
+                    <div className="predicted-price">{currentPrediction?.predicted_price ? formatCurrency(currentPrediction?.predicted_price) : 0}</div>
 
                     <PriceRange>
                         <div className="range-label">Price Range:</div>

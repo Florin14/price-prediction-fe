@@ -23,9 +23,6 @@ const NaturalPersonComponent = () => {
 
     const validationHandler = (values: NaturalPersonRegisterInterface) => {
         const errors: Partial<NaturalPersonRegisterInterface> = {};
-        if (!values.identityCard) {
-            errors.identityCard = languageData?.forms.register.naturalPerson.identityCardIsRequired;
-        }
 
         return errors;
     };
@@ -36,7 +33,8 @@ const NaturalPersonComponent = () => {
                 name: "",
                 email: "",
                 phoneNumber: "",
-                identityCard: null,
+                password: "",
+                confirmPassword: "",
             }}
             enableReinitialize
             validate={validationHandler}
@@ -53,7 +51,7 @@ const NaturalPersonComponent = () => {
                 });
             }}
         >
-            {({ resetForm: formikResetForm }) => (
+            {({ values, resetForm: formikResetForm }) => (
                 <Form className={classes.formContainer} data-testid="natural-person-form">
                     <FormTextInput
                         placeholder={languageData?.forms.register.placeholder}
@@ -77,6 +75,23 @@ const NaturalPersonComponent = () => {
                         label={languageData?.forms.register.naturalPerson.email ?? "Email"}
                         borderError={globalError === "email"}
                     />
+                    <FormTextInput
+                        type="password"
+                        placeholder={languageData?.forms.register.placeholder}
+                        name="password"
+                        required
+                        label={languageData?.forms.register.naturalPerson.password ?? "Parola"}
+                    />
+                    {values?.password && values?.password.length > 0 && (
+                        <FormTextInput
+                            type="password"
+                            placeholder={languageData?.forms.register.placeholder}
+                            name="confirmPassword"
+                            required
+                            label={languageData?.forms.register.naturalPerson.confirmPassword ?? "Confirma parola"}
+                        />
+                    )}
+
                     <div className={classes.forgotPassword}>
                         <Link href="/login">{languageData?.BackToAuthentication}</Link>
                     </div>
