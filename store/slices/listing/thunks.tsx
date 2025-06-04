@@ -67,7 +67,6 @@ export const importListings = createAsyncThunk<boolean, {}, { rejectValue: Error
     };
     try {
         const response = await Axios.post<Listing>(options.url, options.data);
-        console.log(response);
         // const data = response.data;
         // dispatch(listingActions.addListing({ ...payload, id: new Date().getTime() }));
         // return { ...payload, id: new Date().getTime() };
@@ -87,13 +86,11 @@ export const fetchImobiliareRoData = createAsyncThunk<boolean, {}, { rejectValue
         };
         try {
             const response = await Axios.get(options.url);
-            console.log(response);
             // const data = response.data;
             // dispatch(listingActions.addListing({ ...payload, id: new Date().getTime() }));
             // return { ...payload, id: new Date().getTime() };
             return true;
         } catch (e) {
-            console.log(e);
             return rejectWithValue({ error: true, message: "Failed to add listing" });
         }
     }

@@ -35,20 +35,20 @@ export interface Property {
     balconyArea?: number;
 
     // Room counts
-    numRooms?: number;
-    numKitchens?: number;
-    numBathrooms?: number;
+    num_rooms?: number;
+    num_kitchens?: number;
+    num_bathrooms?: number;
     numBalconies?: number;
 
     // Parking
     numParking?: number;
-    numGarages?: number;
+    num_garages?: number;
 
     // Location
     floor?: number;
     city?: string;
     address?: string;
-    streetFrontage?: number;
+    street_frontage?: number;
 
     // Additional details
     price?: number;
@@ -87,8 +87,24 @@ const initialState: PropertyState = {
         city: "",
         usefulArea: 0,
         classification: "",
-        numRooms: 0,
-        numBathrooms: 0,
+        num_rooms: 0,
+        num_bathrooms: 0,
+        street_frontage: 0,
+        num_kitchens: 0,
+        numParking: 0,
+        num_garages: 0,
+        usefulAreaTotal: 0,
+        builtArea: 0,
+        landArea: 0,
+        yardArea: 0,
+        showcaseArea: 0,
+        terraceArea: 0,
+        balconyArea: 0,
+        floor: 0,
+        structuralSystem: "",
+        terraces: "",
+        comfort: "",
+        condominium: "",
         price: 0,
         features: [],
     },

@@ -182,7 +182,7 @@ export const useStyles = (theme: any): StyleClasses => ({
 
         rightSection: {
             position: "absolute",
-            top: `calc(${cssVariables.defaultMargin} + 9em)`, // sub titlu + mic offset
+            top: `calc(${cssVariables.defaultMargin} + 5em)`, // sub titlu + mic offset
             left: "50%",
             transform: "translateX(-50%)",
             width: 220, // ajustează după nevoie
@@ -192,6 +192,7 @@ export const useStyles = (theme: any): StyleClasses => ({
             backgroundPosition: "center top",
             margin: 0,
             zIndex: 1,
+            paddingRight: 0,
         },
         title: {
             fontSize: 20,

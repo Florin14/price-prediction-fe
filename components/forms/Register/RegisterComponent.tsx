@@ -8,7 +8,6 @@ import useClasses from "../../../utils/useClasses";
 import NaturalPersonComponent from "./NaturalPersonRegister/NaturalPersonComponent";
 
 import { useStyles, StyleClasses } from "./RegisterComponentStyles";
-import LegalPersonComponent from "./LegalPersonRegister/LegalPersonComponent";
 
 export interface LegalPersonFormData {
     companyName: string | null;
@@ -19,14 +18,9 @@ export interface LegalPersonFormData {
 }
 
 const RegisterComponent: React.FC = () => {
-    const [personType, setPersonType] = useState<string>("natural"); // natural or legal
     const languageData = useSelector((state: RootState) => state.website.languageData);
 
     const classes = useClasses(useStyles, { name: "RegisterComponentStyles" }) as StyleClasses;
-
-    const handlePersonTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPersonType(event.target.value);
-    };
 
     return (
         <div className={classes.container} data-testid="register-form-container">

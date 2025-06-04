@@ -272,7 +272,7 @@ const LoginForm: React.FC = () => {
                 setCookie("name", rspData["name"], { path: "/", expires });
                 setCookie("role", rspData["role"], { path: "/", expires });
                 setCookie("id", rspData["id"], { path: "/", expires });
-                router.push("/dashboard/control-panel").then((r) => {});
+                router.push("/citizen/history").then((r) => {});
             })
             .catch((err) => {
                 if (err?.response?.data?.code === "E0010" || err?.response?.code === "E0024") {

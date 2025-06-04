@@ -202,36 +202,37 @@ export const ResultCard = styled("div")(({ theme }) => ({
     "& .predicted-price": {
         fontSize: "3.5rem",
         fontWeight: theme.typography.fontWeightBold,
-        background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+        // color: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
         WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
+        color: "blue",
+        // WebkitTextFillColor: "transparent",
         textAlign: "center",
-        margin: `${theme.spacing(4)} 0`,
-        animation: "pulse 2s infinite, fadeIn 0.5s ease-in",
+        margin: `20px 0`,
+        // animation: "pulse 2s infinite, fadeIn 0.5s ease-in",
         textShadow: "0 2px 4px rgba(0,0,0,0.1)",
 
-        "@keyframes pulse": {
-            "0%": {
-                transform: "scale(1)",
-            },
-            "50%": {
-                transform: "scale(1.02)",
-            },
-            "100%": {
-                transform: "scale(1)",
-            },
-        },
+        // "@keyframes pulse": {
+        //     "0%": {
+        //         transform: "scale(1)",
+        //     },
+        //     "50%": {
+        //         transform: "scale(1.02)",
+        //     },
+        //     "100%": {
+        //         transform: "scale(1)",
+        //     },
+        // },
 
-        "@keyframes fadeIn": {
-            "0%": {
-                opacity: 0,
-                transform: "translateY(20px)",
-            },
-            "100%": {
-                opacity: 1,
-                transform: "translateY(0)",
-            },
-        },
+        // "@keyframes fadeIn": {
+        //     "0%": {
+        //         opacity: 0,
+        //         transform: "translateY(20px)",
+        //     },
+        //     "100%": {
+        //         opacity: 1,
+        //         transform: "translateY(0)",
+        //     },
+        // },
     },
 
     "& .factors-grid": {

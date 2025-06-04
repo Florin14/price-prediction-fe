@@ -27,7 +27,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         switch (role) {
             case languageData?.Roles.ADMIN:
                 return adminRoutes;
-            case languageData?.Roles.CUSTOMER:
+            case languageData?.Roles.CLIENT:
                 return customerRoutes;
             default:
                 return guestRoutes;

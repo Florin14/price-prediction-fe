@@ -7,7 +7,6 @@ import useClasses from "../../utils/useClasses";
 import { Box, Tab, Tabs } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 
-import DefineSectionsComponent from "./DefineSectionsComponent";
 import UsersComponent from "./UsersComponent";
 
 import { RootState } from "../../store";
@@ -90,9 +89,7 @@ const ManageUsersComponent = () => {
                 <TabPanel id={`manage-users-tab-panel-1`} className={classes.tabPanel} value={currentTab} index={0}>
                     {init && <UsersComponent />}
                 </TabPanel>
-                <TabPanel id={`manage-users-tab-panel-2`} className={classes.tabPanel} value={currentTab} index={1}>
-                    {init && <DefineSectionsComponent />}
-                </TabPanel>
+                
             </div>
         </>
     );
