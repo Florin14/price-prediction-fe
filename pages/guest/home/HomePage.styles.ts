@@ -46,7 +46,8 @@ export const HeroSection = styled("section")(({ theme }) => ({
             animation: "fadeIn 0.8s ease-out 0.2s both",
         },
         ".hero-buttons": {
-            display: "flex",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
             gap: theme.spacing(4),
             animation: "fadeIn 0.8s ease-out 0.4s both",
             [theme.breakpoints.down("md")]: {

@@ -1,5 +1,7 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import { styled } from "@mui/material/styles";
+import { keyframes } from "@emotion/react";
+import Box from "@mui/material/Box";
 
 const pulseAnimation = keyframes`
   0% { transform: scale(1); opacity: 1; }
@@ -24,74 +26,85 @@ const particlesAnimation = keyframes`
   100% { transform: rotate(360deg); }
 `;
 
-const OverlayContainer = styled.div<{ active: boolean }>`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    display: ${(props) => (props.active ? "flex" : "none")};
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-`;
+interface OverlayContainerProps {
+    active: boolean;
+}
 
-const LoadingContent = styled.div`
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
+const OverlayContainer = styled(Box, {
+    shouldForwardProp: (prop) => prop !== "active",
+})<OverlayContainerProps>(({ active, theme }) => ({
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "rgba(0, 0, 0, 0.85)",
+    backdropFilter: "blur(8px)",
+    display: active ? "flex" : "none",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: theme.zIndex.modal + 1,
+}));
 
-const HouseIcon = styled.div`
-    font-size: 60px;
-    color: #4caf50;
-    animation:
-        ${floatAnimation} 3s ease-in-out infinite,
-        ${glowAnimation} 2s ease-in-out infinite;
-    margin-bottom: 20px;
-`;
+const LoadingContent = styled(Box)({
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+});
 
-const ParticlesContainer = styled.div`
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    animation: ${particlesAnimation} 20s linear infinite;
-`;
+const HouseIcon = styled(Box)(({ theme }) => ({
+    fontSize: 60,
+    color: theme.palette.success.main,
+    animation: `${floatAnimation} 3s ease-in-out infinite, ${glowAnimation} 2s ease-in-out infinite`,
+    marginBottom: theme.spacing(2.5),
+}));
 
-const Particle = styled.div<{ delay: number; distance: number }>`
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: #4caf50;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform-origin: 0 0;
-    animation: ${pulseAnimation} 2s ease-in-out infinite;
-    animation-delay: ${(props) => props.delay}s;
-    transform: rotate(${(props) => props.distance}deg) translateX(${(props) => props.distance}px);
-`;
+const ParticlesContainer = styled(Box)({
+    position: "absolute",
+    width: 200,
+    height: 200,
+    animation: `${particlesAnimation} 20s linear infinite`,
+});
 
-const Message = styled.div`
-    color: #fff;
-    font-size: 24px;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 20px;
-    opacity: 0.9;
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-`;
+interface ParticleProps {
+    delay: number;
+    distance: number;
+}
 
-const SubMessage = styled.div`
-    color: #4caf50;
-    font-size: 16px;
-    margin-top: 10px;
-    opacity: 0.8;
-`;
+const Particle = styled(Box, {
+    shouldForwardProp: (prop) => !["delay", "distance"].includes(prop as string),
+})<ParticleProps>(({ delay, distance, theme }) => ({
+    position: "absolute",
+    width: 8,
+    height: 8,
+    background: theme.palette.success.main,
+    borderRadius: "50%",
+    top: "50%",
+    left: "50%",
+    transformOrigin: "0 0",
+    animation: `${pulseAnimation} 2s ease-in-out infinite`,
+    animationDelay: `${delay}s`,
+    transform: `rotate(${distance}deg) translateX(${distance}px)`,
+}));
+
+const Message = styled(Box)(({ theme }) => ({
+    color: theme.palette.common.white,
+    fontSize: 24,
+    fontWeight: 500,
+    textAlign: "center",
+    marginTop: theme.spacing(2.5),
+    opacity: 0.9,
+    textShadow: `0 0 10px ${theme.palette.success.main}80`,
+}));
+
+const SubMessage = styled(Box)(({ theme }) => ({
+    color: theme.palette.success.main,
+    fontSize: 16,
+    marginTop: theme.spacing(1.25),
+    opacity: 0.8,
+}));
 
 interface PredictionLoadingOverlayProps {
     active: boolean;

@@ -58,6 +58,7 @@ export const StepIndicator = styled("div")(({ theme }) => ({
                 backgroundColor: theme.palette.primary.main,
                 color: theme.palette.common.white,
                 borderColor: theme.palette.primary.main,
+                cursor: "pointer",
             },
 
             "& .step-label": {

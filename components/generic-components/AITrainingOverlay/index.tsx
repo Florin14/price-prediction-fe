@@ -1,5 +1,7 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import { styled } from "@mui/material/styles";
+import { keyframes } from "@emotion/react";
+import Box from "@mui/material/Box";
 
 const neuralPathAnimation = keyframes`
   0% { stroke-dashoffset: 1000; }
@@ -23,103 +25,106 @@ const progressAnimation = keyframes`
   to { width: 100%; }
 `;
 
-const OverlayContainer = styled.div<{ active: boolean }>`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(8px);
-    display: ${(props) => (props.active ? "flex" : "none")};
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    color: white;
-`;
+interface OverlayContainerProps {
+    active: boolean;
+}
 
-const ContentContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 800px;
-    width: 90%;
-`;
+const OverlayContainer = styled(Box, {
+    shouldForwardProp: (prop) => prop !== "active",
+})<OverlayContainerProps>(({ active, theme }) => ({
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "rgba(0, 0, 0, 0.9)",
+    backdropFilter: "blur(8px)",
+    display: active ? "flex" : "none",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: theme.zIndex.modal + 1,
+    color: theme.palette.common.white,
+}));
 
-const Title = styled.h2`
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-    color: #4caf50;
-    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-`;
+const ContentContainer = styled(Box)(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    maxWidth: 800,
+    width: "90%",
+}));
 
-const NetworkVisualization = styled.div`
-    position: relative;
-    width: 600px;
-    height: 300px;
-    margin: 2rem 0;
-    svg {
-        width: 100%;
-        height: 100%;
-        .neural-path {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: ${neuralPathAnimation} 3s linear infinite;
-        }
-    }
-`;
+const Title = styled(Box)(({ theme }) => ({
+    fontSize: "2.5rem",
+    marginBottom: theme.spacing(4),
+    color: theme.palette.success.main,
+    textShadow: "0 0 10px rgba(76, 175, 80, 0.5)",
+}));
 
-const StatsContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin: 2rem 0;
-    width: 100%;
-`;
+const NetworkVisualization = styled(Box)(({ theme }) => ({
+    position: "relative",
+    width: 600,
+    height: 300,
+    margin: theme.spacing(4, 0),
+    "& svg": {
+        width: "100%",
+        height: "100%",
+    },
+    "& .neural-path": {
+        strokeDasharray: 1000,
+        strokeDashoffset: 1000,
+        animation: `${neuralPathAnimation} 3s linear infinite`,
+    },
+}));
 
-const StatCard = styled.div`
-    background: rgba(76, 175, 80, 0.1);
-    border: 1px solid rgba(76, 175, 80, 0.3);
-    border-radius: 10px;
-    padding: 1.5rem;
-    text-align: center;
-    animation: ${pulseAnimation} 2s ease-in-out infinite;
+const StatsContainer = styled(Box)(({ theme }) => ({
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: theme.spacing(4),
+    margin: theme.spacing(4, 0),
+    width: "100%",
+}));
 
-    h3 {
-        font-size: 1.2rem;
-        color: #4caf50;
-        margin-bottom: 0.5rem;
-    }
+const StatCard = styled(Box)(({ theme }) => ({
+    background: theme.palette.success.light,
+    border: `1px solid ${theme.palette.success.main}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(3),
+    textAlign: "center",
+    animation: `${pulseAnimation} 2s ease-in-out infinite`,
+    "& h3": {
+        fontSize: "1.2rem",
+        color: theme.palette.success.main,
+        marginBottom: theme.spacing(1),
+    },
+    "& p": {
+        fontSize: "1.5rem",
+        margin: 0,
+    },
+}));
 
-    p {
-        font-size: 1.5rem;
-        margin: 0;
-    }
-`;
+const ProgressBar = styled(Box)(({ theme }) => ({
+    width: "100%",
+    height: 10,
+    background: "rgba(255, 255, 255, 0.1)",
+    borderRadius: theme.shape.borderRadius,
+    overflow: "hidden",
+    margin: theme.spacing(4, 0),
+    "& > div": {
+        height: "100%",
+        background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
+        animation: `${progressAnimation} 3s ease-in-out infinite`,
+        borderRadius: theme.shape.borderRadius,
+    },
+}));
 
-const ProgressBar = styled.div`
-    width: 100%;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 2rem 0;
-
-    div {
-        height: 100%;
-        background: linear-gradient(90deg, #4caf50, #81c784);
-        animation: ${progressAnimation} 3s ease-in-out infinite;
-        border-radius: 5px;
-    }
-`;
-
-const StatusMessage = styled.div`
-    font-size: 1.2rem;
-    text-align: center;
-    color: #81c784;
-    margin: 1rem 0;
-    animation: ${floatAnimation} 2s ease-in-out infinite;
-`;
+const StatusMessage = styled(Box)(({ theme }) => ({
+    fontSize: "1.2rem",
+    textAlign: "center",
+    color: theme.palette.success.light,
+    margin: theme.spacing(2, 0),
+    animation: `${floatAnimation} 2s ease-in-out infinite`,
+}));
 
 interface AITrainingOverlayProps {
     active: boolean;
@@ -135,7 +140,7 @@ interface AITrainingOverlayProps {
     };
 }
 
-const AITrainingOverlay: React.FC<AITrainingOverlayProps> = ({ active, stats }) => {
+const AITrainingOverlay: React.FC<AITrainingOverlayProps> = ({ active = false, stats }) => {
     return (
         <OverlayContainer active={active}>
             <ContentContainer>
@@ -150,7 +155,12 @@ const AITrainingOverlay: React.FC<AITrainingOverlayProps> = ({ active, stats }) 
                 </NetworkVisualization>
 
                 <ProgressBar>
-                    <div style={{ width: `${(stats.epochsCompleted / stats.totalEpochs) * 100}%` }} />
+                    <Box
+                        component="div"
+                        sx={{
+                            width: `${(stats.epochsCompleted / stats.totalEpochs) * 100}%`,
+                        }}
+                    />
                 </ProgressBar>
 
                 <StatusMessage>
@@ -159,28 +169,28 @@ const AITrainingOverlay: React.FC<AITrainingOverlayProps> = ({ active, stats }) 
 
                 <StatsContainer>
                     <StatCard>
-                        <h3>Accuracy</h3>
-                        <p>{(stats.accuracy * 100).toFixed(2)}%</p>
+                        <Box component="h3">Accuracy</Box>
+                        <Box component="p">{(stats.accuracy * 100).toFixed(2)}%</Box>
                     </StatCard>
                     <StatCard>
-                        <h3>Loss</h3>
-                        <p>{stats.loss.toFixed(4)}</p>
+                        <Box component="h3">Loss</Box>
+                        <Box component="p">{stats.loss.toFixed(4)}</Box>
                     </StatCard>
                     <StatCard>
-                        <h3>Learning Rate</h3>
-                        <p>{stats.learningRate.toExponential(2)}</p>
+                        <Box component="h3">Learning Rate</Box>
+                        <Box component="p">{stats.learningRate.toExponential(2)}</Box>
                     </StatCard>
                     <StatCard>
-                        <h3>Time Elapsed</h3>
-                        <p>{stats.timeElapsed}</p>
+                        <Box component="h3">Time Elapsed</Box>
+                        <Box component="p">{stats.timeElapsed}</Box>
                     </StatCard>
                     <StatCard>
-                        <h3>Est. Time Remaining</h3>
-                        <p>{stats.estimatedTimeRemaining}</p>
+                        <Box component="h3">Est. Time Remaining</Box>
+                        <Box component="p">{stats.estimatedTimeRemaining}</Box>
                     </StatCard>
                     <StatCard>
-                        <h3>Samples Processed</h3>
-                        <p>{stats.samplesProcessed.toLocaleString()}</p>
+                        <Box component="h3">Samples Processed</Box>
+                        <Box component="p">{stats.samplesProcessed.toLocaleString()}</Box>
                     </StatCard>
                 </StatsContainer>
             </ContentContainer>
