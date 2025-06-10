@@ -57,7 +57,7 @@ export const lightTheme: Theme = createTheme({
       defaultProps: { notched: false },
       styleOverrides: {
         root: { borderRadius: 8, background: 'white', '& .MuiOutlinedInput-notchedOutline': {}, '&:hover .MuiOutlinedInput-notchedOutline': {}, '&.Mui-focused .MuiOutlinedInput-notchedOutline': {}, '&.Mui-error .MuiOutlinedInput-notchedOutline': {}, '&.Mui-disabled .MuiOutlinedInput-notchedOutline': {}, '&.Mui-disabled': {} },
-        input: { padding: '0 12px', height: 35, fontSize: 12, fontFamily: '"Inter", sans-serif', '&::placeholder': {} },
+        input: { padding: '0 6px', height: 35, fontSize: 12, fontFamily: '"Inter", sans-serif', '&::placeholder': {} },
       }
     },
     MuiMenu: { styleOverrides: { paper: { borderRadius: 8, boxShadow: '0px 4px 8px rgba(0,0,0,0.1)' } } },

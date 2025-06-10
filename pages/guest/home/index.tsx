@@ -1,5 +1,3 @@
-"use client";
-
 import type React from "react";
 // import StyledButton from "../../components/common/StyledButton/StyledButton"
 import { HomeContainer, HeroSection, FeaturesSection, FeatureCard, HowItWorksSection, Step, TestimonialsSection, TestimonialCard } from "./HomePage.styles";
@@ -8,7 +6,7 @@ import StyledButton from "../../../components/generic-components/StyledButton";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../store";
-import { importListings } from "../../../store/slices/listing/thunks";
+import { importListings, updateListings } from "../../../store/slices/listing/thunks";
 import { addPrediction, addPredictionV2 } from "../../../store/slices/prediction/thunks";
 import AITrainingOverlay from "../../../components/generic-components/AITrainingOverlay";
 import { useState, useEffect } from "react";
@@ -56,6 +54,11 @@ const HomePage: React.FC = () => {
     const handleImport = () => {
         dispatch(importListings({}));
     };
+     const handleUpdateListings = () => {
+        dispatch(updateListings({}));
+    };
+
+    
 
     const handleTrain = async () => {
         setShowTrainingOverlay(true);
@@ -102,6 +105,9 @@ const HomePage: React.FC = () => {
                         </StyledButton>
                         <StyledButton variant="outlined" size="large" onClick={handleImport}>
                             Import data
+                        </StyledButton>
+                        <StyledButton variant="outlined" size="large" onClick={handleUpdateListings}>
+                            Handle Update Listings
                         </StyledButton>
                         <StyledButton variant="outlined" size="large" onClick={handleTrain}>
                             Train AI

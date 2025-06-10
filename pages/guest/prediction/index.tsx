@@ -1,13 +1,9 @@
-"use client";
-
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../store";
-import { updateProperty, resetProperty, type Property } from "../../../store/slices/property/property-slice";
-import { addPrediction, predictPropertyPrice } from "../../../store/slices/prediction/thunks";
-// import StyledButton from "../../components/common/StyledButton/StyledButton"
-// import StyledInput from "../../components/cStyledInput/StyledInput"
+import { updateProperty,  type Property } from "../../../store/slices/property/property-slice";
+import {  predictPropertyPrice } from "../../../store/slices/prediction/thunks";
 import {
     PredictionContainer,
     PredictionForm,
@@ -23,8 +19,10 @@ import {
 import { FiHome, FiMapPin, FiDollarSign, FiArrowRight, FiArrowLeft, FiRefreshCw } from "react-icons/fi";
 import StyledInput from "../../../components/generic-components/StyledInput";
 import StyledButton from "../../../components/generic-components/StyledButton";
-import { fetchImobiliareRoData, importListings } from "../../../store/slices/listing/thunks";
+import StyledDropdown from "../../../components/generic-components/StyledDropdown";
 import PredictionLoadingOverlay from "../../../components/generic-components/PredictionLoadingOverlay";
+import { clearCurrentPrediction } from "../../../store/slices/prediction/prediction-slice";
+import { MapLibre } from "../../../components/generic-components/LibreMap";
 
 const PredictionPage: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -35,12 +33,9 @@ const PredictionPage: React.FC = () => {
     const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
 
     const propertyTypes = [
-        { value: "apartment", label: "Apartment" },
-        { value: "house", label: "House" },
-        { value: "villa", label: "Villa" },
-        { value: "office", label: "Office Space" },
-        { value: "commercial", label: "Commercial Space" },
-        { value: "land", label: "Land" },
+        { id: "bloc", name: "Bloc" },
+        { id: "casa", name: "Casa/Vila" },
+        { id: "nespecificat", name: "Fara specificare" },
     ];
 
     const comfort = [
@@ -51,27 +46,13 @@ const PredictionPage: React.FC = () => {
         { value: "basic", label: "Basic" },
     ];
 
-    // useEffect(() => {
-    //     dispatch(fetchImobiliareRoData({})).then((res) => {
-    //         console.log(res);
-    //     });
-    // }, []);
-
-    // const validateStep1 = () => {
-    //     const required = ["address", "city"];
-    //     for (const field of required) {
-    //         if (!currentProperty[field]) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // };
-
     const validateStep1 = (property: Property): boolean => {
         const errors: string[] = [];
         if (!property.address?.trim()) errors.push("Street address is required");
         if (!property.city?.trim()) errors.push("City is required");
         if (!property.classification) errors.push("Property type is required");
+        if (!property.comfort) errors.push("Comfort level is required");
+
         setValidationErrors(errors);
         return errors.length === 0;
     };
@@ -80,7 +61,6 @@ const PredictionPage: React.FC = () => {
         const errors: string[] = [];
         if (!property.usefulAreaTotal) errors.push("Total usable area is required");
         if (!property.num_rooms) errors.push("Number of rooms is required");
-        if (!property.comfort) errors.push("Comfort level is required");
         setValidationErrors(errors);
         return errors.length === 0;
     };
@@ -110,8 +90,7 @@ const PredictionPage: React.FC = () => {
     };
 
     const handleReset = () => {
-        console.log(4235);
-        dispatch(resetProperty());
+        dispatch(clearCurrentPrediction());
         setStep(1);
     };
 
@@ -125,14 +104,28 @@ const PredictionPage: React.FC = () => {
 
     const renderStepIndicator = () => (
         <StepIndicator>
-            <div className={`step ${step >= 1 ? "active" : ""}`}>
+            <div
+                className={`step ${step >= 1 ? "active" : ""}`}
+                onClick={() => {
+                    if (step >= 1) {
+                        setStep(1);
+                    }
+                }}
+            >
                 <div className="step-icon">
                     <FiMapPin />
                 </div>
                 <div className="step-label">Location</div>
             </div>
             <div className="connector"></div>
-            <div className={`step ${step >= 2 ? "active" : ""}`}>
+            <div
+                className={`step ${step >= 2 ? "active" : ""}`}
+                onClick={() => {
+                    if (step >= 2) {
+                        setStep(2);
+                    }
+                }}
+            >
                 <div className="step-icon">
                     <FiHome />
                 </div>
@@ -151,6 +144,20 @@ const PredictionPage: React.FC = () => {
     const renderStep1 = () => (
         <FormSection>
             <h3>Property Location and Basic Details</h3>
+            <div
+                style={{
+                    background: "#fffdf0",
+                    padding: "12px 16px",
+                    borderRadius: "6px",
+                    color: "#20B2AA",
+                    marginBottom: "20px",
+                    border: "1px solid #d1d5db",
+                    fontSize: "13px",
+                    boxShadow: "0 1px 3px rgba(110, 110, 110, 0.05)",
+                }}
+            >
+                For a better prediction accuracy, please complete all fields, even optional ones.
+            </div>
             <FormRow>
                 <StyledInput
                     label="Street Address"
@@ -188,17 +195,16 @@ const PredictionPage: React.FC = () => {
                 />
             </FormRow>
             <FormRow>
-                <StyledInput
+                <StyledDropdown
                     label="Property Type"
-                    inputName="classification"
-                    value={currentProperty.classification || ""}
-                    onChange={(value) => {
-                        dispatch(updateProperty({ type: "classification", value }));
+                    required
+                    activeLabel
+                    value={currentProperty.classification ? { id: currentProperty.classification } : null}
+                    onChange={(_, value) => {
+                        dispatch(updateProperty({ type: "classification", value: value?.id || null }));
                     }}
-                    placeholder="Property type..."
-                    variant="filled"
-                    select={true}
-                    items={propertyTypes}
+                    placeholder="Selecteaza tipul proprietatii..."
+                    options={propertyTypes}
                 />
                 <StyledInput
                     label="Land Classification"
@@ -232,7 +238,6 @@ const PredictionPage: React.FC = () => {
                     }}
                     placeholder="Comfort level..."
                     variant="filled"
-                    select={true}
                     items={comfort}
                 />
             </FormRow>
@@ -254,6 +259,19 @@ const PredictionPage: React.FC = () => {
     const renderStep2 = () => (
         <FormSection>
             <h3>Property Details</h3>
+            <div
+                style={{
+                    background: "linear-gradient(to right, #fffdf0, #ffffff)",
+                    padding: "12px 16px",
+                    borderRadius: "6px",
+                    color: "#20B2AA",
+                    marginBottom: "20px",
+                    fontSize: "13px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+                }}
+            >
+                Fill in as many details as possible - more information leads to more accurate price predictions.
+            </div>
             <FormRow>
                 <StyledInput
                     label="Total Usable Area (m²)"
@@ -354,6 +372,159 @@ const PredictionPage: React.FC = () => {
         </FormSection>
     );
 
+    const dummySimilarListings = [
+        {
+            id: 1,
+            external_id: "CJ-APT-001",
+            classification: "apartment",
+            land_classification: null,
+            useful_area_total: 85,
+            useful_area: 75,
+            num_kitchens: 1,
+            has_parking_space: true,
+            floor: 3,
+            yard_area: 0,
+            location_raw: "Cluj-Napoca, Zorilor",
+            city: "Cluj-Napoca",
+            address: "Str. Observatorului 34",
+            num_rooms: 3,
+            price: 155000,
+            url: "https://example.com/property1",
+            has_garage: true,
+            condominium: "modern",
+            has_balconies: true,
+            has_terrace: false,
+            comfort: "lux",
+            structure: "brick",
+            property_type: "residential",
+            built_year: 2020,
+            for_sale: true,
+            lat: 46.7579,
+            lng: 23.5819,
+            imageUrl: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&auto=format",
+        },
+        {
+            id: 2,
+            external_id: "CJ-APT-002",
+            classification: "apartment",
+            land_classification: null,
+            useful_area_total: 92,
+            useful_area: 82,
+            num_kitchens: 1,
+            has_parking_space: true,
+            floor: 4,
+            yard_area: 0,
+            location_raw: "Cluj-Napoca, Centru",
+            city: "Cluj-Napoca",
+            address: "Str. Horea 78",
+            num_rooms: 3,
+            price: 165000,
+            url: "https://example.com/property2",
+            has_garage: false,
+            condominium: "residential",
+            has_balconies: true,
+            has_terrace: true,
+            comfort: "lux",
+            structure: "concrete",
+            property_type: "residential",
+            built_year: 2019,
+            for_sale: true,
+            lat: 46.7711,
+            lng: 23.5874,
+            imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=500&auto=format",
+        },
+        {
+            id: 3,
+            external_id: "CJ-HSE-001",
+            classification: "house",
+            land_classification: "intravilan",
+            useful_area_total: 180,
+            useful_area: 150,
+            num_kitchens: 1,
+            has_parking_space: true,
+            floor: 2,
+            yard_area: 300,
+            location_raw: "Cluj-Napoca, Andrei Mureșanu",
+            city: "Cluj-Napoca",
+            address: "Str. Republicii 45",
+            num_rooms: 5,
+            price: 285000,
+            url: "https://example.com/property3",
+            has_garage: true,
+            condominium: null,
+            has_balconies: false,
+            has_terrace: true,
+            comfort: "premium",
+            structure: "brick",
+            property_type: "individual",
+            built_year: 2018,
+            for_sale: true,
+            lat: 46.7645,
+            lng: 23.5882,
+            imageUrl: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500&auto=format",
+        },
+        {
+            id: 4,
+            external_id: "CJ-APT-003",
+            classification: "apartment",
+            land_classification: null,
+            useful_area_total: 75,
+            useful_area: 65,
+            num_kitchens: 1,
+            has_parking_space: true,
+            floor: 1,
+            yard_area: 0,
+            location_raw: "Cluj-Napoca, Gheorgheni",
+            city: "Cluj-Napoca",
+            address: "Str. Albac 23",
+            num_rooms: 2,
+            price: 125000,
+            url: "https://example.com/property4",
+            has_garage: false,
+            condominium: "modern",
+            has_balconies: true,
+            has_terrace: false,
+            comfort: "high",
+            structure: "concrete",
+            property_type: "residential",
+            built_year: 2021,
+            for_sale: true,
+            lat: 46.7558,
+            lng: 23.6002,
+            imageUrl: "https://images.unsplash.com/photo-1565183997392-2f6f122e5912?w=500&auto=format",
+        },
+        {
+            id: 5,
+            external_id: "CJ-APT-004",
+            classification: "apartment",
+            land_classification: null,
+            useful_area_total: 95,
+            useful_area: 85,
+            num_kitchens: 1,
+            has_parking_space: true,
+            floor: 6,
+            yard_area: 0,
+            location_raw: "Cluj-Napoca, Mărăști",
+            city: "Cluj-Napoca",
+            address: "Str. Aurel Vlaicu 4",
+            num_rooms: 4,
+            price: 175000,
+            url: "https://example.com/property5",
+            has_garage: true,
+            condominium: "premium",
+            has_balconies: true,
+            has_terrace: true,
+            comfort: "lux",
+            structure: "concrete",
+            property_type: "residential",
+            built_year: 2022,
+            for_sale: true,
+            lat: 46.7689,
+            lng: 23.6089,
+            imageUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=500&auto=format",
+        },
+    ];
+
     const renderResults = () => {
         if (!currentPrediction) return null;
 
@@ -378,18 +549,27 @@ const PredictionPage: React.FC = () => {
                     </PriceRange>
 
                     <SimilarProperties>
-                        <h4>Similar Properties</h4>
+                        <h4>Similar Properties in Your Area</h4>
                         <div className="similar-properties-grid">
-                            {currentPrediction?.similarProperties?.map((property) => (
+                            {dummySimilarListings.map((property) => (
                                 <PropertyCard key={property.id}>
-                                    {property.imageUrl && (
-                                        <div className="property-image">
-                                            <img src={property.imageUrl || "/placeholder.svg"} alt={property.address} />
+                                    <div className="property-image">
+                                        <img src={property.imageUrl} alt={property.address} style={{ width: "100%", height: "200px", objectFit: "cover" }} />
+                                    </div>
+                                    <div className="property-details">
+                                        <div className="property-address">{property.address}</div>
+                                        <div className="property-specs">
+                                            <span>{property.num_rooms} rooms</span> •<span>{property.useful_area_total} m²</span> •
+                                            <span>{property.comfort}</span>
                                         </div>
-                                    )}
-                                    <div className="property-address">{property.address}</div>
-                                    <div className="property-price">{formatCurrency(property.price)}</div>
-                                    <div className="property-distance">{property.distance} miles away</div>
+                                        <div className="property-price">{formatCurrency(property.price)}</div>
+                                        <div className="property-features">
+                                            {property?.has_garage && <span>Garage</span>}
+                                            {property?.has_balconies && <span>Balcony</span>}
+                                            {property?.has_terrace && <span>Terrace</span>}
+                                            {property?.has_parking_space && <span>Parking</span>}
+                                        </div>
+                                    </div>
                                 </PropertyCard>
                             ))}
                         </div>
@@ -412,6 +592,7 @@ const PredictionPage: React.FC = () => {
         <PredictionContainer>
             <PredictionLoadingOverlay active={showLoadingOverlay} />
             <h1>Real Estate Price Prediction</h1>
+            <MapLibre listings={dummySimilarListings} />
 
             {renderStepIndicator()}
 

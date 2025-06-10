@@ -47,7 +47,31 @@ const useStyles = (theme: Theme) => ({
         paddingTop: "5px !important",
     },
     input: {
-        minHeight: "35px",
+        // minHeight: "45px",
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        borderRadius: "8px",
+        border: "1px solid rgba(0, 0, 0, 0.1)",
+        "& .MuiInputBase-input": {
+            textAlign: "center",
+            height: "45px !important",
+            boxSizing: "border-box",
+            padding: "8px 14px",
+            fontSize: "14px",
+            transition: "all 0.2s ease-in-out",
+        },
+        "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+                border: "1px solid rgba(0, 0, 0, 0.1)",
+                borderRadius: "8px",
+                top: 0,
+            },
+            "&:hover fieldset": {
+                borderColor: theme.palette.primary.main,
+            },
+            "&.Mui-focused fieldset": {
+                borderColor: theme.palette.primary.main,
+            },
+        },
         "&[type=number]": {
             MozAppearance: "textfield",
         },
@@ -62,11 +86,17 @@ const useStyles = (theme: Theme) => ({
     },
     multilineInput: {
         borderRadius: 8,
-        fontSize: "12px",
+        fontSize: "14px",
         fontFamily: "Inter",
-        fontWight: 400,
-        lineHeight: "12px",
-        minHeight: "35px",
+        fontWeight: 400,
+        lineHeight: "14px",
+        minHeight: "45px",
+        backgroundColor: "rgba(255, 255, 255, 0.7)",
+        border: "1px solid rgba(0, 0, 0, 0.1)",
+        "& .MuiInputBase-input": {
+            textAlign: "center",
+            minHeight: "45px !important",
+        },
         "&[type=number]": {
             MozAppearance: "textfield",
         },
@@ -120,7 +150,6 @@ interface StyledInputProps {
     onKeyUp?: (event: any) => void;
     viewMode?: boolean;
     viewModeClassName?: string;
-    select?: boolean;
     items?: Array<{ value: string | number; label: string }>;
     variant?: "standard" | "outlined" | "filled";
     multilineDisabledClassname?: string;
@@ -187,7 +216,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
 
     return (
         <div id={id} style={{ width: width }} {...rest}>
-            {activeLabel && (
+            {label && (
                 <InputLabel required={!!required} className={classNames(classes.label, labelClassName)}>
                     {label}
                 </InputLabel>

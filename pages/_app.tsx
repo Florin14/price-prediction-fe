@@ -23,6 +23,7 @@ import ro from "../assets/language/ro";
 import createEmotionCache from "../utils/createEmotionCache";
 
 import { darkTheme, lightTheme } from "../utils/theme";
+import 'leaflet/dist/leaflet.css';
 
 const clientSideEmotionCache = createEmotionCache();
 
