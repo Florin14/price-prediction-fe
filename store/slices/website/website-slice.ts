@@ -2,6 +2,17 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import WebsiteStore from "../../../models/generic/website";
 import { LanguageDataTypes } from "../../../assets/language/ro";
 
+type Theme = "light" | "dark";
+
+// Get initial theme from localStorage or default to light
+const getInitialTheme = (): Theme => {
+    if (typeof window !== "undefined") {
+        const savedTheme = localStorage.getItem("theme") as Theme;
+        return savedTheme === "dark" ? "dark" : "light";
+    }
+    return "light";
+};
+
 const initialState: WebsiteStore = {
     language: "",
     languageData: null,
@@ -9,7 +20,9 @@ const initialState: WebsiteStore = {
     title: null,
     goBack: null,
     deviceType: null,
-    theme: "light",
+    theme: getInitialTheme(),
+    isDarkMode: getInitialTheme() === "dark",
+    currentLanguage: "en",
 };
 
 const websiteSlice = createSlice({
@@ -34,12 +47,23 @@ const websiteSlice = createSlice({
         setDeviceType(state, action: PayloadAction<{ deviceType: string | null }>) {
             state.deviceType = action.payload.deviceType;
         },
-        changeTheme(state, action) {
-            if (state.theme === "dark") {
-                state.theme = "light";
-            } else {
-                state.theme = "dark";
+        changeTheme(state) {
+            const newTheme: Theme = state.theme === "dark" ? "light" : "dark";
+            state.theme = newTheme;
+            if (typeof window !== "undefined") {
+                localStorage.setItem("theme", newTheme);
             }
+        },
+        setIsDarkMode(state, action: PayloadAction<{ isDarkMode: boolean }>) {
+            state.isDarkMode = action.payload.isDarkMode;
+            state.theme = action.payload.isDarkMode ? "dark" : "light";
+            if (typeof window !== "undefined") {
+                localStorage.setItem("theme", state.theme);
+            }
+        },
+        setCurrentLanguage(state, action: PayloadAction<{ currentLanguage: string }>) {
+            state.currentLanguage = action.payload.currentLanguage;
+            state.language = action.payload.currentLanguage;
         },
     },
 });

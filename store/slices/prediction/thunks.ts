@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
 // import type { PredictionResult, Property } from "./prediction-slice";
 import { setPrediction, setLoading, setError, deletePrediction } from "./prediction-slice";
-import {generateMockFactors, generateMockMarketTrends, generateMockSimilarProperties } from "../../../utils/app-functions";
 import { PredictionResult } from "./prediction-slice";
 import { Property } from "../property/property-slice";
 
@@ -15,6 +14,7 @@ export const predictPropertyPrice = createAsyncThunk<PredictionResult, Property,
         try {
             const response = await Axios.post<PredictionResult>(`/prediction-predict`, property);
             const result = response.data;
+            console.log(result);
             // END MOCK
             dispatch(setPrediction(result));
             dispatch(setLoading(false));
@@ -51,8 +51,6 @@ export const loadPredictions = createAsyncThunk<PredictionResult[], void, { reje
         }
     }
 );
-interface AddPredictionPayload {}
-
 export interface ErrorResponse {
     error: boolean;
     message: string;

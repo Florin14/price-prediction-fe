@@ -31,6 +31,7 @@
     "@mui/styles": "^6.1.1",
     "@mui/types": "^7.4.1",
     "@mui/x-date-pickers": "^7.1.1",
+    "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.2.3",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.8",

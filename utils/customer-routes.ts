@@ -1,32 +1,30 @@
-import ControlPanelIcon from "../components/icons/ControlPanelIcon";
-import CommunicationIcon from "../components/icons/CommunicationIcon";
-import ProfileIcon from "../components/icons/ProfileIcon";
-import ComplaintsIcon from "../components/icons/ComplaintsIcon";
-import PropertiesIcon from "../components/icons/PropertiesIcon";
 import { RouteModel } from "../models/generic/routes";
+import HomeIcon from "../components/icons/HomeIcon";
+import { FiBarChart2, FiList } from "react-icons/fi";
 
 const customerRoutes: RouteModel[] = [
     {
-        path: "/guest/prediction",
-        name: "Prediction",
-        icon: CommunicationIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/guest/history",
-        name: "History",
-        icon: CommunicationIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/guest/home",
+        path: "/home",
         name: "Home",
-        icon: ComplaintsIcon,
+        icon: HomeIcon,
+        isOnMenu: true,
+        label: null,
+    },
+    {
+        path: "/customer/prediction",
+        name: "Prediction",
+        icon: FiBarChart2,
+        isOnMenu: true,
+        label: null,
+    },
+    {
+        path: "/customer/history",
+        name: "History",
+        icon: FiList,
         isOnMenu: true,
         label: null,
     },
 ];
+export const customerSettingRoutes: RouteModel[] = [];
 
 export default customerRoutes;

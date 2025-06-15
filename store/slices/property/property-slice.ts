@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Draft } from '@reduxjs/toolkit';
+import { Option } from "../../../components/generic-components/LazyLoadingMultiDropdown";
 
 export interface PropertyFeature {
     id: string;
@@ -9,7 +10,7 @@ export interface PropertyFeature {
 
 export interface PropertyItemSetter {
     type: string;
-    value: string | number | boolean | null;
+    value: string | number | boolean | any | null;
 }
 
 export interface Property {
@@ -21,12 +22,12 @@ export interface Property {
     features?: PropertyFeature[];
 
     // Classification
-    classification?: string;
+    classification?: Option | null;
     landClassification?: string;
 
     // Areas
-    usefulAreaTotal?: number;
-    usefulArea?: number;
+    useful_area_total?: number;
+    useful_area?: number;
     builtArea?: number;
     landArea?: number;
     yardArea?: number;
@@ -69,7 +70,7 @@ interface PropertyState {
     loading: boolean;
     error: string | null;
     filters: {
-        classification: string | null;
+        classification: any | null;
         minPrice: number | null;
         maxPrice: number | null;
         minRooms: number | null;
@@ -85,15 +86,15 @@ const initialState: PropertyState = {
     currentProperty: {
         address: "",
         city: "",
-        usefulArea: 0,
-        classification: "",
+        useful_area: 0,
+        classification: null,
         num_rooms: 0,
         num_bathrooms: 0,
         street_frontage: 0,
         num_kitchens: 0,
         numParking: 0,
         num_garages: 0,
-        usefulAreaTotal: 0,
+        useful_area_total: 0,
         builtArea: 0,
         landArea: 0,
         yardArea: 0,

@@ -16,6 +16,8 @@ export interface NavbarStyle {
     accountIcon: any;
     accountButtonWrapper: any;
     linkText: any;
+    linkTextLight: any;
+
     dropdownItem: any;
     accountDropdownIcon: any;
     popperClose: any;
@@ -26,6 +28,7 @@ export interface NavbarStyle {
     buttonIcon: any;
     inputWrapper: any;
     sectionTitle: any;
+    menuButton: any;
     [key: string]: any; // For dynamic class names based on breakpoints
 }
 
@@ -36,12 +39,42 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         fontWeight: 500,
         fontSize: "16px",
         lineHeight: "100%",
-        color: "#21272A",
+        color: theme.palette.mode === "dark" ? theme.palette.text.primary : "#21272A",
+        transition: "color 0.3s ease",
     },
     rightCompWrapper: {
-        marginLeft: "auto", // Push the AccountData to the right
+        marginLeft: "auto",
         display: "flex",
         alignItems: "center",
+        gap: "16px",
+    },
+    themeToggle: {
+        width: "30px",
+        height: "30px",
+        borderRadius: "8px",
+        backgroundColor: "transparent",
+        marginRight: 10,
+        "&:hover": {
+            backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
+        },
+        "& svg": {
+            color: theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
+            transition: "color 0.3s ease",
+        },
+    },
+    languageToggle: {
+        width: "30px",
+        height: "30px",
+        borderRadius: "8px",
+        backgroundColor: "transparent",
+        marginLeft: 10,
+        "&:hover": {
+            backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.08)",
+        },
+        "& svg": {
+            color: theme.palette.mode === "dark" ? theme.palette.primary.light : theme.palette.primary.main,
+            transition: "color 0.3s ease",
+        },
     },
 
     wrapper: {
@@ -51,11 +84,73 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         backgroundColor: theme.palette.common.white,
     },
     navbarWrapper: {
-        boxShadow: "none !important",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08) !important",
         height: cssVariables.headerHeight,
         display: "flex",
-        backgroundColor: theme.palette.common.white,
-        borderBottom: "1px solid #E5E7EB",
+        backgroundColor: theme.palette.mode === "dark" ? theme.palette.background.default : theme.palette.common.white,
+        borderBottom: `1px solid ${theme.palette.mode === "dark" ? theme.palette.grey[800] : "#E5E7EB"}`,
+        transition: "background-color 0.3s ease, border-color 0.3s ease",
+    },
+    mobileMenuButton: {
+        display: "none",
+        color: "black",
+        height: 40,
+        width: 40,
+        [theme.breakpoints.down("md")]: {
+            display: "block",
+            marginRight: theme.spacing(2),
+        },
+    },
+    desktopMenu: {
+        display: "flex",
+        alignItems: "center",
+        gap: "20px",
+        [theme.breakpoints.down("md")]: {
+            display: "none",
+        },
+    },
+    mobileMenu: {
+        display: "none",
+        [theme.breakpoints.down("md")]: {
+            display: "block",
+            position: "fixed",
+            top: cssVariables.headerHeight,
+            left: 0,
+            right: 0,
+            backgroundColor: theme.palette.mode === "dark" ? theme.palette.background.default : theme.palette.common.white,
+            borderBottom: `1px solid ${theme.palette.mode === "dark" ? theme.palette.grey[800] : "#E5E7EB"}`,
+            zIndex: 1000,
+            padding: theme.spacing(2),
+        },
+    },
+    mobileMenuItem: {
+        width: "100%",
+        justifyContent: "flex-start",
+        padding: theme.spacing(1.5),
+        borderRadius: theme.shape.borderRadius,
+        "&:hover": {
+            backgroundColor: theme.palette.action.hover,
+        },
+    },
+    accountWrapper: {
+        display: "flex",
+        alignItems: "center",
+        [theme.breakpoints.down("md")]: {
+            marginLeft: "auto",
+        },
+    },
+    registrationButtonsWrapper: {
+        display: "flex",
+        gap: theme.spacing(2),
+        [theme.breakpoints.down("sm")]: {
+            "& > button": {
+                padding: theme.spacing(1),
+                minWidth: "auto",
+                "& span": {
+                    display: "none",
+                },
+            },
+        },
     },
     drawerWrapper: {
         color: theme.palette.grey[200],
@@ -105,13 +200,6 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         marginRight: "15px",
         textTransform: "uppercase",
     },
-    registrationButtonsWrapper: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: cssVariables.defaultMargin,
-        marginLeft: "auto",
-    },
     navbarButton: {
         width: 130,
     },
@@ -137,6 +225,21 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         textTransform: "none",
         whiteSpace: "nowrap",
         color: "#212121",
+        paddingRight: "10px",
+    },
+    linkTextLight: {
+        fontFamily: '"Inter", sans-serif',
+
+        fontWeight: 500,
+        fontSize: theme.typography.pxToRem(12),
+        lineHeight: "15px",
+        maxHeight: "15px",
+        maxWidth: "130px",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        textTransform: "none",
+        whiteSpace: "nowrap",
+        color: "white",
         paddingRight: "10px",
     },
     dropdownItem: {
@@ -205,6 +308,14 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         lineHeight: "15px",
         color: "#b4b4b4",
     },
+    menuButton: {
+        textTransform: "none",
+        padding: "8px 16px",
+        borderRadius: "8px",
+        "&:hover": {
+            backgroundColor: theme.palette.mode === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+        },
+    },
     [theme.breakpoints.down(1425)]: {
         inputWrapper: {
             width: "100%",
@@ -249,6 +360,9 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
             width: "auto",
         },
         linkText: {
+            display: "none",
+        },
+        linkTextLight: {
             display: "none",
         },
     },

@@ -1,4 +1,4 @@
-export interface NaturalPersonRegisterInterface {
+export interface RegisterInterface {
     name: string;
     phoneNumber: string;
     email: string;

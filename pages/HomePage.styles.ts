@@ -6,10 +6,10 @@ export const HomeContainer = styled("div")(({ theme }) => ({
     gap: theme.spacing(8), // xxl
     ".cta-section": {
         textAlign: "center",
-        padding: `${theme.spacing(8)} 0`,
+        paddingBottom: `${theme.spacing(8)}`,
         backgroundColor: theme.palette.background.paper,
         borderRadius: theme.shape.borderRadius,
-        marginTop: theme.spacing(6), // xl
+        // marginTop: theme.spacing(6), // xl
         h2: {
             marginBottom: theme.spacing(4), // md
         },
@@ -18,6 +18,9 @@ export const HomeContainer = styled("div")(({ theme }) => ({
             color: theme.palette.text.secondary,
         },
     },
+    ".cta-button": {
+        width: "fit-content",
+    }
 }));
 
 export const HeroSection = styled("section")(({ theme }) => ({
@@ -64,7 +67,7 @@ export const HeroSection = styled("section")(({ theme }) => ({
         animation: "fadeIn 0.8s ease-out 0.6s both",
         ".image-placeholder": {
             width: "100%",
-            height: 400,
+            height: 300,
             backgroundColor: theme.palette.background.paper,
             borderRadius: theme.shape.borderRadius,
             display: "flex",
@@ -85,6 +88,7 @@ export const FeaturesSection = styled("section")(({ theme }) => ({
     h2: {
         marginBottom: theme.spacing(6),
         fontSize: "2rem",
+        lineHeight: "30px",
     },
     ".features-grid": {
         display: "grid",

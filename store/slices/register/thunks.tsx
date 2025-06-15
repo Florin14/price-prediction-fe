@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "axios";
-import { NaturalPersonRegisterInterface } from "../../../interfaces/NaturalPersonRegisterInterfaces";
+import { RegisterInterface } from "../../../interfaces/RegisterInterfaces";
 
 export const registerNaturalPerson = createAsyncThunk(
     "register/naturalPerson",
-    async ({ name, phoneNumber, email, password, confirmPassword }: NaturalPersonRegisterInterface, { rejectWithValue }) => {
+    async ({ name, phoneNumber, email, password, confirmPassword }: RegisterInterface, { rejectWithValue }) => {
         try {
             const options = {
                 url: `/clients/register`,

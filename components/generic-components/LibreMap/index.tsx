@@ -122,7 +122,7 @@ export const MapLibre = ({ listings = [], defaultMarkerColor = "#4A90E2" }: MapL
                     <Marker
                         longitude={property.lng}
                         latitude={property.lat}
-                        color={hoveredId === property.id ? "#00bd4f" : "#00308E"} // ← any valid CSS color string
+                        color={hoveredId === property.id ? "#00308E" : "#1E88E5"} // ← any valid CSS color string
                         scale={1}
                         onClick={() => setHoveredId(property.id === hoveredId ? null : property.id)}
                         style={{ cursor: "pointer" }}

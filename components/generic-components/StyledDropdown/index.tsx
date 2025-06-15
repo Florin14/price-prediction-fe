@@ -153,7 +153,7 @@ const StyledDropdown: React.FC<StyledDropdownProps> = ({
                             disabled={!!disabled}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
-                                    height: 35,
+                                    height: 52,
                                     borderRadius: 1, // 8px
                                     "& .MuiOutlinedInput-notchedOutline": {
                                         borderColor: "grey.200",
