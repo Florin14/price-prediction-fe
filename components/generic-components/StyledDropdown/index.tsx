@@ -35,6 +35,7 @@ const useStyles = (theme: Theme) => ({
         marginBottom: 3,
     },
     inputRoot: {
+        color: "#111827",
         '&[class*="MuiOutlinedInput-root"] .MuiAutocomplete-input:first-of-type': {
             padding: "0 7px 0 7px",
         },
@@ -42,9 +43,11 @@ const useStyles = (theme: Theme) => ({
             width: "100%",
         },
         '&[class*="MuiOutlinedInput-root"]': {
+            border: "1px solid rgba(0, 0, 0, 0.2)",
+
             padding: "0 7px 0 7px",
             paddingRight: "65px !important",
-            borderRadius: "4px", // 👈 Set border radius to 4px
+            borderRadius: "8px", // 👈 Set border radius to 4px
         },
     },
 });
@@ -153,8 +156,8 @@ const StyledDropdown: React.FC<StyledDropdownProps> = ({
                             disabled={!!disabled}
                             sx={{
                                 "& .MuiOutlinedInput-root": {
-                                    height: 52,
-                                    borderRadius: 1, // 8px
+                                    height: 45,
+                                    borderRadius: 8, // 8px
                                     "& .MuiOutlinedInput-notchedOutline": {
                                         borderColor: "grey.200",
                                     },

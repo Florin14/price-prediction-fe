@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useCookies } from "react-cookie";
+
+import { Typography } from "@mui/material";
+
+import { getClient, updateClient } from "../../../store/slices/client/thunks";
 import { websiteActions } from "../../../store/slices/website/website-slice";
 import { RootState } from "../../../store";
-import { Typography, useTheme, Switch } from "@mui/material";
+
 import StyledInput from "../../../components/generic-components/StyledInput";
-import StyledDropdown from "../../../components/generic-components/StyledDropdown";
 import StyledButton from "../../../components/generic-components/StyledButton";
+
 import { ProfileContainer, ProfileForm, FormGrid, PreferencesContainer } from "./ProfilePage.styles";
 
 const Profile: React.FC = () => {
-    const theme = useTheme();
     const languageData = useSelector((state: RootState) => state.website.languageData);
     const dispatch = useDispatch();
-    const isDarkMode = useSelector((state: RootState) => state.website.isDarkMode);
-    const currentLanguage = useSelector((state: RootState) => state.website.currentLanguage);
-
+    const [cookies, setCookie] = useCookies(["id"]);
+    const client = useSelector((state: RootState) => state.clients.client);
+    const [isEditing, setIsEditing] = useState(false);
     const [profileData, setProfileData] = useState<{
-        firstName: string | null | number;
-        lastName: string | null | number;
+        name: string | null | number;
         email: string | null | number;
         phoneNumber: string | null | number;
     }>({
-        firstName: null,
-        lastName: null,
+        name: null,
         email: null,
         phoneNumber: null,
     });
@@ -33,18 +35,26 @@ const Profile: React.FC = () => {
         // TODO: Fetch actual profile data here
     }, [dispatch, languageData]);
 
-    const handleThemeChange = () => {
-        dispatch(websiteActions.setIsDarkMode({ isDarkMode: !isDarkMode }));
-    };
+    useEffect(() => {
+        if (cookies["id"] && cookies["id"] !== "") dispatch(getClient({ id: cookies["id"] }) as any).then((res: any) => {});
+    }, [cookies]);
 
-    const handleLanguageChange = (value: string) => {
-        dispatch(websiteActions.setCurrentLanguage({ currentLanguage: value }));
-    };
+    useEffect(() => {
+        if (client) {
+            setProfileData({ name: client?.name, phoneNumber: client?.phoneNumber, email: client?.email });
+        }
+    }, [client]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // TODO: Implement save functionality
-        console.log("Saving profile:", profileData);
+        dispatch(
+            updateClient({ id: cookies["id"], payload: { name: profileData?.name, email: profileData?.email, phoneNumber: profileData?.phoneNumber } }) as any
+        ).then((res: any) => {
+            if (!res?.payload?.error) {
+                setIsEditing(false);
+            }
+        });
     };
 
     return (
@@ -58,28 +68,17 @@ const Profile: React.FC = () => {
                     </Typography>
                     <FormGrid>
                         <StyledInput
-                            label={languageData?.ProfilePage?.lastName || "Last Name"}
-                            inputName="lastName"
-                            value={profileData.lastName || ""}
+                            label={languageData?.ProfilePage?.name || "Full Name"}
+                            inputName="name"
+                            value={profileData.name || ""}
                             onChange={(value) => {
                                 setProfileData((prev) => ({
                                     ...prev,
-                                    lastName: value,
+                                    name: value,
                                 }));
                             }}
                             width="100%"
-                        />
-                        <StyledInput
-                            label={languageData?.ProfilePage?.firstName || "First Name"}
-                            inputName="firstName"
-                            value={profileData.firstName || ""}
-                            onChange={(value) => {
-                                setProfileData((prev) => ({
-                                    ...prev,
-                                    firstName: value,
-                                }));
-                            }}
-                            width="100%"
+                            disabled={!isEditing}
                         />
 
                         <StyledInput
@@ -93,6 +92,7 @@ const Profile: React.FC = () => {
                                 }));
                             }}
                             width="100%"
+                            disabled={!isEditing}
                         />
 
                         <StyledInput
@@ -105,6 +105,7 @@ const Profile: React.FC = () => {
                                 }));
                             }}
                             width="100%"
+                            disabled={!isEditing}
                         />
                     </FormGrid>
                 </div>
@@ -114,6 +115,9 @@ const Profile: React.FC = () => {
                         {languageData?.ProfilePage?.preferences || "Preferences"}
                     </Typography>
                     <PreferencesContainer>
+                        <div className="preference-item">
+                            <Typography variant="body1">TO DO</Typography>
+                        </div>
                         {/* <div className="preference-item">
                             <Typography variant="body1">{languageData?.ProfilePage?.darkMode || "Dark Mode"}</Typography>
                             <Switch checked={isDarkMode} onChange={handleThemeChange} color="primary" />
@@ -135,12 +139,24 @@ const Profile: React.FC = () => {
                 </div>
 
                 <div className="form-section">
-                    <StyledButton
-                        type="submit"
-                        children={languageData?.ProfilePage?.saveChanges || "Save Changes"}
-                        variant="contained"
-                        style={{ float: "right", width: "fit-content", marginBottom: 10 }}
-                    />
+                    {isEditing ? (
+                        <StyledButton
+                            type="submit"
+                            children={languageData?.ProfilePage?.saveChanges || "Save Changes"}
+                            variant="contained"
+                            style={{ float: "right", width: "fit-content", marginBottom: 10 }}
+                        />
+                    ) : (
+                        <StyledButton
+                            children={languageData?.Edit || "Edit"}
+                            variant="contained"
+                            style={{ float: "right", width: "fit-content", marginBottom: 10 }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setIsEditing(true);
+                            }}
+                        />
+                    )}
                 </div>
             </ProfileForm>
         </ProfileContainer>

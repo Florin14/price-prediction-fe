@@ -23,6 +23,7 @@ interface StyleClasses {
     form: any;
     formCard: any;
     forgotPassword: any;
+    noAccount: any;
     error: any;
     button: any;
     title: any;
@@ -110,12 +111,20 @@ const useStyles = (theme: any): StyleClasses => ({
         color: "#21272A",
         marginBottom: 16,
     },
+    noAccount: {
+        color: "#001D6C",
+        width: "100%",
+        fontSize: "12px",
+        fontWeight: 400,
+        lineHeight: "120%",
+    },
     forgotPassword: {
         textAlign: "right",
         color: "#001D6C",
         fontSize: "12px",
         fontWeight: 400,
         lineHeight: "120%",
+        minWidth: "fit-content",
     },
     error: {
         color: "red",
@@ -253,6 +262,8 @@ const LoginForm: React.FC = () => {
 
     const classes = useClasses(useStyles, { name: "LoginFormStyles" }) as StyleClasses;
 
+    const isAuthenticated = !!cookies.id;
+
     useEffect(() => {
         if (router.isReady) {
             const { code, email } = router.query;
@@ -325,38 +336,9 @@ const LoginForm: React.FC = () => {
         router.push("/register").then((r) => {});
     };
 
-    const captchaOnChange = (token: string | null) => {
-        setCaptchaToken(token);
-    };
-
-    const googleLogin = useGoogleLogin({
-        onSuccess: async (response) => {
-            try {
-                const data = {
-                    credential: response.access_token,
-                    provider: "google",
-                };
-                const options = {
-                    url: "/auth/social-login",
-                    method: "POST",
-                    data: data,
-                };
-                const loginResponse = await Axios(options);
-                const rspData = loginResponse.data;
-                setGlobalError("");
-                const expires = new Date(Date.now() + 31536000);
-                setCookie("name", rspData["name"], { path: "/", expires });
-                setCookie("role", rspData["role"], { path: "/", expires });
-                setCookie("id", rspData["id"], { path: "/", expires });
-                router.push("/customer/history");
-            } catch (err: any) {
-                setGlobalError(languageData?.SomethingWentWrong || "");
-            }
-        },
-        onError: () => {
-            setGlobalError(languageData?.SomethingWentWrong || "");
-        },
-    });
+    if (isAuthenticated) {
+        router.push("/customer/home").then((r) => {});
+    }
 
     return (
         <div className={classes.container} data-testid="login-form-container">
@@ -403,8 +385,13 @@ const LoginForm: React.FC = () => {
                                 required
                                 data-testid="login-form-password-input"
                             />
-                            <div className={classes.forgotPassword} data-testid="login-form-forgot-password">
-                                <Link href="/forgot-password">{languageData?.ForgotPassword || "Ai uitat parola?"}</Link>
+                            <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
+                                <div className={classes.noAccount}>
+                                    <Link href="/home">{languageData?.ContinueWithoutAccount}</Link>
+                                </div>
+                                <div className={classes.forgotPassword} data-testid="login-form-forgot-password">
+                                    <Link href="/forgot-password">{languageData?.ForgotPassword || "Ai uitat parola?"}</Link>
+                                </div>
                             </div>
                             {globalError && (
                                 <div className={classes.error} data-testid="login-form-error">
@@ -421,13 +408,11 @@ const LoginForm: React.FC = () => {
                             >
                                 {languageData?.Login || "Autentifica-te"}
                             </StyledButton>
-                            <div className={classes.orDivider}>
-                                <span>or</span>
-                            </div>
-                            <button onClick={() => googleLogin()} className={classes.googleButton} type="button" data-testid="google-login-button">
+                            <div className={classes.orDivider}>{/* <span>or</span> */}</div>
+                            {/* <button onClick={() => googleLogin()} className={classes.googleButton} type="button" data-testid="google-login-button">
                                 <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" className={classes.googleIcon} />
                                 <span>Continue with Google</span>
-                            </button>
+                            </button> */}
 
                             <StyledButton
                                 variant="outlined"

@@ -153,7 +153,6 @@ interface StyledInputProps {
     onKeyUp?: (event: any) => void;
     viewMode?: boolean;
     viewModeClassName?: string;
-    items?: Array<{ value: string | number; label: string }>;
     variant?: "standard" | "outlined" | "filled";
     multilineDisabledClassname?: string;
     tooltipClassName?: string;

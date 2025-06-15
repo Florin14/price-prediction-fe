@@ -14,7 +14,6 @@ export const predictPropertyPrice = createAsyncThunk<PredictionResult, Property,
         try {
             const response = await Axios.post<PredictionResult>(`/prediction-predict`, property);
             const result = response.data;
-            console.log(result);
             // END MOCK
             dispatch(setPrediction(result));
             dispatch(setLoading(false));

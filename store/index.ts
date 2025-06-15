@@ -5,10 +5,11 @@ import websiteReducer from "./slices/website/website-slice";
 import loadingReducer from "./slices/loading/loading-slice";
 import administratorReducer from "./slices/administrator/administrator-slice";
 import userReducer from "./slices/user/user-slice";
-import naturalPersonProfileReducer from "./slices/natural-person-profile/natural-person-profile-slice";
+import clientsReducer from "./slices/client/client";
 import listingReducer from "./slices/listing/listing-slice";
 import propertyReducer from "./slices/property/property-slice";
 import predictionReducer from "./slices/prediction/prediction-slice";
+import priceHistoryReducer from "./slices/price-history/price-history-slice";
 
 // Configure the store
 export const store = configureStore({
@@ -18,10 +19,11 @@ export const store = configureStore({
         loading: loadingReducer,
         administrator: administratorReducer,
         user: userReducer,
-        naturalPersonProfile: naturalPersonProfileReducer,
+        clients: clientsReducer,
         listing: listingReducer,
         property: propertyReducer,
         prediction: predictionReducer,
+        priceHistory: priceHistoryReducer,
     },
 });
 

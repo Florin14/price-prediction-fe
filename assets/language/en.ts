@@ -549,13 +549,15 @@ const en: LanguageDataTypes = {
             message: "Make your first property price prediction to see it here.",
         },
     },
+    BaseAddress: "Base address",
+    PricePerMeter: "Price/m²",
+    TotalPrice: "Total price",
 
     ProfilePage: {
         title: "Profile",
         personalInfo: "Personal Information",
         preferences: "Preferences",
-        firstName: "First Name",
-        lastName: "Last Name",
+        name: "Fullname",
         email: "Email",
         phoneNumber: "Phone number",
         darkMode: "Dark Mode",
