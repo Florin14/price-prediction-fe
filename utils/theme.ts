@@ -60,7 +60,6 @@ export const lightTheme: Theme = createTheme({
                 root: {
                     borderRadius: 8,
                     background: "white",
-
                     "& .MuiOutlinedInput-notchedOutline": {},
                     "&:hover .MuiOutlinedInput-notchedOutline": {},
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {},
@@ -68,7 +67,7 @@ export const lightTheme: Theme = createTheme({
                     "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {},
                     "&.Mui-disabled": {},
                 },
-                input: { padding: "0 6px", height: 35, fontSize: 12, fontFamily: '"Inter", sans-serif', "&::placeholder": {} },
+                input: { padding: "0 12px", height: 45, fontSize: 12, fontFamily: '"Inter", sans-serif', "&::placeholder": {} },
             },
         },
         MuiMenu: { styleOverrides: { paper: { borderRadius: 8, boxShadow: "0px 4px 8px rgba(0,0,0,0.1)" } } },
@@ -162,7 +161,7 @@ export const darkTheme: Theme = createTheme({
                     "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {},
                     "&.Mui-disabled": {},
                 },
-                input: { padding: "0 12px", height: 35, fontSize: 12, fontFamily: '"Inter", sans-serif', "&::placeholder": {} },
+                input: { padding: "0 12px", height: 45, fontSize: 12, fontFamily: '"Inter", sans-serif', "&::placeholder": {} },
             },
         },
         MuiMenu: { styleOverrides: { paper: { borderRadius: 8, boxShadow: "0px 4px 8px rgba(0,0,0,0.1)" } } },

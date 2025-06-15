@@ -15,6 +15,7 @@ export interface PropertyItemSetter {
 
 export interface Property {
     id?: string;
+    user_id?: number;
     externalId?: string;
     locationId?: number;
 

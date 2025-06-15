@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { Form, Formik } from "formik";
 
 import { Typography } from "@mui/material";
 
+import { registerNaturalPerson } from "../../../store/slices/register/thunks";
 import { AppDispatch, RootState } from "../../../store";
 
 import useClasses from "../../../utils/useClasses";
-import { Form, Formik } from "formik";
-import Link from "next/link";
-import { useStyles, StyleClasses } from "./RegisterComponentStyles";
-import { RegisterInterface } from "../../../interfaces/RegisterInterfaces";
-import { registerNaturalPerson } from "../../../store/slices/register/thunks";
 import FormTextInput from "../../generic-components/FormFields/FormTextInput";
-import { useRouter } from "next/router";
 import StyledButton from "../../generic-components/StyledButton";
+import { RegisterInterface } from "../../../interfaces/RegisterInterfaces";
+
+import { useStyles, StyleClasses } from "./RegisterComponentStyles";
 
 export interface LegalPersonFormData {
     companyName: string | null;
@@ -28,15 +30,22 @@ const RegisterComponent: React.FC = () => {
 
     const classes = useClasses(useStyles, { name: "RegisterComponentStyles" }) as StyleClasses;
     const dispatch: AppDispatch = useDispatch();
+    const [cookies, setCookie] = useCookies(["id"]);
 
     const [globalError, setGlobalError] = useState<string>("");
     const router = useRouter();
+    const isAuthenticated = !!cookies.id;
 
     const validationHandler = (values: RegisterInterface) => {
         const errors: Partial<RegisterInterface> = {};
 
         return errors;
     };
+
+    if (isAuthenticated) {
+        router.push("/customer/home").then((r) => {});
+    }
+
     return (
         <div className={classes.container} data-testid="register-form-container">
             <div className={classes.wrapper}>

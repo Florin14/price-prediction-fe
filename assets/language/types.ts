@@ -4,8 +4,7 @@ export interface LanguageDataTypes {
         title: string;
         personalInfo: string;
         preferences: string;
-        firstName: string;
-        lastName: string;
+        name: string;
         email: string;
         phoneNumber: string;
         darkMode: string;

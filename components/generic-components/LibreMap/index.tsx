@@ -112,7 +112,7 @@ export const MapLibre = ({ listings = [], defaultMarkerColor = "#4A90E2" }: MapL
             initialViewState={{
                 longitude: center.longitude,
                 latitude: center.latitude,
-                zoom: 13,
+                zoom: 7,
             }}
             style={{ width: "100%", height: "500px", borderRadius: "8px" }}
             mapStyle="https://api.maptiler.com/maps/streets/style.json?key=Z1S68I71HWR60jLgMo2E"

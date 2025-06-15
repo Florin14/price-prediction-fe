@@ -329,9 +329,11 @@ export const PriceRange = styled("div")(({ theme }) => ({
 
 export const SimilarProperties = styled("div")(({ theme }) => ({
     marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
 
     "& h4": {
         marginBottom: theme.spacing(2),
+        color: theme.palette.text.primary,
     },
 
     "& .similar-properties-grid": {
@@ -367,6 +369,7 @@ export const PropertyCard = styled("div")(({ theme }) => ({
         marginBottom: theme.spacing(0.5),
         padding: theme.spacing(2),
         paddingBottom: 0,
+        color: theme.palette.primary.main,
     },
 
     "& .property-price": {
@@ -376,9 +379,15 @@ export const PropertyCard = styled("div")(({ theme }) => ({
         padding: `0 ${theme.spacing(2)}`,
     },
 
-    "& .property-distance": {
+    "& .property-specs": {
         fontSize: theme.typography.body1.fontSize,
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.primary,
+        padding: `0 ${theme.spacing(2)} ${theme.spacing(2)} ${theme.spacing(2)}`,
+    },
+
+    "& .property-features": {
+        fontSize: theme.typography.subtitle2.fontSize,
+        color: theme.palette.text.primary,
         padding: `0 ${theme.spacing(2)} ${theme.spacing(2)} ${theme.spacing(2)}`,
     },
 }));
