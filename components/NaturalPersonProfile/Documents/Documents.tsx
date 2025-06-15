@@ -56,7 +56,7 @@ const DocumentsComponent: React.FC<DocumentsComponentProps> = ({ citizenData, se
                 onChange={(file: File | null) => {
                     handleFileUpload(file);
                 }}
-            ></FileUpload>{" "}
+            ></FileUpload>
             <FileDisplay
                 file={citizenData?.identityCard}
                 isViewable={true}

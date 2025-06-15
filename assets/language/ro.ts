@@ -1,6 +1,115 @@
-import { Category } from "@mui/icons-material";
+export interface LanguageDataTypes {
+    [key: string]: any;
+    Features?: {
+        AccuratePredictions: {
+            title: string;
+            description: string;
+        };
+        RealTimeAnalysis: {
+            title: string;
+            description: string;
+        };
+        UserFriendly: {
+            title: string;
+            description: string;
+        };
+        DetailedInsights: {
+            title: string;
+            description: string;
+        };
+    };
+    HowItWorksSteps?: {
+        Step1: {
+            title: string;
+            description: string;
+        };
+        Step2: {
+            title: string;
+            description: string;
+        };
+        Step3: {
+            title: string;
+            description: string;
+        };
+    };
+    Testimonials?: {
+        Testimonial1: {
+            quote: string;
+            author: string;
+            role: string;
+        };
+        Testimonial2: {
+            quote: string;
+            author: string;
+            role: string;
+        };
+        Testimonial3: {
+            quote: string;
+            author: string;
+            role: string;
+        };
+    };
+    Steps?: {
+        Location: string;
+        Property: string;
+        Result: string;
+    };
+    PropertyFields?: {
+        StreetAddress: string;
+        City: string;
+        StreetFrontage: string;
+        PropertyType: string;
+        LandClassification: string;
+        FloorNumber: string;
+        ComfortLevel: string;
+        TotalUsableArea: string;
+        MainLivingArea: string;
+        NumberOfRooms: string;
+        BuiltArea: string;
+        LandArea: string;
+        NumberOfGarages: string;
+    };
+    PredictionResults?: {
+        title: string;
+        estimatedValue: string;
+        similarProperties: string;
+        propertySpecs: {
+            rooms: string;
+            area: string;
+        };
+    };
+    PredictionHistory?: {
+        title: string;
+        description: string;
+        emptyState: {
+            title: string;
+            message: string;
+        };
+    };
+    StepGuide?: {
+        Location: {
+            title: string;
+            hint: string;
+        };
+        PropertyDetails: {
+            title: string;
+            hint: string;
+        };
+    };
+    ComfortLevels?: {
+        Luxury: string;
+        Premium: string;
+        High: string;
+        Medium: string;
+        Basic: string;
+    };
+    PropertyTypes?: {
+        Apartment: string;
+        House: string;
+    };
+}
 
-const ro = {
+const ro: LanguageDataTypes = {
     // Waiting Validation
     WaitingValidationTitle: "Asteapta validare",
     WaitingValidationMessage:
@@ -14,30 +123,6 @@ const ro = {
     AddComplaintMessage: "Adauga o noua sesizare",
     EditComplaintMessage: "Editeaza sesizarea selectata",
     ComplaintName: "Denumire sesizare",
-    DefineComplaintsTable: {
-        name: "Sesizare",
-        applicant_type: "Solicitant",
-        actions: {
-            title: "Actiuni",
-            style: {
-                position: "sticky !important",
-                color: "#313A47",
-                fontSize: 12,
-                fontWeight: 600,
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: "10px",
-                width: "100%",
-                minWidth: 20,
-            },
-        },
-    },
-    ApplicantType: {
-        NATURAL_PERSON: "Persoana fizica",
-        LEGAL_PERSON: "Persoana juridica",
-        NATURAL_PERSON_AND_LEGAL_PERSON: "Persoana fizica si persoana juridica",
-    },
-    Applicant: "Solicitant",
 
     // Location Filters
     LocationName: "Denumire locatie",
@@ -63,8 +148,8 @@ const ro = {
     Login: "Autentifica-te",
     ToLogin: "Intra in cont",
     LoginAction: "Autentificare",
-    SignIn: "Intra in cont",
-    CreateAccount: "Creaza cont",
+    SignIn: "Login",
+    CreateAccount: "Creeaza cont",
     OrSplitter: "Sau",
     ForgotPassword: "Ai uitat parola?",
     WelcomeTitle: "Bun venit 👋",
@@ -124,26 +209,13 @@ const ro = {
     },
     ConsentMessage: "Consent message",
     Planning: "Planificare",
-    History: "Istoric",
-    PredictRealEstatePrices: "Predict Real Estate Prices",
+    History: "History",
+    PredictRealEstatePrices: "Bine ai venit!",
 
     //Sidebar categories
     Taxes: "Taxe & impozite",
     CommunicationsComplaints: "Comunicari & sesizari",
     Others: "Altele",
-
-    // Labels for role routes
-    ControlPanel: "Panou de control",
-    Registry: "Registratura",
-    Communications: "Comunicari",
-    Prediction: "Predictie",
-    ValidateAccounts: "Validare conturi",
-    ValidAccounts: "Conturi valide",
-    ManageCommunications: "Gestionare comunicari",
-    ManageUsers: "Gestionare utilizatori",
-    Properties: "Proprietati",
-    Complaints: "Sesizari",
-    Settings: "Setari",
 
     ReportsAndAnalyzes: "Rapoarte si analiza",
     Admins: "Administratori",
@@ -152,6 +224,7 @@ const ro = {
     Visits: "Vizite",
     FileUploadAlertMessage: "Poza incarcata nu este valida",
     OrderBy: "Ordoneaza dupa",
+    Prediction: "Predictie",
 
     Attention: "Atentie!",
 
@@ -166,86 +239,9 @@ const ro = {
     InputChannelTabTitle: "Definire canale de intrare",
     CategoriesTabTitle: "Categorii comunicari",
 
-    //CommunicationsCategories
-    AddCommunicationCategory: "Adauga categorie",
-    EditCategory: "Editeaza categorie",
-    AddCommunicationCategoryMessage: "Adauga o noua categorie pentru comunicari.",
-    CategoryName: "Denumire categorie",
-    EditCategoryMessage: "Editeaza categoria selectata.",
-    DeleteCategoryTitle: "Sterge categorie",
-    DeleteCategoryMessage: "Sunteti sigur ca doriti sa stergeti aceasta categorie?",
-
-    DefineCommunicationCategoriesTable: {
-        name: "Categorie",
-        actions: {
-            title: "Actiuni",
-            style: {
-                position: "sticky !important",
-                color: "#313A47",
-                fontSize: 12,
-                fontWeight: 600,
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: "10px",
-                width: "100%",
-                minWidth: 20,
-            },
-        },
-    },
-
-    AddLabel: "Adauga eticheta",
-    EditLabel: "Editeaza eticheta",
-    AddLabelMessage: "Adauga o noua eticheta.",
-    LabelName: "Denumire eticheta",
-    EditLabelMessage: "Editeaza eticheta selectata.",
-    DeleteLabelTitle: "Sterge eticheta",
-    DeleteLabelMessage: "Sunteti sigur ca doriti sa stergeti aceasta eticheta?",
-    DefineLabelsTable: {
-        name: "Eticheta",
-        actions: {
-            title: "Actiuni",
-            style: {
-                position: "sticky !important",
-                color: "#313A47",
-                fontSize: 12,
-                fontWeight: 600,
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: "10px",
-                width: "100%",
-                minWidth: 20,
-            },
-        },
-    },
-
-    AddInputChannel: "Adauga canal de intrare",
-    EditInputChannel: "Editeaza canal de intrare",
-    AddInputChannelMessage: "Adauga un nou canal de intrare.",
-    InputChannelName: "Denumire canal de intrare",
-    EditInputChannelMessage: "Editeaza canalul de intrare selectat.",
-    DeleteInputChannelTitle: "Sterge canal de intrare",
-    DeleteInputChannelMessage: "Sunteti sigur ca doriti sa stergeti acest canal de intrare?",
-    DefineInputChannelsTable: {
-        name: "Canal de intrare",
-        actions: {
-            title: "Actiuni",
-            style: {
-                position: "sticky !important",
-                color: "#313A47",
-                fontSize: 12,
-                fontWeight: 600,
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingRight: "10px",
-                width: "100%",
-                minWidth: 20,
-            },
-        },
-    },
     //ManageUsers
     Users: "Utilizatori",
     DefineSections: "Definire compartimente",
-    WarningDeleteSection: "Stergerea nu poate fi efectuata deoarece exista inregistrari asociate acestui compartiment.",
 
     LocationStates: [
         { id: "Active", name: "Activ", optionStyle: { color: "green" } },
@@ -293,24 +289,10 @@ const ro = {
 
     UploadFile: "Incarca fisier",
 
-    //Aquabis
-    Drivers: "Soferi",
-    Mechanics: "Mecanici",
-    JobTitle: "Functie",
-    RegistrationNumber: "Nr. inmatriculare",
-    AutoType: "Tip auto",
-
     //Website in lucru
     WebsiteInWork: "Website in lucru",
     WebsiteInWorkTitle: "Website in lucru!",
     WebsiteInWorkMessage: "Momentan nu poate fi accesat",
-
-    //Componenta panou de control AQUABIS
-    SectorBoss: "[X] sef sector",
-    CarEmployee: "[X] impegat auto",
-    Driver: "[X] soferi auto",
-    MachineMechanic: "[X] mecanici utilaje",
-    AutoMechanic: "[X] mecanici auto",
 
     //Zilele saptamanii
     FirstLetterVersion: {
@@ -343,8 +325,6 @@ const ro = {
     Phone: "Telefon",
     NrPhone: "Nr. de telefon",
 
-    HomePageMessage:
-        "Descoperiti noua platforma digitala a Primariei comunei Vad, creata pentru a simplifica interactiunea cu cetatenii. Cu aceasta platforma, puteti face cereri si primi raspunsuri prin email, chiar si fara un cont. Daca va inregistrati, puteti urmari statusul cererilor, puteti vedea proprietatile personale si sumele de plata, si accesa un dashboard personalizat.",
     RegisterToPlatform: "Inregistrati-va acum pentru a beneficia de toate aceste avantaje!",
     // Adding new labels for legal person component
     CompanyName: "Nume companie",
@@ -504,11 +484,6 @@ const ro = {
 
     Select: "Selecteaza",
 
-    ComplaintsFilterDrawer: {
-        name: "Sesizare",
-        applicantType: "Solicitant",
-    },
-
     NaturalPersonProfileFields: {
         CitizenInformation: "Informatii cetatean",
         NameAndSurname: "Nume si prenume",
@@ -537,11 +512,170 @@ const ro = {
     DeleteAccountMessage: "Sunteti sigur ca doriti sa stergeti acest cont? Aceasta actiune este ireversibila.",
     ValidateAccount: "Validare cont",
 
-    CommunicationTypeName: "Denumire tip comunicare",
-    Category: "Categorie",
-    AddCommunicationForm: "Adauga formular comunicare",
-    AddCommunicationModelForm: "Adauga model formular completat",
-    AddFormInstructions: "Adauga instructiuni de completare a formularului",
+    // Home Page
+    HomePageTitle: "Prezice Prețuri Imobiliare",
+    HomePageDescription:
+        "Obține predicții precise ale prețurilor proprietăților, alimentate de algoritmi avansați de învățare automată. Ia decizii informate pentru cumpărarea, vânzarea sau investiția în imobiliare.",
+    TryItNow: "Încearcă",
+    LearnMore: "Află Mai Multe",
+    WhyChooseTitle: "De Ce Să Alegi Tool-ul Nostru de Predicție?",
+
+    // Features
+    Features: {
+        AccuratePredictions: {
+            title: "Predicții Precise",
+            description: "Modelul nostru este antrenat pe sute de mii de tranzacții imobiliare pentru a oferi predicții foarte precise ale prețurilor.",
+        },
+        RealTimeAnalysis: {
+            title: "Analiză în Timp Real",
+            description: "Obține evaluări instantanee ale proprietăților cu motorul nostru rapid și responsiv de predicție.",
+        },
+        UserFriendly: {
+            title: "Interfață Prietenoasă",
+            description: "Design-ul nostru intuitiv face ușoară introducerea detaliilor proprietății și înțelegerea rezultatelor.",
+        },
+        DetailedInsights: {
+            title: "Analiză Detaliată",
+            description: "Primește analize detaliate incluzând intervale de preț, scoruri de încredere și proprietăți comparabile.",
+        },
+    },
+
+    // How It Works Section
+    HowItWorksTitle: "Cum Funcționează",
+    HowItWorksSteps: {
+        Step1: {
+            title: "Introduceți Detalii despre Proprietății",
+            description: "Furnizați informații despre proprietate, inclusiv locație, dimensiune, facilități și stare.",
+        },
+        Step2: {
+            title: "Analiză",
+            description: "Algoritmul nostru avansat analizează datele și le compară cu proprietăți similare din zonă.",
+        },
+        Step3: {
+            title: "Obțineți Predicția",
+            description: "Primiți o predicție detaliată a prețului cu intervale de încredere și date suport.",
+        },
+    },
+
+    // Testimonials
+    TestimonialsTitle: "Ce Spun Utilizatorii Noștri",
+    Testimonials: {
+        Testimonial1: {
+            quote: "Acest tool m-a ajutat să îmi evaluez corect casa și să o vând într-o săptămână. Predicția a fost exactă!",
+            author: "Sarah Johnson",
+            role: "Vânzător",
+        },
+        Testimonial2: {
+            quote: "Ca investitor imobiliar, mă bazez pe evaluări precise. Acest tool a devenit o parte esențială a procesului meu decizional.",
+            author: "Michael Chen",
+            role: "Investitor Imobiliar",
+        },
+        Testimonial3: {
+            quote: "Analiza detaliată m-a ajutat să negociez un preț mai bun pentru casa visurilor mele. Am economisit mii de euro!",
+            author: "Emily Rodriguez",
+            role: "Cumpărător",
+        },
+    },
+
+    // CTA Section
+    ReadyToStart: "Gata să Începi?",
+    TryTodayMessage: "Încearcă astăzi tool-ul nostru de predicție a prețurilor.",
+    MakePrediction: "Fă o Predicție",
+
+    // Prediction Page
+    RealEstatePricePrediction: "Predicție Preț Imobiliar",
+    Steps: {
+        Location: "Locație",
+        Property: "Proprietate",
+        Result: "Rezultat",
+    },
+    StepGuide: {
+        Location: {
+            title: "Locația Proprietății și Detalii de Bază",
+            hint: "Pentru o predicție mai precisă, vă rugăm să completați toate câmpurile, chiar și cele opționale.",
+        },
+        PropertyDetails: {
+            title: "Detaliile Proprietății",
+            hint: "Completați cât mai multe detalii posibil - mai multe informații duc la predicții mai precise ale prețului.",
+        },
+    },
+
+    // Property Form Fields
+    PropertyFields: {
+        StreetAddress: "Adresă",
+        City: "Oraș",
+        StreetFrontage: "Deschidere la Stradă (m)",
+        PropertyType: "Tip Proprietate",
+        LandClassification: "Clasificare Teren",
+        FloorNumber: "Etaj",
+        ComfortLevel: "Nivel de Confort",
+        TotalUsableArea: "Suprafață Utilă Totală (m²)",
+        MainLivingArea: "Suprafață Locuibilă (m²)",
+        NumberOfRooms: "Număr Camere",
+        BuiltArea: "Suprafață Construită (m²)",
+        LandArea: "Suprafață Teren (m²)",
+        NumberOfGarages: "Număr Garaje",
+    },
+
+    // Property Types
+    PropertyTypes: {
+        Apartment: "Bloc",
+        House: "Casa/Vila",
+    },
+
+    // Comfort Levels
+    ComfortLevels: {
+        Luxury: "Lux",
+        Premium: "Premium",
+        High: "Ridicat",
+        Medium: "Mediu",
+        Basic: "Basic",
+    },
+
+    // Navigation
+    Back: "Înapoi",
+    Next: "Următorul",
+    NextPropertyDetails: "Următorul: Detalii Proprietate",
+    GetPricePrediction: "Obține Predicția Prețului",
+    TryAgain: "Încearcă din nou",
+    NewPrediction: "Predicție Nouă",
+
+    // Results Page
+    PredictionResults: {
+        title: "Rezultatele Predicției",
+        estimatedValue: "Valoare Estimată Proprietate",
+        similarProperties: "Proprietăți Similare în Zonă",
+        propertySpecs: {
+            rooms: "camere",
+            area: "m²",
+        },
+    },
+
+    // History Page
+    PredictionHistory: {
+        title: "Istoric Predicții",
+        description: "Vizualizează predicțiile tale anterioare pentru proprietăți",
+        emptyState: {
+            title: "Nicio Predicție Încă",
+            message: "Fă prima ta predicție de preț pentru o proprietate pentru a o vedea aici.",
+        },
+    },
+
+    ProfilePage: {
+        title: "Profil",
+        personalInfo: "Informații Personale",
+        preferences: "Preferințe",
+        firstName: "Prenume",
+        lastName: "Nume",
+        email: "Email",
+        phoneNumber: "Telefon",
+        darkMode: "Mod Întunecat",
+        language: "Limbă",
+        saveChanges: "Salvează Modificările",
+    },
+    TranslateInEnglish: "Tradu in Engleza",
+    TranslateInRomanian: "Tradu in Romana",
+    ContinueWithoutAccount: "Continua fara cont",
 
     SuccessAndErrorMessages: {
         Success: {
@@ -635,6 +769,6 @@ const ro = {
     },
 };
 
-export type LanguageDataTypes = typeof ro;
+export * from "./types";
 
 export default ro;

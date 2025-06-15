@@ -79,12 +79,12 @@ const sidebarStyle = (theme: Theme): SidebarStyle => ({
         alignItems: "center",
         backgroundColor: "transparent",
         fontFamily: "Inter",
-        fontWeight: 700, // Updated font weight
-        fontSize: "12px", // Updated font size
-        color: "#ffffff", // White text
-        padding: "6px 7px", // Adjusted padding
+        fontWeight: 700,
+        fontSize: "12px",
+        color: theme.palette.mode === "dark" ? "#ffffff" : theme.palette.text.primary,
+        padding: "6px 7px",
         "&:hover,&:focus": {
-            backgroundColor: "rgba(16, 152, 247, 0.2)",
+            backgroundColor: theme.palette.mode === "dark" ? "rgba(16, 152, 247, 0.2)" : theme.palette.action.hover,
             borderRadius: "8px",
         },
     },
@@ -92,7 +92,15 @@ const sidebarStyle = (theme: Theme): SidebarStyle => ({
         fontSize: theme.typography.pxToRem(20),
         width: 20,
         marginRight: cssVariables.smallestMargin, // Spacing between icon and text
-        color: "#ffffff", // White icons
+        color: "inherit", // This will inherit from itemLink
+        display: "flex",
+        alignItems: "center",
+        "& svg": {
+            width: "100%",
+            height: "100%",
+            stroke: "currentColor",
+            strokeWidth: 2,
+        },
     },
     section: {
         fontSize: "12px",
@@ -109,9 +117,12 @@ const sidebarStyle = (theme: Theme): SidebarStyle => ({
         color: "#ffffff", // White text
     },
     whiteFont: {
-        color: "rgba(49, 49, 49, 1)",
+        color: "inherit",
         "& path": {
-            fill: "rgba(49, 49, 49, 1)",
+            fill: "currentColor",
+        },
+        "& svg": {
+            color: "inherit",
         },
     },
     sidebarWrapper: {

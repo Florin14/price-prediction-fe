@@ -100,6 +100,7 @@ const ErrorHandler: FC = () => {
                             response?.config?.url !== "/account/reset-password" &&
                             response?.config?.url !== "/auth/login" &&
                             response?.config?.url !== "/account/change-password" &&
+                            response?.config?.url !== "/prediction-predict" &&
                             response?.config?.url !== "/auth/refresh-token"
                         )
                             dispatch(

@@ -10,7 +10,7 @@ import { RootState } from "../../../store";
 const icon = <CheckBoxOutlineBlankOutlinedIcon fontSize="small" />;
 const checkedIcon = <CheckBox fontSize="small" />;
 
-interface Option {
+export interface Option {
     id: number;
     [key: string]: any;
 }

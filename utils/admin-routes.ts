@@ -1,73 +1,30 @@
-import ControlPanelIcon from "../components/icons/ControlPanelIcon";
-import RegistryIcon from "../components/icons/RegistryIcon";
-import CommunicationIcon from "../components/icons/CommunicationIcon";
-import AccountsIcon from "../components/icons/AccountsIcon";
 import { RouteModel } from "../models/generic/routes";
+import HomeIcon from "../components/icons/HomeIcon";
+import { FiBarChart2, FiList } from "react-icons/fi";
 
 const adminRoutes: RouteModel[] = [
     {
-        path: "/dashboard/control-panel",
-        name: "ControlPanel",
-        icon: ControlPanelIcon,
+        path: "/home",
+        name: "Home",
+        icon: HomeIcon,
         isOnMenu: true,
         label: null,
     },
     {
-        path: "/dashboard/registry/registry",
-        name: "Registry",
-        icon: RegistryIcon,
+        path: "/admin/prediction",
+        name: "Prediction",
+        icon: FiBarChart2,
         isOnMenu: true,
         label: null,
     },
     {
-        path: "/dashboard/registry/components",
-        name: "Components",
-        icon: ControlPanelIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/communications",
-        name: "Communications",
-        icon: CommunicationIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/modals",
-        name: "Modals",
-        icon: CommunicationIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/validate-accounts",
-        name: "ValidateAccounts",
-        icon: AccountsIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/valid-accounts",
-        name: "ValidAccounts",
-        icon: AccountsIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/manage-communications",
-        name: "ManageCommunications",
-        icon: CommunicationIcon,
-        isOnMenu: true,
-        label: null,
-    },
-    {
-        path: "/dashboard/registry/manage-users",
-        name: "ManageUsers",
-        icon: AccountsIcon,
+        path: "/admin/history",
+        name: "History",
+        icon: FiList,
         isOnMenu: true,
         label: null,
     },
 ];
+export const adminSettingRoutes: RouteModel[] = [];
 
 export default adminRoutes;

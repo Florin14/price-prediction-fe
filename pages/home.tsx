@@ -1,127 +1,128 @@
-import React from "react";
-import Head from "next/head";
+import type React from "react";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import { Theme } from "@mui/material/styles";
 
-import HomePage from "../components/HomePage";
-import { PLATFORM_NAME } from "../assets/language/constants";
-import useClasses from "../utils/useClasses";
+import { HomeContainer, HeroSection, FeaturesSection, FeatureCard, HowItWorksSection, Step, TestimonialsSection, TestimonialCard } from "./HomePage.styles";
+import { FiBarChart2, FiZap, FiSmartphone, FiSearch, FiArrowRight } from "react-icons/fi";
 
-import { RootState } from "../store";
+import StyledButton from "../components/generic-components/StyledButton";
+import type { RootState } from "../store";
 
-// Interface for the class names
-interface HomeStyle {
-    background: any;
-    wrapper: any;
-    left: any;
-    gradient: any;
-    right: any;
-    consentWrapper: any;
-    textFrom: any;
-}
-
-const useStyles = (theme: Theme, _params: { color: string }): HomeStyle => ({
-    background: {
-        width: "100%",
-        height: "100%",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        minWidth: "300px",
-    },
-    wrapper: {
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        height: "100%",
-    },
-    left: {
-        background: "url(/images/background.jpg)",
-        objectFit: "cover",
-        height: "100%",
-        width: "100%",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        display: "flex",
-        alignItems: "flex-start",
-        justifyContent: "center",
-        position: "relative",
-        "& .image-wrapper": {
-            paddingTop: 100,
-            zIndex: 10,
-            background: "white",
-        },
-    },
-    gradient: {
-        position: "absolute",
-        background: "linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%)",
-        filter: "drop-shadow(0px 1.9275px 3.2125px rgba(0, 0, 0, 0.05)) drop-shadow(0px 3.2125px 5.14px rgba(0, 0, 0, 0.05))",
-        height: "100%",
-        width: "100%",
-    },
-    right: {
-        background: theme.palette.common.white,
-        boxShadow: "0px 1.9275px 3.2125px rgba(0, 0, 0, 0.05), 0px 3.2125px 5.14px rgba(0, 0, 0, 0.05)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-    },
-    consentWrapper: {
-        position: "absolute",
-        bottom: 20,
-        fontSize: "12px",
-        lineHeight: "15px",
-        fontWeight: 400,
-        fontFamily: "'Inter', sans-serif",
-        "& a": {
-            fontWeight: 700,
-        },
-        textAlign: "center",
-    },
-    textFrom: {
-        position: "absolute",
-        left: "20px",
-        bottom: "20px",
-        color: "white",
-    },
-    [theme.breakpoints.down(1100)]: {
-        wrapper: {
-            gridTemplateColumns: "100%",
-            gridTemplateRows: "auto auto",
-        },
-    },
-    [theme.breakpoints.down(375)]: {
-        left: {
-            "& .image-wrapper": {
-                width: "100%",
-            },
-        },
-    },
-});
-
-const Home: React.FC = (props) => {
-    const classes = useClasses(useStyles, { name: "Home_page", params: { color: "red" } }) as HomeStyle;
+const HomePage: React.FC = () => {
+    const router = useRouter();
     const languageData = useSelector((state: RootState) => state.website.languageData);
 
     return (
-        <React.Fragment>
-            <Head>
-                <title>{PLATFORM_NAME}</title>
-            </Head>
-            <div className={classes.background}>
-                <div className={classes.wrapper}>
-                    <div className={classes.right}>
-                        <HomePage {...props} />
+        <HomeContainer>
+            <HeroSection>
+                <div className="hero-content">
+                    <h1>{languageData?.HomePageTitle}</h1>
+                    <p>{languageData?.HomePageDescription}</p>
+                    <div className="hero-buttons">
+                        <StyledButton variant="contained" size="large" onClick={() => router.push("/guest/prediction")} endIcon={<FiArrowRight />}>
+                            {languageData?.TryItNow}
+                        </StyledButton>
+                        <StyledButton variant="outlined" size="large" onClick={() => router.push("/guest/how-it-works")}>
+                            {languageData?.LearnMore}
+                        </StyledButton>
                     </div>
                 </div>
+                <div className="hero-image">
+                    <img className="image-placeholder" alt="welcome page" src="/images/welcome_page.png" />
+                </div>
+            </HeroSection>
+
+            <FeaturesSection>
+                <h2 className="features-grid">{languageData?.WhyChooseTitle}</h2>
+                <div className="features-grid">
+                    <FeatureCard>
+                        <div className="feature-icon">
+                            <FiBarChart2 />
+                        </div>
+                        <h3>{languageData?.Features?.AccuratePredictions.title}</h3>
+                        <p>{languageData?.Features?.AccuratePredictions.description}</p>
+                    </FeatureCard>
+                    <FeatureCard>
+                        <div className="feature-icon">
+                            <FiZap />
+                        </div>
+                        <h3>{languageData?.Features?.RealTimeAnalysis.title}</h3>
+                        <p>{languageData?.Features?.RealTimeAnalysis.description}</p>
+                    </FeatureCard>
+                    <FeatureCard>
+                        <div className="feature-icon">
+                            <FiSmartphone />
+                        </div>
+                        <h3>{languageData?.Features?.UserFriendly.title}</h3>
+                        <p>{languageData?.Features?.UserFriendly.description}</p>
+                    </FeatureCard>
+                    <FeatureCard>
+                        <div className="feature-icon">
+                            <FiSearch />
+                        </div>
+                        <h3>{languageData?.Features?.DetailedInsights.title}</h3>
+                        <p>{languageData?.Features?.DetailedInsights.description}</p>
+                    </FeatureCard>
+                </div>
+            </FeaturesSection>
+
+            <HowItWorksSection>
+                <h2>{languageData?.HowItWorksTitle}</h2>
+                <div className="steps">
+                    <Step>
+                        <div className="step-number">1</div>
+                        <h3>{languageData?.HowItWorksSteps?.Step1.title}</h3>
+                        <p>{languageData?.HowItWorksSteps?.Step1.description}</p>
+                    </Step>
+                    <Step>
+                        <div className="step-number">2</div>
+                        <h3>{languageData?.HowItWorksSteps?.Step2.title}</h3>
+                        <p>{languageData?.HowItWorksSteps?.Step2.description}</p>
+                    </Step>
+                    <Step>
+                        <div className="step-number">3</div>
+                        <h3>{languageData?.HowItWorksSteps?.Step3.title}</h3>
+                        <p>{languageData?.HowItWorksSteps?.Step3.description}</p>
+                    </Step>
+                </div>
+            </HowItWorksSection>
+
+            <TestimonialsSection>
+                <h2>{languageData?.TestimonialsTitle}</h2>
+                <div className="testimonials-grid">
+                    <TestimonialCard>
+                        <p>{languageData?.Testimonials?.Testimonial1.quote}</p>
+                        <div className="testimonial-author">
+                            <strong>{languageData?.Testimonials?.Testimonial1.author}</strong>
+                            <span>{languageData?.Testimonials?.Testimonial1.role}</span>
+                        </div>
+                    </TestimonialCard>
+                    <TestimonialCard>
+                        <p>{languageData?.Testimonials?.Testimonial2.quote}</p>
+                        <div className="testimonial-author">
+                            <strong>{languageData?.Testimonials?.Testimonial2.author}</strong>
+                            <span>{languageData?.Testimonials?.Testimonial2.role}</span>
+                        </div>
+                    </TestimonialCard>
+                    <TestimonialCard>
+                        <p>{languageData?.Testimonials?.Testimonial3.quote}</p>
+                        <div className="testimonial-author">
+                            <strong>{languageData?.Testimonials?.Testimonial3.author}</strong>
+                            <span>{languageData?.Testimonials?.Testimonial3.role}</span>
+                        </div>
+                    </TestimonialCard>
+                </div>
+            </TestimonialsSection>
+
+            <div className="cta-section">
+                <h2>{languageData?.ReadyToStart}</h2>
+                <p>{languageData?.TryTodayMessage}</p>
+                <StyledButton className="cta-button" size="large" onClick={() => router.push("/guest/prediction")} endIcon={<FiArrowRight />}>
+                    {languageData?.MakePrediction}
+                </StyledButton>
             </div>
-        </React.Fragment>
+        </HomeContainer>
     );
 };
 
-export const getServerSideProps = async () => {
-    return {
-        props: {},
-    };
-};
-
-export default Home;
+export default HomePage;

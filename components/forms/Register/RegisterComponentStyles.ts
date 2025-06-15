@@ -15,6 +15,9 @@ export interface StyleClasses {
     radioOption: any;
     personTypeSelector: any;
     radio: any;
+    forgotPassword: any;
+    divider: any;
+    formContainer: any;
     [key: string]: any;
 }
 
@@ -25,6 +28,64 @@ export const useStyles = (theme: any): StyleClasses => ({
         backgroundColor: "#F9FAFB",
         display: "flex",
         justifyContent: "center",
+    },
+    formContainer: {
+        width: "100%",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+        [theme.breakpoints.down(365)]: {
+            margin: "5px auto",
+        },
+    },
+    requiredMark: {
+        color: "red",
+    },
+
+    fieldLabel: {
+        fontSize: "12px !important",
+        fontWeight: "400 !important",
+        color: "#21272A !important",
+        marginBottom: "8px",
+        fontFamily: "'Inter', sans-serif",
+    },
+    confirmed: {
+        color: "#34C759 !important",
+        fontSize: 12,
+        fontWeight: 500,
+        fontStyle: "normal",
+    },
+    unconfirmed: {
+        color: "#637381 !important",
+        fontSize: 12,
+        fontWeight: 500,
+        fontStyle: "normal",
+    },
+
+    forgotPassword: {
+        textAlign: "right",
+        color: "#001D6C",
+        width: "100%",
+        fontSize: "12px",
+        fontWeight: 400,
+        lineHeight: "120%",
+    },
+
+    noAccount: {
+        color: "#001D6C",
+        width: "100%",
+        fontSize: "12px",
+        fontWeight: 400,
+        lineHeight: "120%",
+    },
+
+    button: {
+        height: 40,
+    },
+
+    uploadButton: {
+        maxWidth: "200px",
     },
     wrapper: {
         display: "flex",
@@ -148,22 +209,6 @@ export const useStyles = (theme: any): StyleClasses => ({
         },
     },
 
-    // [theme.breakpoints.down(900)]: {
-    //     leftSection: {
-    //         padding: "0 25px",
-    //         paddingTop: cssVariables.defaultMargin,
-    //     },
-    //     titlesSection: {
-    //         padding: "0 25px",
-    //         paddingTop: cssVariables.defaultMargin,
-    //     },
-    //     formCard: {
-    //         padding: "0 25px",
-    //     },
-    //     subtitle: {
-    //         marginBottom: cssVariables.defaultMargin,
-    //     },
-    // },
     [theme.breakpoints.down(900)]: {
         container: {
             height: "100%",

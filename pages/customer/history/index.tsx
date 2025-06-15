@@ -50,10 +50,10 @@ const HistoryPage: React.FC = () => {
             <PredictionHistoryItem key={prediction.id}>
               <div className="prediction-date">{formatDate(prediction.createdAt)}</div>
               <div className="prediction-price">{formatCurrency(prediction.predicted_price)}</div>
-              <div className="prediction-confidence">Confidence: {(prediction.confidence * 100).toFixed(0)}%</div>
-              <div className="prediction-range">
+              {/* <div className="prediction-confidence">Confidence: {(prediction.confidence * 100).toFixed(0)}%</div> */}
+              {/* <div className="prediction-range">
                 Range: {formatCurrency(prediction.priceRange.min)} - {formatCurrency(prediction.priceRange.max)}
-              </div>
+              </div> */}
             </PredictionHistoryItem>
           ))}
         </PredictionHistoryList>

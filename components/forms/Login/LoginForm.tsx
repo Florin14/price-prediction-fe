@@ -3,10 +3,10 @@ import Axios from "axios";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
 import { useSelector } from "react-redux";
-import ReCAPTCHA from "react-google-recaptcha";
 import Link from "next/link";
+import { useGoogleLogin } from "@react-oauth/google";
 
-import { Typography, Divider } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { RootState } from "../../../store";
 
@@ -29,6 +29,9 @@ interface StyleClasses {
     subtitle: any;
     titlesSection: any;
     loginMessage: any;
+    orDivider: any;
+    googleButton: any;
+    googleIcon: any;
     [key: string]: any;
 }
 
@@ -125,6 +128,38 @@ const useStyles = (theme: any): StyleClasses => ({
     createAccountButton: {
         height: 40,
         backgroundColor: "white",
+    },
+    orDivider: {
+        display: "flex",
+        alignItems: "center",
+        margin: "15px 0",
+        color: "#666",
+        "&:before, &:after": {
+            content: '""',
+            flex: 1,
+            borderBottom: "1px solid #DDE1E6",
+            marginLeft: "15px",
+            marginRight: "15px",
+        },
+    },
+    googleButton: {
+        height: 40,
+        backgroundColor: "#fff",
+        border: "1px solid #DDE1E6",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        cursor: "pointer",
+        borderRadius: "4px",
+        transition: "background-color 0.3s",
+        "&:hover": {
+            backgroundColor: "#f8f9fa",
+        },
+    },
+    googleIcon: {
+        width: 18,
+        height: 18,
     },
     [theme.breakpoints.down(1200)]: {
         wrapper: {
@@ -272,7 +307,7 @@ const LoginForm: React.FC = () => {
                 setCookie("name", rspData["name"], { path: "/", expires });
                 setCookie("role", rspData["role"], { path: "/", expires });
                 setCookie("id", rspData["id"], { path: "/", expires });
-                router.push("/citizen/history").then((r) => {});
+                router.push("/customer/history").then((r) => {});
             })
             .catch((err) => {
                 if (err?.response?.data?.code === "E0010" || err?.response?.code === "E0024") {
@@ -294,6 +329,35 @@ const LoginForm: React.FC = () => {
         setCaptchaToken(token);
     };
 
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (response) => {
+            try {
+                const data = {
+                    credential: response.access_token,
+                    provider: "google",
+                };
+                const options = {
+                    url: "/auth/social-login",
+                    method: "POST",
+                    data: data,
+                };
+                const loginResponse = await Axios(options);
+                const rspData = loginResponse.data;
+                setGlobalError("");
+                const expires = new Date(Date.now() + 31536000);
+                setCookie("name", rspData["name"], { path: "/", expires });
+                setCookie("role", rspData["role"], { path: "/", expires });
+                setCookie("id", rspData["id"], { path: "/", expires });
+                router.push("/customer/history");
+            } catch (err: any) {
+                setGlobalError(languageData?.SomethingWentWrong || "");
+            }
+        },
+        onError: () => {
+            setGlobalError(languageData?.SomethingWentWrong || "");
+        },
+    });
+
     return (
         <div className={classes.container} data-testid="login-form-container">
             <div className={classes.wrapper}>
@@ -311,6 +375,7 @@ const LoginForm: React.FC = () => {
                         <Typography className={classes.loginMessage} data-testid="login-form-message">
                             {languageData?.LoginAction || "Autentificare"}
                         </Typography>
+
                         <FormLayout
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -356,7 +421,14 @@ const LoginForm: React.FC = () => {
                             >
                                 {languageData?.Login || "Autentifica-te"}
                             </StyledButton>
-                            <Divider style={{ margin: "15px 0", borderColor: "#DDE1E6" }} data-testid="login-form-divider" />
+                            <div className={classes.orDivider}>
+                                <span>or</span>
+                            </div>
+                            <button onClick={() => googleLogin()} className={classes.googleButton} type="button" data-testid="google-login-button">
+                                <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" alt="Google" className={classes.googleIcon} />
+                                <span>Continue with Google</span>
+                            </button>
+
                             <StyledButton
                                 variant="outlined"
                                 fullWidth

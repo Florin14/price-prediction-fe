@@ -9,4 +9,6 @@ export default interface WebsiteStore {
     goBack: string | null;
     deviceType: string | null;
     theme: "light" | "dark";
+    isDarkMode: boolean;
+    currentLanguage: string;
 }

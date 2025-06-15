@@ -50,7 +50,9 @@ const useStyles = (theme: Theme) => ({
         // minHeight: "45px",
         backgroundColor: "rgba(255, 255, 255, 0.7)",
         borderRadius: "8px",
-        border: "1px solid rgba(0, 0, 0, 0.1)",
+        // border: "1px solid rgba(0, 0, 0, 0.1)",
+        color: "#111827 !important",
+
         "& .MuiInputBase-input": {
             textAlign: "center",
             height: "45px !important",
@@ -64,6 +66,7 @@ const useStyles = (theme: Theme) => ({
                 border: "1px solid rgba(0, 0, 0, 0.1)",
                 borderRadius: "8px",
                 top: 0,
+                color: "#111827 !important",
             },
             "&:hover fieldset": {
                 borderColor: theme.palette.primary.main,
@@ -215,14 +218,14 @@ const StyledInput: React.FC<StyledInputProps> = ({
     const inputHasValue = (value: any) => value !== undefined && value !== null && value !== "";
 
     return (
-        <div id={id} style={{ width: width }} {...rest}>
+        <div id={id} style={{ width: width, border: "" }} {...rest}>
             {label && (
                 <InputLabel required={!!required} className={classNames(classes.label, labelClassName)}>
                     {label}
                 </InputLabel>
             )}
             {!viewMode ? (
-                <FormControl required={required} id="formControl" style={{ width, minWidth: 0 }} className={className}>
+                <FormControl required={required} id="formControl" style={{ width, minWidth: 0, border: "1px solid rgba(0, 0, 0, 0.1)", borderRadius: 8 }} className={className}>
                     {tooltip ? (
                         <StyledTooltip title={tooltip}>
                             <TextField
