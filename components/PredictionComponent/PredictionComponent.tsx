@@ -69,10 +69,10 @@ const PredictionComponent: React.FC = () => {
 
     const validateStep1 = (property: Property): boolean => {
         const errors: string[] = [];
-        if (!property.address?.trim()) errors.push("Street address is required");
-        if (!property.city?.trim()) errors.push("City is required");
-        if (!property.classification) errors.push("Property type is required");
-        if (!property.comfort) errors.push("Comfort level is required");
+        if (!property.address?.trim()) errors.push(languageData?.ValidationErrors?.StreetAddressRequired || "Street address is required");
+        if (!property.city?.trim()) errors.push(languageData?.ValidationErrors?.CityRequired || "City is required");
+        if (!property.classification) errors.push(languageData?.ValidationErrors?.PropertyTypeRequired || "Property type is required");
+        if (!property.comfort) errors.push(languageData?.ValidationErrors?.ComfortLevelRequired || "Comfort level is required");
 
         setValidationErrors(errors);
         return errors.length === 0;
@@ -80,8 +80,8 @@ const PredictionComponent: React.FC = () => {
 
     const validateStep2 = (property: Property): boolean => {
         const errors: string[] = [];
-        if (!property.useful_area_total) errors.push("Total usable area is required");
-        if (!property.num_rooms) errors.push("Number of rooms is required");
+        if (!property.useful_area_total) errors.push(languageData?.ValidationErrors?.TotalUsableAreaRequired || "Total usable area is required");
+        if (!property.num_rooms) errors.push(languageData?.ValidationErrors?.NumberOfRoomsRequired || "Number of rooms is required");
         setValidationErrors(errors);
         return errors.length === 0;
     };
@@ -99,10 +99,20 @@ const PredictionComponent: React.FC = () => {
         setStep2Attempted(true);
         if (validateStep2(currentProperty)) {
             setShowLoadingOverlay(true);
+            console.log({ ...currentProperty, classification: currentProperty?.classification?.name, user_id: cookies["id"] });
 
             // Adding a minimum loading time of 3 seconds for better UX
             await Promise.all([
-                dispatch(predictPropertyPrice({ ...currentProperty, classification: currentProperty?.classification?.name, user_id: cookies["id"] })),
+                dispatch(
+                    predictPropertyPrice({
+                        ...currentProperty,
+                        classification: currentProperty?.classification?.name,
+                        user_id: cookies["id"],
+                        has_garage: false,
+                        for_sale: false,
+                        property_type: "apartment",
+                    })
+                ),
                 new Promise((resolve) => setTimeout(resolve, 3000)),
             ]);
 
@@ -225,60 +235,51 @@ const PredictionComponent: React.FC = () => {
                     inputName="address"
                     value={currentProperty.address || ""}
                     onChange={(value) => handleStep1InputChange("address", value)}
-                    placeholder="Street address..."
                     width="100%"
+                    placeholder={`${languageData?.PropertyFields?.StreetAddress}...`}
                 />
-            </FormRow>
-            <FormRow>
                 <StyledInput
                     label={languageData?.PropertyFields?.City}
                     inputName="city"
                     value={currentProperty.city || ""}
                     onChange={(value) => handleStep1InputChange("city", value)}
-                    placeholder="City name..."
+                    placeholder={`${languageData?.PropertyFields?.City}...`}
                 />
+            </FormRow>
+            <FormRow>
                 <StyledInput
                     label={languageData?.PropertyFields?.StreetFrontage}
                     inputName="streetFrontage"
                     type="number"
                     value={currentProperty.street_frontage?.toString() || ""}
                     onChange={(value) => handleStep1InputChange("streetFrontage", Number(value))}
-                    placeholder="Street frontage..."
+                    placeholder={`${languageData?.PropertyFields?.StreetFrontage}...`}
                 />
-            </FormRow>
-            <FormRow>
                 <StyledDropdown
                     label={languageData?.PropertyFields?.PropertyType}
                     required
                     activeLabel
                     value={currentProperty.classification || null}
                     onChange={(_, value) => handleStep1InputChange("classification", value || null)}
-                    placeholder="Selecteaza tipul proprietatii..."
+                    placeholder={`${languageData?.PropertyFields?.PropertyType}...`}
                     options={propertyTypes}
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.LandClassification}
-                    inputName="landClassification"
-                    value={currentProperty.landClassification || ""}
-                    onChange={(value) => handleStep1InputChange("landClassification", value)}
-                    placeholder="Land classification..."
                 />
             </FormRow>
             <FormRow>
                 <StyledInput
-                    label="Floor Number"
+                    label={languageData?.PropertyFields?.FloorNumber}
                     inputName="floor"
                     type="number"
                     value={currentProperty.floor?.toString() || ""}
                     onChange={(value) => handleStep1InputChange("floor", Number(value))}
-                    placeholder="Floor number..."
+                    placeholder={`${languageData?.PropertyFields?.FloorNumber}...`}
                 />
                 <StyledInput
-                    label="Comfort Level"
+                    label={languageData?.PropertyFields?.ComfortLevel}
                     inputName="comfort"
                     value={currentProperty.comfort || ""}
                     onChange={(value) => handleStep1InputChange("comfort", value)}
-                    placeholder="Comfort level..."
+                    placeholder={`${languageData?.PropertyFields?.ComfortLevel}...`}
                     type="number"
                 />
             </FormRow>
@@ -365,14 +366,14 @@ const PredictionComponent: React.FC = () => {
                     onChange={(value) => handleStep2InputChange("num_garages", Number(value))}
                     placeholder="Number of garages..."
                 />
-                <StyledInput
+                {/* <StyledInput
                     label="Street Frontage (m)"
                     inputName="street_frontage"
                     type="number"
                     value={currentProperty.street_frontage?.toString() || ""}
                     onChange={(value) => handleStep2InputChange("street_frontage", Number(value))}
                     placeholder="Street Frontage..."
-                />
+                /> */}
             </FormRow>
             <div className="validation-errors">
                 {validationErrors.map((error, index) => (

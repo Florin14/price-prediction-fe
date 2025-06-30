@@ -44,6 +44,8 @@ const en: LanguageDataTypes = {
     InvalidEmail: "Invalid Email",
     InvalidPassword: "Invalid Password",
     SomethingWentWrong: "Server error. Please try again later.",
+    PredictionWentWrong: "Error while predicting the price. Please try again later.",
+
     ResetPasswordEmailSentConfirm: "If the specified address is in our database, an email with password reset instructions has been sent.",
     EmailConfirmationMessage:
         "After registration, account confirmation is required. Please check the email address used for registration to complete account activation.",
@@ -506,19 +508,14 @@ const en: LanguageDataTypes = {
         NumberOfGarages: "Number of garages",
     },
 
-    // Property Types
-    PropertyTypes: {
-        Apartment: "Bloc",
-        House: "Casa/Vila",
-    },
-
-    // Comfort Levels
-    ComfortLevels: {
-        Luxury: "Luxury",
-        Premium: "Premium",
-        High: "High",
-        Medium: "Medium",
-        Basic: "Basic",
+    // Validation Error Messages
+    ValidationErrors: {
+        StreetAddressRequired: "Street address is required",
+        CityRequired: "City is required",
+        PropertyTypeRequired: "Property type is required",
+        ComfortLevelRequired: "Comfort level is required",
+        TotalUsableAreaRequired: "Total usable area is required",
+        NumberOfRoomsRequired: "Number of rooms is required",
     },
 
     // Navigation
@@ -567,6 +564,13 @@ const en: LanguageDataTypes = {
     TranslateInEnglish: "Translate in English",
     TranslateInRomanian: "Translate in Romanian",
     ContinueWithoutAccount: "Continua with no account",
+
+    PredictionMessages: {
+        AnalyzingMarketTrends: "Analyzing market trends...",
+        ProcessingPropertyFeatures: "Processing property features...",
+        CalculatingPreciseEstimates: "Calculating precise estimates...",
+        GeneratingAIPredictions: "Generating a prediction...",
+    },
 
     SuccessAndErrorMessages: {
         Success: {

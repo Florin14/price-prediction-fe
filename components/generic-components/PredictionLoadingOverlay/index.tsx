@@ -2,6 +2,8 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { keyframes } from "@emotion/react";
 import Box from "@mui/material/Box";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const pulseAnimation = keyframes`
   0% { transform: scale(1); opacity: 1; }
@@ -112,9 +114,14 @@ interface PredictionLoadingOverlayProps {
 
 const PredictionLoadingOverlay: React.FC<PredictionLoadingOverlayProps> = ({ active }) => {
     const particles = Array.from({ length: 12 }, (_, i) => <Particle key={i} delay={i * 0.2} distance={(i + 1) * 30} />);
+    const languageData = useSelector((state: RootState) => state.website.languageData);
 
-    const messages = ["Analyzing market trends...", "Processing property features...", "Calculating precise estimates...", "Generating AI predictions..."];
-
+    const messages = [
+        languageData?.PredictionMessages?.AnalyzingMarketTrends,
+        languageData?.PredictionMessages?.ProcessingPropertyFeatures,
+        languageData?.PredictionMessages?.CalculatingPreciseEstimates,
+        languageData?.PredictionMessages?.GeneratingAIPredictions,
+    ];
     const [messageIndex, setMessageIndex] = React.useState(0);
 
     React.useEffect(() => {
@@ -132,7 +139,7 @@ const PredictionLoadingOverlay: React.FC<PredictionLoadingOverlayProps> = ({ act
             <LoadingContent>
                 <ParticlesContainer>{particles}</ParticlesContainer>
                 <HouseIcon>🏠</HouseIcon>
-                <Message>AI Price Prediction</Message>
+                <Message>{languageData?.HomePageTitle}</Message>
                 <SubMessage>{messages[messageIndex]}</SubMessage>
             </LoadingContent>
         </OverlayContainer>

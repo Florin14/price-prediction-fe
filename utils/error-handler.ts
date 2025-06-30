@@ -185,7 +185,7 @@ const ErrorHandler: FC = () => {
                             match = "default";
                         }
                     }
-                    if (response?.config?.url !== "/account/reset-password") {
+                    if (response?.config?.url !== "/account/reset-password" && response?.config?.url !== "/prediction-predict") {
                         if (match !== null) {
                             dispatch(
                                 snackbarActions.handleOpen({
@@ -215,6 +215,13 @@ const ErrorHandler: FC = () => {
                                     })
                                 );
                         }
+                    } else if (response?.config?.url == "/prediction-predict") {
+                        dispatch(
+                            snackbarActions.handleOpen({
+                                message: languageData?.PredictionWentWrong,
+                                type: "error",
+                            })
+                        );
                     }
                 }
             } else {

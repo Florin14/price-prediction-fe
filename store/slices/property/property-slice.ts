@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Draft } from '@reduxjs/toolkit';
+import type { Draft } from "@reduxjs/toolkit";
 import { Option } from "../../../components/generic-components/LazyLoadingMultiDropdown";
 
 export interface PropertyFeature {
@@ -63,6 +63,10 @@ export interface Property {
     // Additional frontend fields
     images?: string[];
     description?: string;
+
+    has_garage?: boolean;
+    for_sale?: boolean;
+    property_type?: string;
 }
 
 interface PropertyState {

@@ -80,6 +80,14 @@ export interface LanguageDataTypes {
         LandArea: string;
         NumberOfGarages: string;
     };
+    ValidationErrors?: {
+        StreetAddressRequired: string;
+        CityRequired: string;
+        PropertyTypeRequired: string;
+        ComfortLevelRequired: string;
+        TotalUsableAreaRequired: string;
+        NumberOfRoomsRequired: string;
+    };
     PredictionResults?: {
         title: string;
         estimatedValue: string;

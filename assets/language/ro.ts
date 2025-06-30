@@ -165,6 +165,7 @@ const ro: LanguageDataTypes = {
     InvalidEmail: "Email invalid",
     InvalidPassword: "Parola invalida",
     SomethingWentWrong: "Eroare de server. Va rugam incercati mai tarziu.",
+    PredictionWentWrong: "Eroare la prezicerea pretului. Va rugam incercati mai tarziu.",
     ResetPasswordEmailSentConfirm:
         "Daca adresa specificata se afla in baza de date, un e-mail cu instructiunile de resetarea a parolei a fost trimis catre aceasta.",
     EmailConfirmationMessage:
@@ -620,6 +621,16 @@ const ro: LanguageDataTypes = {
         NumberOfGarages: "Număr Garaje",
     },
 
+    // Validation Error Messages
+    ValidationErrors: {
+        StreetAddressRequired: "Adresa este obligatorie",
+        CityRequired: "Orașul este obligatoriu",
+        PropertyTypeRequired: "Tipul proprietății este obligatoriu",
+        ComfortLevelRequired: "Nivelul de confort este obligatoriu",
+        TotalUsableAreaRequired: "Suprafața utilă totală este obligatorie",
+        NumberOfRoomsRequired: "Numărul de camere este obligatoriu",
+    },
+
     // Property Types
     PropertyTypes: {
         Apartment: "Bloc",
@@ -678,6 +689,13 @@ const ro: LanguageDataTypes = {
     TranslateInEnglish: "Tradu in Engleza",
     TranslateInRomanian: "Tradu in Romana",
     ContinueWithoutAccount: "Continua fara cont",
+
+    PredictionMessages: {
+        AnalyzingMarketTrends: "Analizăm tendințele pieței...",
+        ProcessingPropertyFeatures: "Procesăm caracteristicile proprietății...",
+        CalculatingPreciseEstimates: "Calculăm estimări precise...",
+        GeneratingAIPredictions: "Generăm predicția...",
+    },
 
     SuccessAndErrorMessages: {
         Success: {
