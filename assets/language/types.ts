@@ -97,6 +97,15 @@ export interface LanguageDataTypes {
             message: string;
         };
     };
+    PredictionLoading?: {
+        title: string;
+        messages: {
+            analyzing: string;
+            processing: string;
+            calculating: string;
+            generating: string;
+        };
+    };
     StepGuide?: {
         Location: {
             title: string;
@@ -117,6 +126,14 @@ export interface LanguageDataTypes {
     PropertyTypes?: {
         Apartment: string;
         House: string;
+    };
+    ValidationErrors?: {
+        StreetAddressRequired: string;
+        CityRequired: string;
+        PropertyTypeRequired: string;
+        ComfortLevelRequired: string;
+        TotalUsableAreaRequired: string;
+        NumberOfRoomsRequired: string;
     };
 
     // Existing Types

@@ -86,6 +86,15 @@ export interface LanguageDataTypes {
             message: string;
         };
     };
+    PredictionLoading?: {
+        title: string;
+        messages: {
+            analyzing: string;
+            processing: string;
+            calculating: string;
+            generating: string;
+        };
+    };
     StepGuide?: {
         Location: {
             title: string;
@@ -212,7 +221,7 @@ const ro: LanguageDataTypes = {
     },
     ConsentMessage: "Consent message",
     Planning: "Planificare",
-    History: "History",
+    History: "Istoric",
     PredictRealEstatePrices: "Bine ai venit!",
 
     //Sidebar categories
@@ -516,6 +525,7 @@ const ro: LanguageDataTypes = {
     ValidateAccount: "Validare cont",
 
     // Home Page
+    Home: "Acasă",
     HomePageTitle: "Prezice Prețuri Imobiliare",
     HomePageDescription:
         "Obține predicții precise ale prețurilor proprietăților, alimentate de algoritmi avansați de învățare automată. Ia decizii informate pentru cumpărarea, vânzarea sau investiția în imobiliare.",
@@ -547,7 +557,7 @@ const ro: LanguageDataTypes = {
     HowItWorksTitle: "Cum Funcționează",
     HowItWorksSteps: {
         Step1: {
-            title: "Introduceți Detalii despre Proprietății",
+            title: "Introduceți Detalii despre Proprietăți",
             description: "Furnizați informații despre proprietate, inclusiv locație, dimensiune, facilități și stare.",
         },
         Step2: {
@@ -635,6 +645,16 @@ const ro: LanguageDataTypes = {
         Basic: "Basic",
     },
 
+    // Validation Error Messages
+    ValidationErrors: {
+        StreetAddressRequired: "Adresa stradală este obligatorie",
+        CityRequired: "Orașul este obligatoriu",
+        PropertyTypeRequired: "Tipul proprietății este obligatoriu",
+        ComfortLevelRequired: "Nivelul de confort este obligatoriu",
+        TotalUsableAreaRequired: "Suprafața utilă totală este obligatorie",
+        NumberOfRoomsRequired: "Numărul de camere este obligatoriu",
+    },
+
     // Navigation
     Back: "Înapoi",
     Next: "Următorul",
@@ -661,6 +681,17 @@ const ro: LanguageDataTypes = {
         emptyState: {
             title: "Nicio Predicție Încă",
             message: "Fă prima ta predicție de preț pentru o proprietate pentru a o vedea aici.",
+        },
+    },
+
+    // Prediction Loading
+    PredictionLoading: {
+        title: "Predicția Prețului",
+        messages: {
+            analyzing: "Analizez tendințele pieței...",
+            processing: "Procesez caracteristicile proprietății...",
+            calculating: "Calculez estimări precise...",
+            generating: "Generez predicții...",
         },
     },
 
@@ -743,7 +774,7 @@ const ro: LanguageDataTypes = {
                     default: "Unul dintre campurile entitatii este folosit deja.",
                 },
                 put: {
-                    "/clients/[0-9]+": "Numele trebuie sa contina intre 3 si 500 de caractere.",
+                    "/clients/[0-9]+": "Numele trebuie sa contine intre 3 si 500 de caractere.",
                     default: "Unul dintre campurile entitatii este folosit deja.",
                 },
             },

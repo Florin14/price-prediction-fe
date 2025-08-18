@@ -49,6 +49,7 @@ const en: LanguageDataTypes = {
         "After registration, account confirmation is required. Please check the email address used for registration to complete account activation.",
     SuccessfulPasswordReset: "Password has been reset successfully.",
     InvalidResetCode: "Reset code is invalid",
+    Home: "Home",
     PasswordsDontMatch: "Passwords don't match.",
     MainRoute: "Main Route!",
     Logout: "Logout",
@@ -105,7 +106,7 @@ const en: LanguageDataTypes = {
     Visits: "Visits",
     FileUploadAlertMessage: "Uploaded image is not valid",
     OrderBy: "Order by",
-    Prediction: "Predictie",
+    Prediction: "Prediction",
 
     //Location
     Location: "Location",
@@ -521,6 +522,16 @@ const en: LanguageDataTypes = {
         Basic: "Basic",
     },
 
+    // Validation Error Messages
+    ValidationErrors: {
+        StreetAddressRequired: "Street address is required",
+        CityRequired: "City is required",
+        PropertyTypeRequired: "Property type is required",
+        ComfortLevelRequired: "Comfort level is required",
+        TotalUsableAreaRequired: "Total usable area is required",
+        NumberOfRoomsRequired: "Number of rooms is required",
+    },
+
     // Navigation
     Back: "Back",
     Next: "Next",
@@ -549,6 +560,18 @@ const en: LanguageDataTypes = {
             message: "Make your first property price prediction to see it here.",
         },
     },
+
+    // Prediction Loading
+    PredictionLoading: {
+        title: "Price Prediction",
+        messages: {
+            analyzing: "Analyzing market trends...",
+            processing: "Processing property features...",
+            calculating: "Calculating precise estimates...",
+            generating: "Generating predictions...",
+        },
+    },
+
     BaseAddress: "Base address",
     PricePerMeter: "Price/m²",
     TotalPrice: "Total price",
