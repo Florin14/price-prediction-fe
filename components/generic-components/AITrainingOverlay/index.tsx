@@ -144,7 +144,7 @@ const AITrainingOverlay: React.FC<AITrainingOverlayProps> = ({ active = false, s
     return (
         <OverlayContainer active={active}>
             <ContentContainer>
-                <Title>AI Model Training in Progress</Title>
+                <Title>Model Training in Progress</Title>
 
                 <NetworkVisualization>
                     <svg viewBox="0 0 600 300">

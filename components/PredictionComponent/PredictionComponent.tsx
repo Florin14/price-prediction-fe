@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import { resetProperty, updateProperty, type Property } from "../../store/slices/property/property-slice";
 import { predictPropertyPrice } from "../../store/slices/prediction/thunks";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface SimilarListing {
     external_id: string;
@@ -61,6 +62,22 @@ const PredictionComponent: React.FC = () => {
     const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
     const [step1Attempted, setStep1Attempted] = useState(false);
     const [step2Attempted, setStep2Attempted] = useState(false);
+    const [showError, setShowError] = useState(false);
+
+    // useEffect to handle error display logic
+    useEffect(() => {
+        if (error) {
+            setShowError(true);
+            const timer = setTimeout(() => {
+                setShowError(false);
+            }, 3000); // Hide error after 3 seconds
+
+            // Cleanup timer if component unmounts or error changes
+            return () => clearTimeout(timer);
+        } else {
+            setShowError(false);
+        }
+    }, [error]);
 
     const propertyTypes = [
         { id: 1, name: languageData?.PropertyTypes?.Apartment || "Bloc" },
@@ -69,10 +86,10 @@ const PredictionComponent: React.FC = () => {
 
     const validateStep1 = (property: Property): boolean => {
         const errors: string[] = [];
-        if (!property.address?.trim()) errors.push("Street address is required");
-        if (!property.city?.trim()) errors.push("City is required");
-        if (!property.classification) errors.push("Property type is required");
-        if (!property.comfort) errors.push("Comfort level is required");
+        if (!property.address?.trim()) errors.push(languageData?.ValidationErrors?.StreetAddressRequired || "Street address is required");
+        if (!property.city?.trim()) errors.push(languageData?.ValidationErrors?.CityRequired || "City is required");
+        if (!property.classification) errors.push(languageData?.ValidationErrors?.PropertyTypeRequired || "Property type is required");
+        if (!property.comfort) errors.push(languageData?.ValidationErrors?.ComfortLevelRequired || "Comfort level is required");
 
         setValidationErrors(errors);
         return errors.length === 0;
@@ -80,8 +97,8 @@ const PredictionComponent: React.FC = () => {
 
     const validateStep2 = (property: Property): boolean => {
         const errors: string[] = [];
-        if (!property.useful_area_total) errors.push("Total usable area is required");
-        if (!property.num_rooms) errors.push("Number of rooms is required");
+        if (!property.useful_area_total) errors.push(languageData?.ValidationErrors?.TotalUsableAreaRequired || "Total usable area is required");
+        if (!property.num_rooms) errors.push(languageData?.ValidationErrors?.NumberOfRoomsRequired || "Number of rooms is required");
         setValidationErrors(errors);
         return errors.length === 0;
     };
@@ -481,7 +498,18 @@ const PredictionComponent: React.FC = () => {
         <PredictionContainer>
             <PredictionLoadingOverlay active={showLoadingOverlay} />
             <h1>{languageData?.RealEstatePricePrediction}</h1> {renderStepIndicator()}
-            {error && <div className="error-message">Error: {error}</div>}
+            {showError && error && (
+                <div className="error-message">
+                    <span>Error: {error}</span>
+                    <span
+                        onClick={() => {
+                            setShowError(false);
+                        }}
+                    >
+                        <CloseIcon />
+                    </span>
+                </div>
+            )}
             {!currentPrediction ? (
                 <PredictionForm>
                     {step === 1 && renderStep1()}
