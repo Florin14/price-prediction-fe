@@ -2,11 +2,10 @@ import type React from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-import { HomeContainer, HeroSection, FeaturesSection, FeatureCard, HowItWorksSection, Step, TestimonialsSection, TestimonialCard } from "../components/HomeComponent/HomePage.styles";
+import { HomeContainer, HeroSection, FeaturesSection, FeatureCard, HowItWorksSection, Step, TestimonialsSection, TestimonialCard } from "./HomePage.styles";
 import { FiBarChart2, FiZap, FiSmartphone, FiSearch, FiArrowRight } from "react-icons/fi";
-
-import StyledButton from "../components/generic-components/StyledButton";
-import type { RootState } from "../store";
+import { RootState } from "../../store";
+import StyledButton from "../generic-components/StyledButton";
 
 const HomePage: React.FC = () => {
     const router = useRouter();
