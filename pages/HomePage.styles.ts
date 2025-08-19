@@ -8,7 +8,7 @@ export const HomeContainer = styled("div")(({ theme }) => ({
         textAlign: "center",
         paddingBottom: `${theme.spacing(8)}`,
         backgroundColor: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         // marginTop: theme.spacing(6), // xl
         h2: {
             marginBottom: theme.spacing(4), // md
@@ -20,7 +20,7 @@ export const HomeContainer = styled("div")(({ theme }) => ({
     },
     ".cta-button": {
         width: "fit-content",
-    }
+    },
 }));
 
 export const HeroSection = styled("section")(({ theme }) => ({
@@ -69,7 +69,7 @@ export const HeroSection = styled("section")(({ theme }) => ({
             width: "100%",
             height: 300,
             backgroundColor: theme.palette.background.paper,
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: Number(theme.shape.borderRadius),
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -99,7 +99,7 @@ export const FeaturesSection = styled("section")(({ theme }) => ({
 
 export const FeatureCard = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     padding: theme.spacing(6),
     boxShadow: theme.shadows[4],
     transition: `transform ${theme.transitions.duration.short}ms, box-shadow ${theme.transitions.duration.short}ms`,
@@ -147,7 +147,7 @@ export const Step = styled("div")(({ theme }) => ({
     position: "relative",
     padding: theme.spacing(6),
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     boxShadow: theme.shadows[4],
     ".step-number": {
         width: 40,
@@ -186,7 +186,7 @@ export const TestimonialsSection = styled("section")(({ theme }) => ({
 
 export const TestimonialCard = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     padding: theme.spacing(6),
     boxShadow: theme.shadows[4],
     textAlign: "left",

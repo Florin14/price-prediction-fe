@@ -13,7 +13,7 @@ export const PredictionContainer = styled("div")(({ theme }) => ({
         padding: theme.spacing(2),
         backgroundColor: "rgba(244, 67, 54, 0.1)",
         border: `1px solid ${theme.palette.error.main}`,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         color: theme.palette.error.main,
         marginBottom: theme.spacing(2),
     },
@@ -94,7 +94,7 @@ export const StepIndicator = styled("div")(({ theme }) => ({
 
 export const PredictionForm = styled("form")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
     overflow: "hidden",
     animation: "fadeIn 0.5s ease",
@@ -103,7 +103,7 @@ export const PredictionForm = styled("form")(({ theme }) => ({
 export const FormSection = styled("div")(({ theme }) => ({
     padding: theme.spacing(4),
     backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius * 1.5,
+    borderRadius: Number(theme.shape.borderRadius) * 1.5,
     boxShadow: theme.shadows[3],
     transition: theme.transitions.create("box-shadow"),
 
@@ -127,7 +127,7 @@ export const FormSection = styled("div")(({ theme }) => ({
             width: 60,
             height: 3,
             backgroundColor: theme.palette.primary.main,
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: Number(theme.shape.borderRadius),
         },
     },
 
@@ -173,7 +173,7 @@ export const PredictionResults = styled("div")(({ theme }) => ({
 
 export const ResultCard = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius * 1.5,
+    borderRadius: Number(theme.shape.borderRadius) * 1.5,
     boxShadow: theme.shadows[8],
     padding: theme.spacing(4),
     transition: theme.transitions.create(["box-shadow", "transform"], {
@@ -202,7 +202,7 @@ export const ResultCard = styled("div")(({ theme }) => ({
             backgroundColor: theme.palette.success.light,
             color: theme.palette.success.dark,
             padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
-            borderRadius: theme.shape.borderRadius * 2,
+            borderRadius: Number(theme.shape.borderRadius) * 2,
             fontSize: theme.typography.subtitle1.fontSize,
             fontWeight: theme.typography.fontWeightMedium,
             display: "flex",
@@ -261,7 +261,7 @@ export const ResultCard = styled("div")(({ theme }) => ({
     "& .factor-card": {
         backgroundColor: theme.palette.background.default,
         padding: theme.spacing(2),
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         border: `1px solid ${theme.palette.divider}`,
         transition: theme.transitions.create("transform"),
 
@@ -286,7 +286,7 @@ export const ResultCard = styled("div")(({ theme }) => ({
                 flex: 1,
                 height: 4,
                 backgroundColor: theme.palette.grey[200],
-                borderRadius: theme.shape.borderRadius,
+                borderRadius: Number(theme.shape.borderRadius),
                 overflow: "hidden",
 
                 "& .impact-value": {
@@ -319,7 +319,7 @@ export const PriceRange = styled("div")(({ theme }) => ({
         justifyContent: "space-between",
         backgroundColor: "rgba(67, 97, 238, 0.1)",
         padding: theme.spacing(2),
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
     },
 
     "& .range-min, & .range-max": {
@@ -345,7 +345,7 @@ export const SimilarProperties = styled("div")(({ theme }) => ({
 
 export const PropertyCard = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     overflow: "hidden",
     transition: theme.transitions.create("transform"),
 

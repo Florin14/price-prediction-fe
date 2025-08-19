@@ -14,7 +14,7 @@ export const ProfileContainer = styled("div")(({ theme }) => ({
         padding: theme.spacing(2),
         backgroundColor: "rgba(244, 67, 54, 0.1)",
         border: `1px solid ${theme.palette.error.main}`,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         color: theme.palette.error.main,
         marginBottom: theme.spacing(2),
     },
@@ -22,7 +22,7 @@ export const ProfileContainer = styled("div")(({ theme }) => ({
 
 export const ProfileForm = styled("form")(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
     overflow: "hidden",
     animation: "fadeIn 0.5s ease",
@@ -61,7 +61,7 @@ export const PreferencesContainer = styled("div")(({ theme }) => ({
         justifyContent: "space-between",
         padding: theme.spacing(2),
         backgroundColor: theme.palette.background.paper,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         transition: theme.transitions.create(["background-color", "box-shadow"]),
 
         "&:hover": {

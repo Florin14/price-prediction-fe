@@ -88,7 +88,7 @@ const StatsContainer = styled(Box)(({ theme }) => ({
 const StatCard = styled(Box)(({ theme }) => ({
     background: theme.palette.success.light,
     border: `1px solid ${theme.palette.success.main}`,
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     padding: theme.spacing(3),
     textAlign: "center",
     animation: `${pulseAnimation} 2s ease-in-out infinite`,
@@ -107,14 +107,14 @@ const ProgressBar = styled(Box)(({ theme }) => ({
     width: "100%",
     height: 10,
     background: "rgba(255, 255, 255, 0.1)",
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: Number(theme.shape.borderRadius),
     overflow: "hidden",
     margin: theme.spacing(4, 0),
     "& > div": {
         height: "100%",
         background: `linear-gradient(90deg, ${theme.palette.success.main}, ${theme.palette.success.light})`,
         animation: `${progressAnimation} 3s ease-in-out infinite`,
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
     },
 }));
 

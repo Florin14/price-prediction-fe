@@ -55,17 +55,17 @@ export const PredictionHistoryItem = styled(Paper)(({ theme }) => ({
     "& .property-details": {
         fontSize: 14,
         "& .property-base-address": {
-          color: theme.palette.primary.main,
-          marginBottom: 5,
-          fontSize: 16, 
-          fontStyle: "italic"
+            color: theme.palette.primary.main,
+            marginBottom: 5,
+            fontSize: 16,
+            fontStyle: "italic",
         },
     },
 
     "& .prediction-confidence": {
         backgroundColor: "rgba(67, 97, 238, 0.1)",
         padding: `${theme.spacing(1)} ${theme.spacing(2)}`, // xs, sm
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         display: "inline-block",
     },
     "& .prediction-range": {
@@ -89,7 +89,7 @@ export const EmptyState = styled(Paper)(({ theme }) => ({
     justifyContent: "center",
     padding: theme.spacing(8), // xxl
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius * 2, // lg
+    borderRadius: Number(theme.shape.borderRadius) * 2, // lg
     boxShadow: theme.shadows[4], // md
     textAlign: "center",
     "& .empty-icon": {

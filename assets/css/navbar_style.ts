@@ -127,7 +127,7 @@ const navbarStyle = (theme: Theme): NavbarStyle => ({
         width: "100%",
         justifyContent: "flex-start",
         padding: theme.spacing(1.5),
-        borderRadius: theme.shape.borderRadius,
+        borderRadius: Number(theme.shape.borderRadius),
         "&:hover": {
             backgroundColor: theme.palette.action.hover,
         },
