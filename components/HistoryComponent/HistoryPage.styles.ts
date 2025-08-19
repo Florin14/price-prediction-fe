@@ -30,7 +30,7 @@ export const PredictionHistoryList = styled(Box)(({ theme }) => ({
 // Single prediction history item
 export const PredictionHistoryItem = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.background.default,
-    borderRadius: theme.shape.borderRadius * 2, // lg
+    borderRadius: Number(theme.shape.borderRadius) * 2, // lg
     boxShadow: theme.shadows[4], // md
     padding: theme.spacing(4), // lg
     display: "grid",
