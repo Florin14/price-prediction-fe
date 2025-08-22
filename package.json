@@ -3,11 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:development": "env-cmd -f environments/.env.development next build",
     "build": "next build",
     "start": "next start",
     "dev": "tsc --noEmit && next dev",
-    "dev:staging": "env-cmd -f environments/.env.staging next dev",
     "dev-https": "node server.js",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
