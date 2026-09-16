@@ -1,6 +1,6 @@
 import { RouteModel } from "../models/generic/routes";
 import HomeIcon from "../components/icons/HomeIcon";
-import { FiBarChart2, FiList } from "react-icons/fi";
+import { FiBarChart2, FiList, FiTrendingUp } from "react-icons/fi";
 
 const customerRoutes: RouteModel[] = [
     {
@@ -14,6 +14,13 @@ const customerRoutes: RouteModel[] = [
         path: "/customer/prediction",
         name: "Prediction",
         icon: FiBarChart2,
+        isOnMenu: true,
+        label: null,
+    },
+    {
+        path: "/customer/analytics",
+        name: "Analytics",
+        icon: FiTrendingUp,
         isOnMenu: true,
         label: null,
     },

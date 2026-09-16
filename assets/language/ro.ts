@@ -88,6 +88,10 @@ export interface LanguageDataTypes {
     };
     PredictionLoading?: {
         title: string;
+        subtitle?: string;
+        AnalyzingData?: string;
+        LocatingComparables?: string;
+        RunningModels?: string;
         messages: {
             analyzing: string;
             processing: string;
@@ -147,6 +151,48 @@ const ro: LanguageDataTypes = {
     BaseAddress: "Adresa de baza",
     PricePerMeter: "Pret/m²",
     TotalPrice: "Pret total",
+
+    // Analytics Page
+    MarketAnalytics: "Analiza Pietei",
+    TotalListings: "Total Anunturi",
+    CitiesCovered: "Orase Acoperite",
+    AvgPricePerSqm: "Pret Mediu / mp",
+    SaleVsRent: "Vanzare / Inchiriere",
+    PricesByCity: "Preturi pe Oras",
+    PriceDistribution: "Distributie Preturi",
+    Listings: "anunturi",
+    AvgArea: "Sup. medie",
+    AvgPrice: "Pret mediu",
+    AIModelPerformance: "Performanta Modele AI",
+    LastTrained: "Ultima antrenare",
+    BestModel: "Cel mai bun",
+    NoDataAvailable: "Nu exista date disponibile",
+    PredictionSubtitle: "Obtine o estimare AI pentru orice proprietate din Romania",
+    RequiredField: "indica camp obligatoriu",
+    AddressInfo: "Informatii Adresa",
+    PropertyInfo: "Clasificare Proprietate",
+    AreaDimensions: "Suprafata si Dimensiuni",
+    AdditionalDetails: "Detalii Suplimentare",
+    SelectPropertyType: "Selecteaza tipul proprietatii...",
+    PriceTrend: "Trend Preturi",
+    CompareZones: "Comparatie Zone",
+    ROIEstimation: "ROI Investitie",
+    ValuationIndex: "Indice Evaluare",
+    Undervalued: "Subevaluat",
+    Fair: "Corect",
+    Overvalued: "Supraevaluat",
+    AnnualYield: "Randament Anual",
+    PaybackYears: "Perioada de Recuperare",
+    AvgSalePrice: "Pret Mediu Vanzare",
+    AvgMonthlyRent: "Chirie Medie Lunara",
+    PricePerSqm: "Pret pe mp",
+    HeatmapTitle: "Heatmap Preturi",
+    SelectCitiesToCompare: "Selecteaza orasele pentru comparatie",
+    ConfidenceRange: "Interval de Incredere",
+    Warnings: "Avertismente",
+    Years: "ani",
+    ForSale: "De Vanzare",
+    PriceTrendOverTime: "Evolutie Preturi in Timp",
 
     Cancel: "Anuleaza",
     Delete: "Sterge",
@@ -686,7 +732,11 @@ const ro: LanguageDataTypes = {
 
     // Prediction Loading
     PredictionLoading: {
-        title: "Predicția Prețului",
+        title: "Calculăm estimarea ta",
+        subtitle: "Comparăm 117K+ anunțuri și rulăm ensemble-ul de modele.",
+        AnalyzingData: "Analizez anunțurile și tendințele pieței",
+        LocatingComparables: "Localizez proprietățile comparabile din apropiere",
+        RunningModels: "Rulez ensemble-ul cu stacking",
         messages: {
             analyzing: "Analizez tendințele pieței...",
             processing: "Procesez caracteristicile proprietății...",
@@ -800,6 +850,111 @@ const ro: LanguageDataTypes = {
             },
         },
     },
+
+    // ============================================================
+    // Redesign 2026 — copy UI (warm-editorial)
+    // ============================================================
+
+    // Autentificare
+    WelcomeBack: "Bun revenit",
+    SignInTitle: "Autentifică-te în cont",
+    SignInSubtitle: "Accesează istoricul predicțiilor și salvează estimări noi în contul tău.",
+    GetStarted: "Începe acum",
+    RegisterTitle: "Creează-ți contul",
+    RegisterSubtitle: "Salvează estimări, construiește un istoric și deblochează analize adaptate căutărilor tale.",
+    Recovery: "Recuperare parolă",
+    ForgotPasswordTitle: "Ai uitat parola?",
+    ForgotPasswordSubtitle: "Introdu adresa de email asociată contului tău și îți vom trimite un link pentru resetare.",
+    ResetPasswordSubtitle: "Alege o parolă nouă și sigură. Urmează lista de cerințe de mai jos pentru a-ți proteja contul.",
+    WaitingValidationHint: "Dacă nu vezi email-ul în câteva minute, verifică folderul de spam sau retrimite linkul de verificare din pagina de autentificare.",
+    AlmostThere: "Aproape gata",
+    AlreadyHaveAccount: "Ai deja un cont?",
+    FieldRequired: "Obligatoriu",
+    PasswordRulesMissing: "Parola nu respectă cerințele",
+    Unnamed: "Fără nume",
+
+    // Cont / profil
+    AccountKicker: "Cont",
+    ProfileSubtitle: "Gestionează informațiile personale și preferințele contului.",
+    ChangePasswordSubtitle: "Actualizează-ți parola periodic. Folosește o combinație unică, diferită de cea de pe alte platforme.",
+    ChangePasswordHint: "Minim 8 caractere · majusculă + minusculă + cifră + simbol",
+    PasswordChanged: "Parolă actualizată cu succes.",
+    SecuritySection: "Securitate",
+    SecurityHint: "Schimbă-ți parola periodic pentru a-ți menține contul în siguranță.",
+    Loading: "Se încarcă...",
+
+    // Home / landing
+    HeroKicker: "Inteligență imobiliară — România",
+    StatListings: "Anunțuri",
+    StatListingsHint: "Date reale de vânzare și chirie",
+    StatCities: "Orașe",
+    StatCitiesHint: "Din toată România",
+    StatModels: "Modele",
+    StatModelsHint: "Ensemble cu stacking",
+    HeroCardLocation: "Cluj-Napoca · Gheorgheni",
+    HeroCardRooms: "camere",
+    TrustedSources: "Construit pe date publice din toată România",
+    FeaturesKicker: "De ce funcționează",
+    HowItWorksKicker: "Proces",
+    HowItWorksSubtitle: "Trei pași de la adresă la o estimare transparentă, bazată pe date.",
+    MethodKicker: "Metodologie",
+    MethodTitle: "Bazat pe date, nu pe presupuneri",
+    MethodData: "117K+ anunțuri reale",
+    MethodDataText: "Colectate din 10+ surse de încredere, deduplicate și validate. Actualizate continuu.",
+    MethodModels: "Ensemble cu stacking",
+    MethodModelsText: "XGBoost, LightGBM și RandomForest combinate într-un meta-model, evaluate prin MAE, RMSE și R².",
+    MethodGeo: "Feature-uri geospațiale",
+    MethodGeoText: "Distanțe la POI-uri prin OSMnx, comparabile din vecinătate și clasificare teren.",
+    TestimonialsKicker: "Voci",
+
+    // Dashboard / customer
+    DashboardKicker: "Panoul tău",
+    DashboardSubtitle: "Alege o direcție mai jos — sau pornește o estimare nouă acum.",
+    DashboardPredictionHint: "Estimează prețul unei proprietăți în sub un minut.",
+    DashboardHistoryHint: "Revizuiește estimările salvate de-a lungul timpului.",
+    DashboardAnalyticsHint: "Explorează trenduri de piață și insights pe orașe.",
+    Start: "Pornește",
+    Explore: "Explorează",
+    HistoryGuestHint: "Autentifică-te pentru a vedea estimările salvate, a le compara în timp și a urmări mișcările pieței.",
+    HistoryKicker: "Arhiva ta",
+
+    // Flow predicție
+    PredictionKicker: "Evaluare",
+    StepLabel: "Pas",
+    AddressHint: "Folosit pentru a ancora predicția pe comparabile stradale reale.",
+    ClassificationHint: "Tipul determină ce comparabile sunt luate în calcul.",
+    OptionalField: "Opțional",
+    AreaHint: "Cel mai important factor pentru estimarea prețului.",
+    AdditionalHint: "Opțional — îmbunătățește acuratețea atunci când e disponibil.",
+    MapView: "Unde sunt",
+    MapViewHint: "Locațiile comparabilelor potrivite din apropierea proprietății țintă.",
+    SimilarHint: "Top 5 anunțuri clasate după un scor de similaritate multi-factor.",
+    ResultsFootnote: "Estimare bazată pe un ensemble cu stacking: XGBoost, LightGBM și RandomForest.",
+    MarketAverage: "Medie piață (€/m²)",
+    ModelAccuracy: "Acuratețe model",
+
+    // Footer & navigare
+    HowItWorks: "Cum funcționează",
+    About: "Despre",
+    Contact: "Contact",
+    Terms: "Termeni",
+    Privacy: "Confidențialitate",
+    FooterTagline: "Estimări AI de preț imobiliar pentru toată România. Construit din 117K+ anunțuri reale.",
+    Product: "Produs",
+    Company: "Companie",
+    Analytics: "Analize",
+    AllRightsReserved: "Toate drepturile rezervate.",
+    MadeIn: "Creat în România",
+    DataPoints: "117.000+ puncte de date",
+
+    // AuthShell
+    AuthAsideQuote: "Claritatea prețurilor e avantajul tăcut. Fiecare estimare ancorată în datele unei piețe întregi.",
+    AuthAsideAttrib: "Metoda Domus",
+
+    // Diverse
+    Or: "sau",
+    NotFoundTitle: "Această pagină s-a rătăcit",
+    GoHome: "Acasă",
 };
 
 export * from "./types";

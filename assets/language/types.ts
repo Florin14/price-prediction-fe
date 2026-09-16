@@ -99,6 +99,10 @@ export interface LanguageDataTypes {
     };
     PredictionLoading?: {
         title: string;
+        subtitle?: string;
+        AnalyzingData?: string;
+        LocatingComparables?: string;
+        RunningModels?: string;
         messages: {
             analyzing: string;
             processing: string;

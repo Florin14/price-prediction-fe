@@ -6,10 +6,35 @@ import { useRouter } from "next/router";
 import { CookiesProvider, useCookies } from "react-cookie";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
+import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
 
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
+    display: "swap",
+    weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const fraunces = Fraunces({
+    subsets: ["latin"],
+    variable: "--font-fraunces",
+    display: "swap",
+    style: ["normal", "italic"],
+    axes: ["opsz"],
+});
+
+const jetbrains = JetBrains_Mono({
+    subsets: ["latin"],
+    variable: "--font-jetbrains",
+    display: "swap",
+    weight: ["400", "500", "600"],
+});
+
+const fontVariables = `${inter.variable} ${fraunces.variable} ${jetbrains.variable}`;
 
 import store, { RootState } from "../store";
 import { websiteActions } from "../store/slices/website/website-slice";
@@ -87,6 +112,19 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
         dispatch(websiteActions.changeTheme());
     };
 
+    useEffect(() => {
+        if (typeof document !== "undefined") {
+            const root = document.documentElement;
+            if (theme === "dark") {
+                root.classList.add("dark");
+                root.style.colorScheme = "dark";
+            } else {
+                root.classList.remove("dark");
+                root.style.colorScheme = "light";
+            }
+        }
+    }, [theme]);
+
     return languageData ? (
         <CookiesProvider>
             <ErrorHandler />
@@ -94,23 +132,25 @@ const AppInner: React.FC<{ Component: React.ComponentType; pageProps: any; urlOb
                 <CacheProvider value={clientSideEmotionCache}>
                     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
                         <CssBaseline />
-                        {(route.pathname.includes("customer") || route.pathname.includes("guest") || route.pathname.includes("home")) && loaded ? (
-                            <DashboardLayout>
-                                <SnackbarProvider>
-                                    <Component {...pageProps} onToggleTheme={handleToggleTheme} isDarkMode={theme === "dark"} />
-                                </SnackbarProvider>
-                            </DashboardLayout>
-                        ) : loaded ? (
-                            <Layout>
-                                <Head>
-                                    <title>Predict Real Estate Prices</title>
-                                    <meta name="description" content="Predict Real Estate Prices" />
-                                </Head>
-                                <SnackbarProvider>
-                                    <Component {...pageProps} onToggleTheme={handleToggleTheme} isDarkMode={theme === "dark"} />
-                                </SnackbarProvider>
-                            </Layout>
-                        ) : null}
+                        <div className={`${fontVariables} font-sans h-full`}>
+                            {(route.pathname.includes("customer") || route.pathname.includes("guest") || route.pathname.includes("home")) && loaded ? (
+                                <DashboardLayout>
+                                    <SnackbarProvider>
+                                        <Component {...pageProps} onToggleTheme={handleToggleTheme} isDarkMode={theme === "dark"} />
+                                    </SnackbarProvider>
+                                </DashboardLayout>
+                            ) : loaded ? (
+                                <Layout>
+                                    <Head>
+                                        <title>Predict Real Estate Prices</title>
+                                        <meta name="description" content="Predict Real Estate Prices" />
+                                    </Head>
+                                    <SnackbarProvider>
+                                        <Component {...pageProps} onToggleTheme={handleToggleTheme} isDarkMode={theme === "dark"} />
+                                    </SnackbarProvider>
+                                </Layout>
+                            ) : null}
+                        </div>
                     </ThemeProvider>
                 </CacheProvider>
             </GoogleOAuthProvider>

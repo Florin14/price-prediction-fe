@@ -1,102 +1,68 @@
 import React from "react";
 import Head from "next/head";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
+import { Wrench, ArrowLeft } from "lucide-react";
 
-import { Theme } from "@mui/material/styles";
-
-import useClasses from "../utils/useClasses";
-
-import { RootState } from "../store";
-
-interface PlatformInWorkStyle {
-    outerWrapper: any;
-    wrapper: any;
-    image: any;
-    title: any;
-    subtitle: any;
-}
-
-const useStyles = (theme: Theme): PlatformInWorkStyle => ({
-    outerWrapper: {
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "400px",
-    },
-    wrapper: {
-        height: "auto",
-        width: "451px",
-        minHeight: "400px",
-        minWidth: "451px",
-    },
-    image: {
-        width: "100%",
-        height: "100%",
-    },
-    title: {
-        fontFamily: "Inter",
-        fontSize: "18px",
-        lineHeight: "13.49px",
-        fontWeight: 800,
-        textAlign: "center",
-        marginTop: "50px",
-        color: theme.palette.primary.dark,
-    },
-    subtitle: {
-        fontFamily: "Inter",
-        fontSize: "18px",
-        lineHeight: "13.49px",
-        fontWeight: 600,
-        textAlign: "center",
-        marginTop: "10px",
-        color: theme.palette.primary.dark,
-    },
-    [theme.breakpoints.down(480)]: {
-        outerWrapper: {
-            minHeight: "300px",
-        },
-        wrapper: {
-            width: "339px",
-            minWidth: "339px",
-            minHeight: "300px",
-        },
-        title: {
-            fontSize: "15px",
-            marginTop: "30px",
-        },
-        subtitle: {
-            fontSize: "15px",
-        },
-    },
-});
+import { RootState } from "@/store";
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
+import { PLATFORM_NAME } from "@/assets/language/constants";
 
 const PlatformInWork: React.FC = () => {
-    const classes = useClasses(useStyles, { name: "platformInWorkStyles" }) as PlatformInWorkStyle;
-
-    const languageData = useSelector((state: RootState) => state.website.languageData);
+    const languageData = useSelector((s: RootState) => s.website.languageData);
+    const router = useRouter();
 
     return (
-        <React.Fragment>
+        <>
             <Head>
-                <title>Predict Real Estate Prices | {languageData?.WebsiteInWork}</title>
+                <title>
+                    {PLATFORM_NAME} | {languageData?.WebsiteInWork || "Under construction"}
+                </title>
             </Head>
-            <div className={classes.outerWrapper}>
-                <div className={classes.wrapper}>
-                    <img className={classes.image} alt="platforma in lucru" src="/images/platform_in_work.png" />
-                    <h2 className={classes.title}>{languageData?.WebsiteInWorkTitle}</h2>
-                    <h4 className={classes.subtitle}>{languageData?.WebsiteInWorkMessage}</h4>
-                </div>
-            </div>
-        </React.Fragment>
+            <section className="relative flex min-h-screen items-center overflow-hidden bg-background">
+                <div
+                    className="absolute inset-0 -z-10"
+                    style={{
+                        background:
+                            "radial-gradient(700px 400px at 20% 0%, hsl(var(--primary) / 0.1), transparent 60%), radial-gradient(600px 400px at 100% 100%, hsl(var(--terracotta) / 0.08), transparent 60%)",
+                    }}
+                />
+                <Container size="md" className="py-16 text-center">
+                    <div className="mx-auto w-full max-w-sm">
+                        <Image
+                            src="/images/platform_in_work.png"
+                            alt={languageData?.WebsiteInWorkTitle || "Platform under construction"}
+                            width={451}
+                            height={400}
+                            className="h-auto w-full"
+                            priority
+                        />
+                    </div>
+                    <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                        <Wrench className="h-3.5 w-3.5 text-terracotta" />
+                        {languageData?.WebsiteInWork || "Under construction"}
+                    </div>
+                    <h1 className="mt-5 font-display text-3xl font-medium tracking-tight md:text-4xl">
+                        {languageData?.WebsiteInWorkTitle || "We'll be back soon"}
+                    </h1>
+                    <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+                        {languageData?.WebsiteInWorkMessage ||
+                            "This part of the platform is getting an upgrade. Thanks for your patience."}
+                    </p>
+                    <div className="mt-7">
+                        <Button size="lg" variant="outline" onClick={() => router.push("/home")}>
+                            <ArrowLeft />
+                            {languageData?.GoHome || "Go home"}
+                        </Button>
+                    </div>
+                </Container>
+            </section>
+        </>
     );
 };
 
-export const getServerSideProps = async () => {
-    return {
-        props: {},
-    };
-};
+export const getServerSideProps = async () => ({ props: {} });
 
 export default PlatformInWork;

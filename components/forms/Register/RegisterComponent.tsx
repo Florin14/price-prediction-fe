@@ -1,152 +1,212 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { Form, Formik } from "formik";
+import { Formik, Form } from "formik";
+import { User, Phone, Mail, Lock, AlertCircle, ArrowRight } from "lucide-react";
 
-import { Typography } from "@mui/material";
+import { registerNaturalPerson } from "@/store/slices/register/thunks";
+import { AppDispatch, RootState } from "@/store";
+import { RegisterInterface } from "@/interfaces/RegisterInterfaces";
 
-import { registerNaturalPerson } from "../../../store/slices/register/thunks";
-import { AppDispatch, RootState } from "../../../store";
-
-import useClasses from "../../../utils/useClasses";
-import FormTextInput from "../../generic-components/FormFields/FormTextInput";
-import StyledButton from "../../generic-components/StyledButton";
-import { RegisterInterface } from "../../../interfaces/RegisterInterfaces";
-
-import { useStyles, StyleClasses } from "./RegisterComponentStyles";
-
-export interface LegalPersonFormData {
-    companyName: string | null;
-    email: string | null;
-    phoneNumber: string | null;
-    representativeName: string | null;
-    taxCertificate: File | null;
-}
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Field } from "@/components/ui/field";
+import { PasswordRequirements } from "@/components/layout/PasswordRequirements";
+import { allValid, validatePassword } from "@/lib/password";
 
 const RegisterComponent: React.FC = () => {
-    const languageData = useSelector((state: RootState) => state.website.languageData);
-
-    const classes = useClasses(useStyles, { name: "RegisterComponentStyles" }) as StyleClasses;
+    const languageData = useSelector((s: RootState) => s.website.languageData);
     const dispatch: AppDispatch = useDispatch();
-    const [cookies, setCookie] = useCookies(["id"]);
+    const [cookies] = useCookies(["id"]);
+    const router = useRouter();
 
     const [globalError, setGlobalError] = useState<string>("");
-    const router = useRouter();
+    const [submitting, setSubmitting] = useState(false);
+
     const isAuthenticated = !!cookies.id;
 
-    const validationHandler = (values: RegisterInterface) => {
-        const errors: Partial<RegisterInterface> = {};
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/customer/home");
+        }
+    }, [isAuthenticated]);
 
+    const validate = (values: RegisterInterface) => {
+        const errors: Partial<Record<keyof RegisterInterface, string>> = {};
+        if (!values.name?.trim()) errors.name = languageData?.FieldRequired || "Required";
+        if (!values.email?.trim()) errors.email = languageData?.FieldRequired || "Required";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
+            errors.email = languageData?.InvalidEmail || "Invalid email";
+        if (!values.phoneNumber?.trim()) errors.phoneNumber = languageData?.FieldRequired || "Required";
+        if (!values.password) errors.password = languageData?.FieldRequired || "Required";
+        else if (!allValid(validatePassword(values.password)))
+            errors.password = languageData?.PasswordRulesMissing || "Password doesn't meet requirements";
+        if (values.password !== values.confirmPassword)
+            errors.confirmPassword = languageData?.PasswordsDontMatch || "Passwords don't match";
         return errors;
     };
 
-    if (isAuthenticated) {
-        router.push("/customer/home").then((r) => {});
-    }
-
     return (
-        <div className={classes.container} data-testid="register-form-container">
-            <div className={classes.wrapper}>
-                <div className={classes.leftSection} data-testid="register-form-left-section">
-                    <div className={classes.titlesSection} data-testid="register-form-titles-section">
-                        <Typography className={classes.title} data-testid="register-form-title">
-                            {languageData?.PredictRealEstatePrices || "Welcome!"}
-                        </Typography>
-                    </div>
-                    <div className={classes.formCard} data-testid="register-form-card">
-                        <Typography className={classes.loginMessage} data-testid="register-form-message">
-                            {languageData?.CreateAccount || "Creare cont"}
-                        </Typography>
+        <Formik<RegisterInterface>
+            initialValues={{
+                name: "",
+                email: "",
+                phoneNumber: "",
+                password: "",
+                confirmPassword: "",
+            }}
+            enableReinitialize
+            validate={validate}
+            onSubmit={(values) => {
+                setSubmitting(true);
+                setGlobalError("");
+                dispatch(registerNaturalPerson(values))
+                    .then((response: any) => {
+                        const payload = response.payload;
+                        if (!payload?.error) {
+                            router.push("/waiting-validation");
+                        } else if (payload?.fields && payload.fields.length > 0) {
+                            setGlobalError(payload.fields[0]);
+                        } else {
+                            setGlobalError(languageData?.SomethingWentWrong || "Something went wrong");
+                        }
+                    })
+                    .finally(() => setSubmitting(false));
+            }}
+        >
+            {({ values, errors, touched, handleChange, handleBlur }) => {
+                const rules = validatePassword(values.password);
+                return (
+                    <Form className="flex flex-col gap-5">
+                        <div className="grid gap-5 md:grid-cols-2">
+                            <Field
+                                label={languageData?.forms?.register?.naturalPerson?.name || "Full name"}
+                                htmlFor="name"
+                                required
+                                error={touched.name && errors.name ? errors.name : undefined}
+                            >
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    autoComplete="name"
+                                    leftSlot={<User />}
+                                    value={values.name}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    invalid={Boolean(touched.name && errors.name)}
+                                />
+                            </Field>
 
-                        <Formik<RegisterInterface>
-                            initialValues={{
-                                name: "",
-                                email: "",
-                                phoneNumber: "",
-                                password: "",
-                                confirmPassword: "",
-                            }}
-                            enableReinitialize
-                            validate={validationHandler}
-                            onSubmit={(values) => {
-                                dispatch(registerNaturalPerson(values)).then((response) => {
-                                    const payload = response.payload;
+                            <Field
+                                label={languageData?.forms?.register?.naturalPerson?.phoneNumber || "Phone number"}
+                                htmlFor="phoneNumber"
+                                required
+                                error={touched.phoneNumber && errors.phoneNumber ? errors.phoneNumber : undefined}
+                            >
+                                <Input
+                                    id="phoneNumber"
+                                    name="phoneNumber"
+                                    type="tel"
+                                    autoComplete="tel"
+                                    leftSlot={<Phone />}
+                                    value={values.phoneNumber}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    invalid={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                                />
+                            </Field>
+                        </div>
 
-                                    if (!payload.error) {
-                                        setGlobalError("");
-                                        router.push("/waiting-validation"); // Redirect to waiting validation page on successful registration
-                                    } else if (payload?.fields && payload?.fields?.length > 0) {
-                                        setGlobalError(payload?.fields[0]); // Set global error message if there's an error
-                                    }
-                                });
-                            }}
+                        <Field
+                            label={languageData?.forms?.register?.naturalPerson?.email || "Email"}
+                            htmlFor="email"
+                            required
+                            error={touched.email && errors.email ? errors.email : undefined}
                         >
-                            {({ values, resetForm: formikResetForm }) => (
-                                <Form className={classes.formContainer} data-testid="natural-person-form">
-                                    <FormTextInput
-                                        placeholder={languageData?.forms.register.placeholder}
-                                        name="name"
-                                        required
-                                        label={languageData?.forms.register.naturalPerson.name ?? "Full Name"}
-                                        borderError={globalError === "name"}
-                                    />
-                                    <FormTextInput
-                                        placeholder={languageData?.forms.register.placeholder}
-                                        name="phoneNumber"
-                                        required
-                                        label={languageData?.forms.register.naturalPerson.phoneNumber ?? "Phone Number"}
-                                        borderError={globalError === "phone_number"}
-                                    />
-                                    <FormTextInput
-                                        type="email"
-                                        placeholder={languageData?.forms.register.placeholder}
-                                        name="email"
-                                        required
-                                        label={languageData?.forms.register.naturalPerson.email ?? "Email"}
-                                        borderError={globalError === "email"}
-                                    />
-                                    <div style={{ display: "flex", gap: 5 }}>
-                                        <FormTextInput
-                                            type="password"
-                                            placeholder={languageData?.forms.register.placeholder}
-                                            name="password"
-                                            required
-                                            label={languageData?.forms.register.naturalPerson.password ?? "Parola"}
-                                        />
-                                        {values?.password && values?.password.length > 0 && (
-                                            <FormTextInput
-                                                type="password"
-                                                placeholder={languageData?.forms.register.placeholder}
-                                                name="confirmPassword"
-                                                required
-                                                label={languageData?.forms.register.naturalPerson.confirmPassword ?? "Confirma parola"}
-                                            />
-                                        )}
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
-                                        <div className={classes.noAccount}>
-                                            <Link href="/home">{languageData?.ContinueWithoutAccount}</Link>
-                                        </div>
-                                        <div className={classes.forgotPassword}>
-                                            <Link href="/login">{languageData?.BackToAuthentication}</Link>
-                                        </div>
-                                    </div>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                leftSlot={<Mail />}
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                invalid={Boolean(touched.email && errors.email)}
+                            />
+                        </Field>
 
-                                    <StyledButton id="create-account-button" color="primary" variant="contained" type="submit" className={classes.button}>
-                                        {languageData?.CreateAccount}
-                                    </StyledButton>
-                                </Form>
-                            )}
-                        </Formik>
-                    </div>
-                </div>
-                <div className={classes.rightSection} data-testid="register-form-right-section">
-                    <div className={classes.rightImage} data-testid="register-form-right-image-section"></div>
-                </div>
-            </div>
-        </div>
+                        <Field
+                            label={languageData?.forms?.register?.naturalPerson?.password || "Password"}
+                            htmlFor="password"
+                            required
+                        >
+                            <Input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autoComplete="new-password"
+                                leftSlot={<Lock />}
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
+                        </Field>
+
+                        {values.password && <PasswordRequirements rules={rules} />}
+
+                        {values.password && (
+                            <Field
+                                label={languageData?.forms?.register?.naturalPerson?.confirmPassword || "Confirm password"}
+                                htmlFor="confirmPassword"
+                                required
+                                error={touched.confirmPassword && errors.confirmPassword ? errors.confirmPassword : undefined}
+                            >
+                                <Input
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type="password"
+                                    autoComplete="new-password"
+                                    leftSlot={<Lock />}
+                                    value={values.confirmPassword}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    invalid={Boolean(touched.confirmPassword && errors.confirmPassword)}
+                                />
+                            </Field>
+                        )}
+
+                        {globalError && (
+                            <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-xs text-destructive">
+                                <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                <span>{globalError}</span>
+                            </div>
+                        )}
+
+                        <Button type="submit" size="lg" className="mt-2 w-full" disabled={submitting}>
+                            {submitting
+                                ? languageData?.Loading || "Creating account..."
+                                : languageData?.CreateAccount || "Create account"}
+                            <ArrowRight />
+                        </Button>
+
+                        <div className="flex flex-col items-center gap-2 text-center text-xs text-muted-foreground">
+                            <span>
+                                {languageData?.AlreadyHaveAccount || "Already have an account?"}{" "}
+                                <Link href="/login" className="font-medium text-primary transition-colors hover:underline">
+                                    {languageData?.Login || "Sign in"}
+                                </Link>
+                            </span>
+                            <Link href="/home" className="transition-colors hover:text-foreground">
+                                {languageData?.ContinueWithoutAccount || "Continue without account"}
+                            </Link>
+                        </div>
+                    </Form>
+                );
+            }}
+        </Formik>
     );
 };
 

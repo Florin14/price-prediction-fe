@@ -7,26 +7,31 @@ interface StyledButtonProps {
 
 const StyledButton = styled(Button)<StyledButtonProps>(({ theme }) => ({
     fontStyle: "normal",
-    height: 35,
+    height: 44,
     boxShadow: "none",
     textTransform: "none",
-    fontSize: 12,
-    fontWeight: 500,
-    padding: "10.5px auto",
-    lineHeight: "14px",
-    width: "100%",
+    fontSize: 14,
+    fontWeight: 600,
+    padding: "10px 24px",
+    lineHeight: "20px",
+    width: "auto",
+    borderRadius: 10,
+    letterSpacing: "0.01em",
+    transition: "all 0.2s ease",
     "&:hover": {
         boxShadow: "none",
+        transform: "translateY(-1px)",
     },
     "&:active": {
         boxShadow: "none",
+        transform: "translateY(0)",
     },
     "&:focus": {
         boxShadow: "none",
     },
     "&:disabled": {
-        background: "#E3E3E4",
-        color: "#BEC2C7",
+        background: theme.palette.mode === "dark" ? "rgba(255,255,255,0.06)" : "#F1F5F9",
+        color: theme.palette.text.disabled,
     },
 }));
 

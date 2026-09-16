@@ -24,20 +24,22 @@ interface ClassNames {
 
 const useStyles = (theme: Theme) => ({
     error: {
-        fontSize: 10,
-        lineHeight: "12px",
+        fontSize: 11,
+        lineHeight: "14px",
         fontWeight: 500,
         fontStyle: "normal",
-        color: "red",
+        color: theme.palette.error.main,
+        marginTop: 4,
     },
     label: {
         fontFamily: "Inter",
         fontStyle: "normal",
-        fontWeight: "600",
-        fontSize: "12px",
-        lineHeight: "14px",
-        color: "#667085",
-        marginBottom: 3,
+        fontWeight: "500",
+        fontSize: "13px",
+        lineHeight: "16px",
+        color: theme.palette.text.secondary,
+        marginBottom: 6,
+        letterSpacing: "0.01em",
     },
     rightAlignPadding: {
         paddingRight: "15px !important",
@@ -47,32 +49,36 @@ const useStyles = (theme: Theme) => ({
         paddingTop: "5px !important",
     },
     input: {
-        // minHeight: "45px",
-        backgroundColor: "rgba(255, 255, 255, 0.7)",
-        borderRadius: "8px",
-        // border: "1px solid rgba(0, 0, 0, 0.1)",
-        color: "#111827 !important",
+        backgroundColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.04)" : "#fff",
+        borderRadius: "10px",
+        color: `${theme.palette.text.primary} !important`,
+        transition: "all 0.2s ease",
 
         "& .MuiInputBase-input": {
-            textAlign: "center",
-            height: "45px !important",
+            textAlign: "left",
+            height: "48px !important",
             boxSizing: "border-box",
             padding: "8px 14px",
             fontSize: "14px",
             transition: "all 0.2s ease-in-out",
+            "&::placeholder": {
+                color: theme.palette.text.disabled,
+                opacity: 1,
+            },
         },
         "& .MuiOutlinedInput-root": {
             "& fieldset": {
-                border: "1px solid rgba(0, 0, 0, 0.1)",
-                borderRadius: "8px",
+                border: `1px solid ${theme.palette.mode === "dark" ? "rgba(255,255,255,0.12)" : "#E2E8F0"}`,
+                borderRadius: "10px",
                 top: 0,
-                color: "#111827 !important",
+                transition: "border-color 0.2s ease",
             },
             "&:hover fieldset": {
                 borderColor: theme.palette.primary.main,
             },
             "&.Mui-focused fieldset": {
                 borderColor: theme.palette.primary.main,
+                borderWidth: 2,
             },
         },
         "&[type=number]": {
@@ -224,7 +230,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
                 </InputLabel>
             )}
             {!viewMode ? (
-                <FormControl required={required} id="formControl" style={{ width, minWidth: 0, border: "1px solid rgba(0, 0, 0, 0.1)", borderRadius: 8 }} className={className}>
+                <FormControl required={required} id="formControl" style={{ width, minWidth: 0 }} className={className}>
                     {tooltip ? (
                         <StyledTooltip title={tooltip}>
                             <TextField
@@ -295,7 +301,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
                                             borderColor: borderError ? "red" : undefined,
                                         },
                                         "&.Mui-focused fieldset": {
-                                            borderColor: borderError ? "red" : "#00308E",
+                                            borderColor: borderError ? "red" : undefined,
                                         },
                                     },
                                 }}
@@ -374,7 +380,7 @@ const StyledInput: React.FC<StyledInputProps> = ({
                                         borderColor: borderError ? "red" : undefined,
                                     },
                                     "&.Mui-focused fieldset": {
-                                        borderColor: borderError ? "red" : "#00308E",
+                                        borderColor: borderError ? "red" : undefined,
                                     },
                                 },
                             }}

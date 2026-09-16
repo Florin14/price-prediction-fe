@@ -19,9 +19,22 @@ export const predictPropertyPrice = createAsyncThunk<PredictionResult, Property,
             dispatch(setLoading(false));
             return result;
         } catch (e: any) {
-            dispatch(setError(e.message));
+            const serverDetail = e?.response?.data?.detail || e?.response?.data?.message;
+            let userMessage: string;
+            if (serverDetail && serverDetail.includes("Model not trained")) {
+                userMessage = "The prediction model is currently being prepared. Please try again later.";
+            } else if (e?.response?.status === 503) {
+                userMessage = "The prediction service is temporarily unavailable. Please try again in a few minutes.";
+            } else if (e?.response?.status >= 500) {
+                userMessage = "Something went wrong on our end. Please try again later.";
+            } else if (e?.response?.status === 400) {
+                userMessage = serverDetail || "Please check your input and try again.";
+            } else {
+                userMessage = serverDetail || e.message || "An unexpected error occurred.";
+            }
+            dispatch(setError(userMessage));
             dispatch(setLoading(false));
-            return rejectWithValue({ error: true, message: e.message });
+            return rejectWithValue({ error: true, message: userMessage });
         }
     }
 );

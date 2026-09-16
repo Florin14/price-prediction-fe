@@ -10,6 +10,7 @@ import listingReducer from "./slices/listing/listing-slice";
 import propertyReducer from "./slices/property/property-slice";
 import predictionReducer from "./slices/prediction/prediction-slice";
 import priceHistoryReducer from "./slices/price-history/price-history-slice";
+import analyticsReducer from "./slices/analytics/analytics-slice";
 
 // Configure the store
 export const store = configureStore({
@@ -24,6 +25,7 @@ export const store = configureStore({
         property: propertyReducer,
         prediction: predictionReducer,
         priceHistory: priceHistoryReducer,
+        analytics: analyticsReducer,
     },
 });
 

@@ -1,59 +1,54 @@
 import React from "react";
+import Link from "next/link";
 import { useSelector } from "react-redux";
-import { Theme } from "@mui/material/styles";
+import { Home as HomeIcon, ArrowRight, ArrowLeft } from "lucide-react";
 
-import DashboardLayout from "../containers/DashboardLayout";
-import NotFoundIcon from "../components/icons/NotFoundIcon";
-import useClasses from "../utils/useClasses";
-
-import { RootState } from "../store";
-
-// Interface for the class names
-interface Custom404Style {
-    center: any;
-}
-
-const useStyles = (theme: Theme): Custom404Style => ({
-    center: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        marginTop: "-50px",
-
-        "& h1": {
-            margin: "0",
-            marginTop: "-30px",
-            fontSize: "106px",
-            lineHeight: "130px",
-            fontFamily: "Inter",
-            fontWeight: "700",
-            color: "#0F3656",
-        },
-
-        "& h6": {
-            margin: "0",
-            fontSize: "12px",
-            lineHeight: "15px",
-            fontFamily: "Inter",
-            fontWeight: "700",
-            color: "#0F3656",
-        },
-    },
-});
+import DashboardLayout from "@/containers/DashboardLayout";
+import { RootState } from "@/store";
+import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 
 const Custom404: React.FC = () => {
-    const classes = useClasses(useStyles, { name: "custom404Styles" }) as Custom404Style;
-    const languageData = useSelector((state: RootState) => state.website.languageData);
+    const languageData = useSelector((s: RootState) => s.website.languageData);
 
     return (
         <DashboardLayout>
-            <div className={classes.center}>
-                <NotFoundIcon />
-                <h1>404</h1>
-                <h6>{languageData?.PageNotFound.toLowerCase()}</h6>
-            </div>
+            <section className="relative overflow-hidden">
+                <div
+                    className="absolute inset-0 -z-10 opacity-60"
+                    style={{
+                        background:
+                            "radial-gradient(800px 400px at 50% 0%, hsl(var(--primary) / 0.12), transparent 60%), radial-gradient(600px 400px at 50% 100%, hsl(var(--terracotta) / 0.12), transparent 60%)",
+                    }}
+                />
+                <Container size="md" className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center py-20 text-center">
+                    <div className="font-display text-[140px] font-medium leading-none tracking-tight text-primary md:text-[200px]">
+                        404
+                    </div>
+                    <h1 className="mt-4 font-display text-3xl font-medium tracking-tight md:text-4xl">
+                        {languageData?.NotFoundTitle || "This page drifted off the map"}
+                    </h1>
+                    <p className="mt-3 max-w-md text-muted-foreground">
+                        {languageData?.PageNotFound ||
+                            "We couldn't find the page you were looking for. It may have moved, or the link was mistyped."}
+                    </p>
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                        <Button asChild size="lg" variant="outline">
+                            <Link href="javascript:history.back()">
+                                <ArrowLeft />
+                                {languageData?.Back || "Back"}
+                            </Link>
+                        </Button>
+                        <Button asChild size="lg">
+                            <Link href="/home">
+                                <HomeIcon />
+                                {languageData?.GoHome || "Go home"}
+                                <ArrowRight />
+                            </Link>
+                        </Button>
+                    </div>
+                </Container>
+            </section>
         </DashboardLayout>
     );
 };

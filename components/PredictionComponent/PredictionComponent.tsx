@@ -1,10 +1,43 @@
-import type React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../../store";
-import { resetProperty, updateProperty, type Property } from "../../store/slices/property/property-slice";
-import { predictPropertyPrice } from "../../store/slices/prediction/thunks";
-import CloseIcon from "@mui/icons-material/Close";
+import { useCookies } from "react-cookie";
+import {
+    MapPin,
+    Home as HomeIcon,
+    Wallet,
+    ArrowRight,
+    ArrowLeft,
+    RefreshCw,
+    Check,
+    Info,
+    TrendingUp,
+    TrendingDown,
+    AlertTriangle,
+    X,
+} from "lucide-react";
+
+import type { RootState, AppDispatch } from "@/store";
+import { resetProperty, updateProperty, type Property } from "@/store/slices/property/property-slice";
+import { predictPropertyPrice } from "@/store/slices/prediction/thunks";
+import { clearCurrentPrediction } from "@/store/slices/prediction/prediction-slice";
+
+import { Container } from "@/components/ui/container";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Field } from "@/components/ui/field";
+import { Separator } from "@/components/ui/separator";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import PredictionLoadingOverlay from "@/components/layout/PredictionLoadingOverlay";
+import { MapLibre } from "@/components/generic-components/LibreMap";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface SimilarListing {
     external_id: string;
@@ -19,44 +52,120 @@ interface SimilarListing {
     longitude: number;
 }
 
+interface ValuationIndex {
+    score: number;
+    label: string;
+    market_avg_price_per_sqm: number | null;
+    predicted_price_per_sqm: number | null;
+}
+
 interface PredictionResponse {
     predicted_price: number;
+    predicted_price_per_sqm?: number;
+    confidence_min?: number;
+    confidence_max?: number;
     location_raw: string;
     accuracy_pct: number | null;
     similar_listings: SimilarListing[];
+    valuation_index?: ValuationIndex;
+    warnings?: string[];
 }
-import {
-    PredictionContainer,
-    PredictionForm,
-    FormSection,
-    FormRow,
-    PredictionResults,
-    ResultCard,
-    PriceRange,
-    SimilarProperties,
-    PropertyCard,
-    StepIndicator,
-} from "./PredictionPage.styles";
-import { FiHome, FiMapPin, FiDollarSign, FiArrowRight, FiArrowLeft, FiRefreshCw } from "react-icons/fi";
-import StyledInput from "../../components/generic-components/StyledInput";
-import StyledButton from "../../components/generic-components/StyledButton";
-import StyledDropdown from "../../components/generic-components/StyledDropdown";
-import PredictionLoadingOverlay from "../../components/generic-components/PredictionLoadingOverlay";
-import { MapLibre } from "../../components/generic-components/LibreMap";
-import { clearCurrentPrediction } from "../../store/slices/prediction/prediction-slice";
-import { useCookies } from "react-cookie";
+
+const STEPS = [
+    { key: "location", icon: MapPin },
+    { key: "property", icon: HomeIcon },
+    { key: "result", icon: Wallet },
+] as const;
+
+function StepNav({
+    step,
+    currentPrediction,
+    onStepClick,
+}: {
+    step: number;
+    currentPrediction: PredictionResponse | null;
+    onStepClick: (n: number) => void;
+}) {
+    const languageData = useSelector((s: RootState) => s.website.languageData);
+    const stepLabels: Record<(typeof STEPS)[number]["key"], string> = {
+        location: languageData?.Steps?.Location || "Location",
+        property: languageData?.Steps?.Property || "Details",
+        result: languageData?.Steps?.Result || "Result",
+    };
+    const activeIndex = currentPrediction ? 2 : step - 1;
+
+    return (
+        <ol className="mb-10 flex items-center gap-0">
+            {STEPS.map((s, i) => {
+                const Icon = s.icon;
+                const isDone = i < activeIndex;
+                const isActive = i === activeIndex;
+                const canClick = i <= activeIndex;
+
+                return (
+                    <React.Fragment key={s.key}>
+                        <li className="flex min-w-0 items-center gap-3">
+                            <button
+                                type="button"
+                                disabled={!canClick}
+                                onClick={() => canClick && onStepClick(i + 1)}
+                                className={cn(
+                                    "group flex items-center gap-3 rounded-md transition-colors",
+                                    canClick ? "cursor-pointer" : "cursor-default"
+                                )}
+                            >
+                                <span
+                                    className={cn(
+                                        "flex h-9 w-9 items-center justify-center rounded-full border transition-colors",
+                                        isActive && "border-primary bg-primary text-primary-foreground",
+                                        isDone && "border-primary/40 bg-primary/10 text-primary",
+                                        !isActive && !isDone && "border-border bg-card text-muted-foreground"
+                                    )}
+                                >
+                                    {isDone ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
+                                </span>
+                                <div className="flex flex-col items-start leading-tight">
+                                    <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                                        {languageData?.StepLabel || "Step"} {String(i + 1).padStart(2, "0")}
+                                    </span>
+                                    <span
+                                        className={cn(
+                                            "text-sm font-semibold transition-colors",
+                                            (isActive || isDone) ? "text-foreground" : "text-muted-foreground"
+                                        )}
+                                    >
+                                        {stepLabels[s.key]}
+                                    </span>
+                                </div>
+                            </button>
+                        </li>
+                        {i < STEPS.length - 1 && (
+                            <span
+                                aria-hidden
+                                className={cn(
+                                    "mx-4 hidden h-px flex-1 transition-colors md:block",
+                                    i < activeIndex ? "bg-primary/50" : "bg-border"
+                                )}
+                            />
+                        )}
+                    </React.Fragment>
+                );
+            })}
+        </ol>
+    );
+}
 
 const PredictionComponent: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { currentProperty } = useSelector((state: RootState) => state.property);
-    const { currentPrediction, loading, error } = useSelector((state: RootState) => state.prediction) as {
+    const { currentProperty } = useSelector((s: RootState) => s.property);
+    const { currentPrediction, error } = useSelector((s: RootState) => s.prediction) as {
         currentPrediction: PredictionResponse | null;
         loading: boolean;
         error: string | null;
     };
-    const [cookies, setCookie] = useCookies(["id"]);
+    const [cookies] = useCookies(["id"]);
+    const languageData = useSelector((s: RootState) => s.website.languageData);
 
-    const languageData = useSelector((state: RootState) => state.website.languageData);
     const [step, setStep] = useState(1);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [showLoadingOverlay, setShowLoadingOverlay] = useState(false);
@@ -64,44 +173,46 @@ const PredictionComponent: React.FC = () => {
     const [step2Attempted, setStep2Attempted] = useState(false);
     const [showError, setShowError] = useState(false);
 
-    // useEffect to handle error display logic
     useEffect(() => {
         if (error) {
             setShowError(true);
-            const timer = setTimeout(() => {
-                setShowError(false);
-            }, 3000); // Hide error after 3 seconds
-
-            // Cleanup timer if component unmounts or error changes
-            return () => clearTimeout(timer);
-        } else {
-            setShowError(false);
+            const t = setTimeout(() => setShowError(false), 5000);
+            return () => clearTimeout(t);
         }
+        setShowError(false);
     }, [error]);
 
-    const propertyTypes = [
-        { id: 1, name: languageData?.PropertyTypes?.Apartment || "Bloc" },
-        { id: 2, name: languageData?.PropertyTypes?.House || "Casa/Vila" },
-    ];
+    const propertyTypes = useMemo(
+        () => [
+            { id: 1, name: languageData?.PropertyTypes?.Apartment || "Bloc" },
+            { id: 2, name: languageData?.PropertyTypes?.House || "Casa/Vila" },
+        ],
+        [languageData]
+    );
 
-    const validateStep1 = (property: Property): boolean => {
-        const errors: string[] = [];
-        if (!property.address?.trim()) errors.push(languageData?.ValidationErrors?.StreetAddressRequired || "Street address is required");
-        if (!property.city?.trim()) errors.push(languageData?.ValidationErrors?.CityRequired || "City is required");
-        if (!property.classification) errors.push(languageData?.ValidationErrors?.PropertyTypeRequired || "Property type is required");
-        if (!property.comfort) errors.push(languageData?.ValidationErrors?.ComfortLevelRequired || "Comfort level is required");
-
-        setValidationErrors(errors);
-        return errors.length === 0;
+    const validateStep1 = (p: Property): boolean => {
+        const errs: string[] = [];
+        if (!p.address?.trim()) errs.push(languageData?.ValidationErrors?.StreetAddressRequired || "Street address is required");
+        if (!p.city?.trim()) errs.push(languageData?.ValidationErrors?.CityRequired || "City is required");
+        if (!p.classification) errs.push(languageData?.ValidationErrors?.PropertyTypeRequired || "Property type is required");
+        setValidationErrors(errs);
+        return errs.length === 0;
     };
 
-    const validateStep2 = (property: Property): boolean => {
-        const errors: string[] = [];
-        if (!property.useful_area_total) errors.push(languageData?.ValidationErrors?.TotalUsableAreaRequired || "Total usable area is required");
-        if (!property.num_rooms) errors.push(languageData?.ValidationErrors?.NumberOfRoomsRequired || "Number of rooms is required");
-        setValidationErrors(errors);
-        return errors.length === 0;
+    const validateStep2 = (p: Property): boolean => {
+        const errs: string[] = [];
+        if (!p.useful_area_total) errs.push(languageData?.ValidationErrors?.TotalUsableAreaRequired || "Total usable area is required");
+        if (!p.num_rooms) errs.push(languageData?.ValidationErrors?.NumberOfRoomsRequired || "Number of rooms is required");
+        setValidationErrors(errs);
+        return errs.length === 0;
     };
+
+    const setField = (type: string, value: any, step: 1 | 2) => {
+        dispatch(updateProperty({ type, value }));
+        if (step === 1 && step1Attempted) validateStep1({ ...currentProperty, [type]: value });
+        if (step === 2 && step2Attempted) validateStep2({ ...currentProperty, [type]: value });
+    };
+
     const handleNextStep = () => {
         setStep1Attempted(true);
         if (validateStep1(currentProperty)) {
@@ -111,27 +222,27 @@ const PredictionComponent: React.FC = () => {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handlePrevStep = () => setStep((s) => Math.max(1, s - 1));
+
+    const handleSubmit = async () => {
         setStep2Attempted(true);
-        if (validateStep2(currentProperty)) {
-            setShowLoadingOverlay(true);
-
-            // Adding a minimum loading time of 3 seconds for better UX
-            await Promise.all([
-                dispatch(predictPropertyPrice({ ...currentProperty, classification: currentProperty?.classification?.name, user_id: cookies["id"] })),
-                new Promise((resolve) => setTimeout(resolve, 3000)),
-            ]);
-
-            setShowLoadingOverlay(false);
-            setValidationErrors([]);
-            setStep2Attempted(false);
-        }
+        if (!validateStep2(currentProperty)) return;
+        setShowLoadingOverlay(true);
+        await Promise.all([
+            dispatch(
+                predictPropertyPrice({
+                    ...currentProperty,
+                    classification: currentProperty?.classification?.name,
+                    user_id: cookies["id"] ? parseInt(cookies["id"], 10) || undefined : undefined,
+                }) as any
+            ),
+            new Promise((resolve) => setTimeout(resolve, 2500)),
+        ]);
+        setShowLoadingOverlay(false);
+        setValidationErrors([]);
+        setStep2Attempted(false);
     };
 
-    const handlePrevStep = () => {
-        setStep(step - 1);
-    };
     const handleReset = () => {
         dispatch(clearCurrentPrediction());
         dispatch(resetProperty());
@@ -141,385 +252,618 @@ const PredictionComponent: React.FC = () => {
         setValidationErrors([]);
     };
 
-    // Handler for step 1 input changes
-    const handleStep1InputChange = (type: string, value: any) => {
-        dispatch(updateProperty({ type, value }));
-        if (step1Attempted) {
-            validateStep1({ ...currentProperty, [type]: value });
+    const handleStepClick = (n: number) => {
+        if (currentPrediction) {
+            setStep(n);
+            dispatch(clearCurrentPrediction());
+        } else if (n < step) {
+            setStep(n);
+            setValidationErrors([]);
+        } else if (n === 2 && step === 1 && validateStep1(currentProperty)) {
+            setStep(2);
+            setValidationErrors([]);
         }
-    };
-
-    // Handler for step 2 input changes
-    const handleStep2InputChange = (type: string, value: any) => {
-        dispatch(updateProperty({ type, value }));
-        if (step2Attempted) {
-            validateStep2({ ...currentProperty, [type]: value });
-        }
-    };
-
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
-
-    const renderStepIndicator = () => (
-        <StepIndicator>
-            <div
-                className={`step ${step >= 1 || currentPrediction ? "active" : ""}`}
-                onClick={() => {
-                    if (step === 2 && validateStep1(currentProperty)) {
-                        setStep(1);
-                        setValidationErrors([]);
-                    } else if (currentPrediction) {
-                        setStep(1);
-                        dispatch(clearCurrentPrediction());
-                    }
-                }}
-            >
-                <div className="step-icon">
-                    <FiMapPin />
-                </div>
-                <div className="step-label">{languageData?.Steps?.Location}</div>
-            </div>
-            <div className="connector"></div>
-            <div
-                className={`step ${step >= 2 || currentPrediction ? "active" : ""}`}
-                onClick={() => {
-                    if (currentPrediction) {
-                        setStep(2);
-                        dispatch(clearCurrentPrediction());
-                    } else if (step === 1 && validateStep1(currentProperty)) {
-                        setStep(2);
-                        setValidationErrors([]);
-                    }
-                }}
-            >
-                <div className="step-icon">
-                    <FiHome />
-                </div>
-                <div className="step-label">{languageData?.Steps?.Property}</div>
-            </div>
-            <div className="connector"></div>
-            <div
-                className={`step ${currentPrediction ? "active" : ""}`}
-                onClick={() => {
-                    if (!currentPrediction && step === 2 && validateStep2(currentProperty)) {
-                        handleSubmit(new Event("click") as unknown as React.FormEvent);
-                    }
-                }}
-            >
-                <div className="step-icon">
-                    <FiDollarSign />
-                </div>
-                <div className="step-label">{languageData?.Steps?.Result}</div>
-            </div>
-        </StepIndicator>
-    );
-
-    const renderStep1 = () => (
-        <FormSection>
-            <h3>{languageData?.StepGuide?.Location.title}</h3>
-            <div
-                style={{
-                    background: "#fffdf0",
-                    padding: "12px 16px",
-                    borderRadius: "6px",
-                    color: "#20B2AA",
-                    marginBottom: "20px",
-                    border: "1px solid #d1d5db",
-                    fontSize: "13px",
-                    boxShadow: "0 1px 3px rgba(110, 110, 110, 0.05)",
-                }}
-            >
-                {languageData?.StepGuide?.Location.hint}
-            </div>
-            <FormRow>
-                <StyledInput
-                    label={languageData?.PropertyFields?.StreetAddress}
-                    inputName="address"
-                    value={currentProperty.address || ""}
-                    onChange={(value) => handleStep1InputChange("address", value)}
-                    placeholder="Street address..."
-                    width="100%"
-                />
-            </FormRow>
-            <FormRow>
-                <StyledInput
-                    label={languageData?.PropertyFields?.City}
-                    inputName="city"
-                    value={currentProperty.city || ""}
-                    onChange={(value) => handleStep1InputChange("city", value)}
-                    placeholder="City name..."
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.StreetFrontage}
-                    inputName="streetFrontage"
-                    type="number"
-                    value={currentProperty.street_frontage?.toString() || ""}
-                    onChange={(value) => handleStep1InputChange("streetFrontage", Number(value))}
-                    placeholder="Street frontage..."
-                />
-            </FormRow>
-            <FormRow>
-                <StyledDropdown
-                    label={languageData?.PropertyFields?.PropertyType}
-                    required
-                    activeLabel
-                    value={currentProperty.classification || null}
-                    onChange={(_, value) => handleStep1InputChange("classification", value || null)}
-                    placeholder="Selecteaza tipul proprietatii..."
-                    options={propertyTypes}
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.LandClassification}
-                    inputName="landClassification"
-                    value={currentProperty.landClassification || ""}
-                    onChange={(value) => handleStep1InputChange("landClassification", value)}
-                    placeholder="Land classification..."
-                />
-            </FormRow>
-            <FormRow>
-                <StyledInput
-                    label="Floor Number"
-                    inputName="floor"
-                    type="number"
-                    value={currentProperty.floor?.toString() || ""}
-                    onChange={(value) => handleStep1InputChange("floor", Number(value))}
-                    placeholder="Floor number..."
-                />
-                <StyledInput
-                    label="Comfort Level"
-                    inputName="comfort"
-                    value={currentProperty.comfort || ""}
-                    onChange={(value) => handleStep1InputChange("comfort", value)}
-                    placeholder="Comfort level..."
-                    type="number"
-                />
-            </FormRow>
-            <div className="validation-errors">
-                {validationErrors.map((error, index) => (
-                    <div key={index} className="error-message">
-                        {error}
-                    </div>
-                ))}
-            </div>
-            <div className="form-actions">
-                <StyledButton onClick={handleNextStep} endIcon={<FiArrowRight />} variant="contained" color="primary" disabled={validationErrors.length > 0}>
-                    {languageData?.NextPropertyDetails}
-                </StyledButton>
-            </div>
-        </FormSection>
-    );
-
-    const renderStep2 = () => (
-        <FormSection>
-            <h3>{languageData?.StepGuide?.PropertyDetails.title}</h3>
-            <div
-                style={{
-                    background: "linear-gradient(to right, #fffdf0, #ffffff)",
-                    padding: "12px 16px",
-                    borderRadius: "6px",
-                    color: "#20B2AA",
-                    marginBottom: "20px",
-                    fontSize: "13px",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
-            >
-                {languageData?.StepGuide?.PropertyDetails.hint}
-            </div>
-            <FormRow>
-                <StyledInput
-                    label={languageData?.PropertyFields?.TotalUsableArea}
-                    inputName="useful_area_total"
-                    type="number"
-                    value={currentProperty.useful_area_total?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("useful_area_total", Number(value))}
-                    placeholder="Total usable area..."
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.MainLivingArea}
-                    inputName="useful_area"
-                    type="number"
-                    value={currentProperty?.useful_area?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("useful_area", Number(value))}
-                    placeholder="Main living area..."
-                />
-
-                <StyledInput
-                    label={languageData?.PropertyFields?.NumberOfRooms}
-                    inputName="num_rooms"
-                    type="number"
-                    value={currentProperty.num_rooms?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("num_rooms", Number(value))}
-                    placeholder="Number of rooms..."
-                />
-            </FormRow>
-            <FormRow>
-                <StyledInput
-                    label={languageData?.PropertyFields?.BuiltArea}
-                    inputName="builtArea"
-                    type="number"
-                    value={currentProperty.builtArea?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("builtArea", Number(value))}
-                    placeholder="Built area..."
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.LandArea}
-                    inputName="landArea"
-                    type="number"
-                    value={currentProperty.landArea?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("landArea", Number(value))}
-                    placeholder="Land area..."
-                />
-                <StyledInput
-                    label={languageData?.PropertyFields?.NumberOfGarages}
-                    inputName="num_garages"
-                    type="number"
-                    value={currentProperty.num_garages?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("num_garages", Number(value))}
-                    placeholder="Number of garages..."
-                />
-                <StyledInput
-                    label="Street Frontage (m)"
-                    inputName="street_frontage"
-                    type="number"
-                    value={currentProperty.street_frontage?.toString() || ""}
-                    onChange={(value) => handleStep2InputChange("street_frontage", Number(value))}
-                    placeholder="Street Frontage..."
-                />
-            </FormRow>
-            <div className="validation-errors">
-                {validationErrors.map((error, index) => (
-                    <div key={index} className="error-message">
-                        {error}
-                    </div>
-                ))}
-            </div>
-            <div className="form-actions">
-                <StyledButton variant="outlined" onClick={handlePrevStep} startIcon={<FiArrowLeft />}>
-                    {languageData?.Back}
-                </StyledButton>
-                <StyledButton variant="contained" onClick={handleSubmit} endIcon={<FiDollarSign />} disabled={validationErrors.length > 0}>
-                    {languageData?.GetPricePrediction}
-                </StyledButton>
-            </div>
-        </FormSection>
-    ); // Removed dummy listings as we'll use real data from the API
-
-    const renderResults = () => {
-        if (!currentPrediction) return null;
-
-        return (
-            <PredictionResults>
-                <h2>{languageData?.PredictionResults?.title}</h2>
-
-                <ResultCard>
-                    <div className="prediction-header">
-                        <h3>{languageData?.PredictionResults?.estimatedValue}</h3>
-                        {/* <div className="confidence">Confidence: {(currentPrediction.confidence * 100).toFixed(0)}%</div> */}
-                    </div>
-
-                    <div className="predicted-price">{currentPrediction?.predicted_price ? formatCurrency(currentPrediction?.predicted_price) : 0}</div>
-
-                    {/* <PriceRange>
-                        <div className="range-label">Price Range:</div>
-                        <div className="range-bar">
-                            <div className="range-min">{currentPrediction?.priceRange?.min ? formatCurrency(currentPrediction?.priceRange?.min) : ""}</div>
-                            <div className="range-max">{currentPrediction?.priceRange?.max ? formatCurrency(currentPrediction?.priceRange?.max) : ""}</div>
-                        </div>
-                    </PriceRange> */}
-
-                    <SimilarProperties>
-                        <h4>{languageData?.PredictionResults?.similarProperties}</h4>
-                        <div className="similar-properties-grid">
-                            {currentPrediction.similar_listings?.map((property) => (
-                                <PropertyCard key={property?.external_id}>
-                                    <div className="property-image">
-                                        <img
-                                            src="/images/property_placeholder.png"
-                                            alt={property?.location_raw}
-                                            style={{ width: "100%", height: "200px", objectFit: "cover" }}
-                                        />
-                                    </div>
-                                    <div className="property-details">
-                                        <div className="property-address">{property?.location_raw}</div>
-                                        <div className="property-specs">
-                                            <span>
-                                                {property?.num_rooms} {languageData?.PredictionResults?.propertySpecs.rooms}
-                                            </span>
-                                            •
-                                            <span>
-                                                {property?.useful_area} {languageData?.PredictionResults?.propertySpecs.area}
-                                            </span>
-                                        </div>
-                                        <div className="property-price">{formatCurrency(property.total_price)}</div>
-                                        <div className="property-features">
-                                            <span>Price/m²: {property.price_per_sqm.toFixed(2)} €</span>
-                                        </div>
-                                    </div>
-                                </PropertyCard>
-                            ))}
-                        </div>
-                    </SimilarProperties>
-                    {currentPrediction?.similar_listings && (
-                        <MapLibre
-                            listings={currentPrediction.similar_listings.map((listing) => ({
-                                id: parseInt(listing.external_id.replace("P", ""), 10),
-                                address: listing.location_raw,
-                                price: listing.total_price,
-                                lat: listing.latitude,
-                                lng: listing.longitude,
-                                distance: 0,
-                                // Required by Property type
-                                classification: "apartment",
-                                useful_area_total: listing.useful_area,
-                                num_rooms: listing.num_rooms,
-                                comfort: "standard",
-                            }))}
-                        />
-                    )}
-                    <div className="result-actions">
-                        <StyledButton variant="outlined" onClick={handleSubmit} startIcon={<FiRefreshCw />}>
-                            {languageData?.TryAgain}
-                        </StyledButton>
-                        <StyledButton variant="outlined" onClick={handleReset} startIcon={<FiRefreshCw />}>
-                            {languageData?.NewPrediction}
-                        </StyledButton>
-                    </div>
-                </ResultCard>
-            </PredictionResults>
-        );
     };
 
     return (
-        <PredictionContainer>
+        <Container size="xl" className="py-10 md:py-14">
             <PredictionLoadingOverlay active={showLoadingOverlay} />
-            <h1>{languageData?.RealEstatePricePrediction}</h1> {renderStepIndicator()}
+
+            <div className="mb-8 flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">
+                    {languageData?.PredictionKicker || "Valuation"}
+                </span>
+                <h1 className="font-display text-4xl font-medium tracking-tight md:text-5xl">
+                    {languageData?.RealEstatePricePrediction || "Real estate price prediction"}
+                </h1>
+                <p className="max-w-2xl text-sm text-muted-foreground md:text-base">
+                    {languageData?.PredictionSubtitle ||
+                        "Get an AI-powered estimate for any property in Romania."}
+                </p>
+            </div>
+
+            <StepNav step={step} currentPrediction={currentPrediction} onStepClick={handleStepClick} />
+
             {showError && error && (
-                <div className="error-message">
-                    <span>Error: {error}</span>
-                    <span
-                        onClick={() => {
-                            setShowError(false);
-                        }}
-                    >
-                        <CloseIcon />
+                <button
+                    type="button"
+                    onClick={() => setShowError(false)}
+                    className="mb-6 flex w-full items-center justify-between gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
+                >
+                    <span className="flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        {error}
                     </span>
-                </div>
+                    <X className="h-4 w-4 opacity-60" />
+                </button>
             )}
+
             {!currentPrediction ? (
-                <PredictionForm>
-                    {step === 1 && renderStep1()}
-                    {step === 2 && renderStep2()}
-                </PredictionForm>
+                step === 1 ? (
+                    <Step1
+                        property={currentProperty}
+                        propertyTypes={propertyTypes}
+                        onField={(t, v) => setField(t, v, 1)}
+                        validationErrors={validationErrors}
+                        onNext={handleNextStep}
+                    />
+                ) : (
+                    <Step2
+                        property={currentProperty}
+                        onField={(t, v) => setField(t, v, 2)}
+                        validationErrors={validationErrors}
+                        onPrev={handlePrevStep}
+                        onSubmit={handleSubmit}
+                    />
+                )
             ) : (
-                renderResults()
+                <PredictionResultsView prediction={currentPrediction} onReset={handleReset} />
             )}
-        </PredictionContainer>
+        </Container>
     );
 };
+
+/* ============================================================
+   Step 1 — Location & classification
+   ============================================================ */
+
+function Step1({
+    property,
+    propertyTypes,
+    onField,
+    validationErrors,
+    onNext,
+}: {
+    property: Property;
+    propertyTypes: { id: number; name: string }[];
+    onField: (type: string, value: any) => void;
+    validationErrors: string[];
+    onNext: () => void;
+}) {
+    const languageData = useSelector((s: RootState) => s.website.languageData);
+
+    return (
+        <Card>
+            <CardHeader className="border-b border-border">
+                <CardTitle className="font-display text-2xl font-medium">
+                    {languageData?.StepGuide?.Location?.title || "Property Location"}
+                </CardTitle>
+                <CardDescription className="flex items-center gap-2">
+                    <Info className="h-3.5 w-3.5" />
+                    {languageData?.StepGuide?.Location?.hint ||
+                        "Enter the property location details. The more accurate the address, the better the prediction."}
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent className="pt-6">
+                <div className="grid gap-8">
+                    <Section
+                        label={languageData?.AddressInfo || "Address information"}
+                        hint={languageData?.AddressHint || "Used to anchor the prediction on actual street-level comparables."}
+                    >
+                        <div className="grid gap-5">
+                            <Field
+                                label={languageData?.PropertyFields?.StreetAddress || "Street address"}
+                                required
+                            >
+                                <Input
+                                    value={property.address || ""}
+                                    onChange={(e) => onField("address", e.target.value)}
+                                    placeholder="Str. Memorandumului 28"
+                                />
+                            </Field>
+                            <div className="grid gap-5 md:grid-cols-2">
+                                <Field label={languageData?.PropertyFields?.City || "City"} required>
+                                    <Input
+                                        value={property.city || ""}
+                                        onChange={(e) => onField("city", e.target.value)}
+                                        placeholder="Cluj-Napoca"
+                                    />
+                                </Field>
+                                <Field
+                                    label={languageData?.PropertyFields?.StreetFrontage || "Street frontage (m)"}
+                                    hint={languageData?.OptionalField || "Optional"}
+                                >
+                                    <Input
+                                        type="number"
+                                        value={property.street_frontage || ""}
+                                        onChange={(e) => onField("street_frontage", Number(e.target.value))}
+                                        placeholder="12"
+                                    />
+                                </Field>
+                            </div>
+                        </div>
+                    </Section>
+
+                    <Separator />
+
+                    <Section
+                        label={languageData?.PropertyInfo || "Classification"}
+                        hint={languageData?.ClassificationHint || "Type determines which comparables are considered."}
+                    >
+                        <div className="grid gap-5 md:grid-cols-2">
+                            <Field label={languageData?.PropertyFields?.PropertyType || "Property type"} required>
+                                <Select
+                                    value={property.classification?.name || ""}
+                                    onValueChange={(v) => {
+                                        const opt = propertyTypes.find((p) => p.name === v) || null;
+                                        onField("classification", opt);
+                                    }}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue
+                                            placeholder={languageData?.SelectPropertyType || "Select property type..."}
+                                        />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {propertyTypes.map((p) => (
+                                            <SelectItem key={p.id} value={p.name}>
+                                                {p.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </Field>
+                            <Field
+                                label={languageData?.PropertyFields?.LandClassification || "Land classification"}
+                                hint={languageData?.OptionalField || "Optional"}
+                            >
+                                <Input
+                                    value={property.landClassification || ""}
+                                    onChange={(e) => onField("landClassification", e.target.value)}
+                                    placeholder="Intravilan"
+                                />
+                            </Field>
+                        </div>
+                        <div className="mt-5 grid gap-5 md:grid-cols-2">
+                            <Field label={languageData?.PropertyFields?.FloorNumber || "Floor"}>
+                                <Input
+                                    type="number"
+                                    value={property.floor || ""}
+                                    onChange={(e) => onField("floor", Number(e.target.value))}
+                                    placeholder="3"
+                                />
+                            </Field>
+                            <Field label={languageData?.PropertyFields?.ComfortLevel || "Comfort level"}>
+                                <Input
+                                    type="number"
+                                    value={property.comfort || ""}
+                                    onChange={(e) => onField("comfort", e.target.value)}
+                                    placeholder="1, 2, 3"
+                                />
+                            </Field>
+                        </div>
+                    </Section>
+
+                    {validationErrors.length > 0 && (
+                        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+                            <ul className="space-y-1 text-sm text-destructive">
+                                {validationErrors.map((e, i) => (
+                                    <li key={i}>• {e}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    <div className="flex items-center justify-between border-t border-border pt-5">
+                        <span className="text-xs text-muted-foreground">
+                            <span className="text-terracotta">*</span>{" "}
+                            {languageData?.RequiredField || "indicates required field"}
+                        </span>
+                        <Button size="lg" onClick={onNext}>
+                            {languageData?.NextPropertyDetails || "Continue to details"}
+                            <ArrowRight />
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+/* ============================================================
+   Step 2 — Dimensions & details
+   ============================================================ */
+
+function Step2({
+    property,
+    onField,
+    validationErrors,
+    onPrev,
+    onSubmit,
+}: {
+    property: Property;
+    onField: (type: string, value: any) => void;
+    validationErrors: string[];
+    onPrev: () => void;
+    onSubmit: () => void;
+}) {
+    const languageData = useSelector((s: RootState) => s.website.languageData);
+
+    return (
+        <Card>
+            <CardHeader className="border-b border-border">
+                <CardTitle className="font-display text-2xl font-medium">
+                    {languageData?.StepGuide?.PropertyDetails?.title || "Property details"}
+                </CardTitle>
+                <CardDescription className="flex items-center gap-2">
+                    <Info className="h-3.5 w-3.5" />
+                    {languageData?.StepGuide?.PropertyDetails?.hint ||
+                        "Provide the property dimensions and features. More details lead to more accurate predictions."}
+                </CardDescription>
+            </CardHeader>
+
+            <CardContent className="pt-6">
+                <div className="grid gap-8">
+                    <Section
+                        label={languageData?.AreaDimensions || "Area & dimensions"}
+                        hint={languageData?.AreaHint || "Most important factor for the price estimate."}
+                    >
+                        <div className="grid gap-5 md:grid-cols-3">
+                            <Field
+                                label={`${languageData?.PropertyFields?.TotalUsableArea || "Total usable area"} (m²)`}
+                                required
+                            >
+                                <Input
+                                    type="number"
+                                    value={property.useful_area_total || ""}
+                                    onChange={(e) => onField("useful_area_total", Number(e.target.value))}
+                                    placeholder="65"
+                                />
+                            </Field>
+                            <Field label={`${languageData?.PropertyFields?.MainLivingArea || "Main living area"} (m²)`}>
+                                <Input
+                                    type="number"
+                                    value={property.useful_area || ""}
+                                    onChange={(e) => onField("useful_area", Number(e.target.value))}
+                                    placeholder="52"
+                                />
+                            </Field>
+                            <Field label={languageData?.PropertyFields?.NumberOfRooms || "Rooms"} required>
+                                <Input
+                                    type="number"
+                                    value={property.num_rooms || ""}
+                                    onChange={(e) => onField("num_rooms", Number(e.target.value))}
+                                    placeholder="2"
+                                />
+                            </Field>
+                        </div>
+                    </Section>
+
+                    <Separator />
+
+                    <Section
+                        label={languageData?.AdditionalDetails || "Additional details"}
+                        hint={languageData?.AdditionalHint || "Optional — improves accuracy when available."}
+                    >
+                        <div className="grid gap-5 md:grid-cols-3">
+                            <Field label={`${languageData?.PropertyFields?.BuiltArea || "Built area"} (m²)`}>
+                                <Input
+                                    type="number"
+                                    value={property.builtArea || ""}
+                                    onChange={(e) => onField("builtArea", Number(e.target.value))}
+                                    placeholder="80"
+                                />
+                            </Field>
+                            <Field label={`${languageData?.PropertyFields?.LandArea || "Land area"} (m²)`}>
+                                <Input
+                                    type="number"
+                                    value={property.landArea || ""}
+                                    onChange={(e) => onField("landArea", Number(e.target.value))}
+                                    placeholder="300"
+                                />
+                            </Field>
+                            <Field label={languageData?.PropertyFields?.NumberOfGarages || "Garages"}>
+                                <Input
+                                    type="number"
+                                    value={property.num_garages || ""}
+                                    onChange={(e) => onField("num_garages", Number(e.target.value))}
+                                    placeholder="1"
+                                />
+                            </Field>
+                        </div>
+                    </Section>
+
+                    {validationErrors.length > 0 && (
+                        <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+                            <ul className="space-y-1 text-sm text-destructive">
+                                {validationErrors.map((e, i) => (
+                                    <li key={i}>• {e}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    <div className="flex items-center justify-between border-t border-border pt-5">
+                        <Button variant="outline" size="lg" onClick={onPrev}>
+                            <ArrowLeft />
+                            {languageData?.Back || "Back"}
+                        </Button>
+                        <Button size="lg" onClick={onSubmit}>
+                            {languageData?.GetPricePrediction || "Get price prediction"}
+                            <ArrowRight />
+                        </Button>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+/* ============================================================
+   Section component
+   ============================================================ */
+
+function Section({
+    label,
+    hint,
+    children,
+}: {
+    label: React.ReactNode;
+    hint?: React.ReactNode;
+    children: React.ReactNode;
+}) {
+    return (
+        <section className="grid gap-5 md:grid-cols-[260px_1fr]">
+            <div className="flex flex-col gap-1.5">
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    {label}
+                </span>
+                {hint && <span className="text-xs leading-relaxed text-muted-foreground/80">{hint}</span>}
+            </div>
+            <div>{children}</div>
+        </section>
+    );
+}
+
+/* ============================================================
+   Results view — polished further in Faza 5
+   ============================================================ */
+
+function PredictionResultsView({
+    prediction,
+    onReset,
+}: {
+    prediction: PredictionResponse;
+    onReset: () => void;
+}) {
+    const languageData = useSelector((s: RootState) => s.website.languageData);
+    const valuation = prediction.valuation_index;
+
+    const valuationBadge = (() => {
+        if (!valuation) return null;
+        const label = valuation.label;
+        if (label === "undervalued")
+            return (
+                <Badge variant="success" className="gap-1.5">
+                    <TrendingDown className="h-3.5 w-3.5" />
+                    {languageData?.Undervalued || "Below market"}{" "}
+                    {valuation.score !== undefined && (
+                        <span className="tabular-nums">({valuation.score.toFixed(1)}%)</span>
+                    )}
+                </Badge>
+            );
+        if (label === "overvalued")
+            return (
+                <Badge variant="warning" className="gap-1.5">
+                    <TrendingUp className="h-3.5 w-3.5" />
+                    {languageData?.Overvalued || "Above market"}{" "}
+                    {valuation.score !== undefined && (
+                        <span className="tabular-nums">(+{valuation.score.toFixed(1)}%)</span>
+                    )}
+                </Badge>
+            );
+        return (
+            <Badge variant="muted" className="gap-1.5">
+                <Check className="h-3.5 w-3.5" />
+                {languageData?.Fair || "Fair market price"}
+            </Badge>
+        );
+    })();
+
+    const mapListings = (prediction.similar_listings || [])
+        .filter((l) => l.latitude && l.longitude)
+        .map((l) => ({
+            id: parseInt(l.external_id.replace("P", ""), 10) || 0,
+            address: l.location_raw,
+            price: l.total_price,
+            lat: l.latitude,
+            lng: l.longitude,
+            classification: "apartment",
+            useful_area_total: l.useful_area,
+            num_rooms: l.num_rooms,
+            comfort: "standard",
+        }));
+
+    return (
+        <div className="grid gap-6">
+            {/* Hero price card */}
+            <Card className="overflow-hidden">
+                <CardContent className="p-0">
+                    <div className="grid gap-10 p-8 md:grid-cols-[1.3fr_1fr]">
+                        <div className="flex flex-col gap-4">
+                            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">
+                                {languageData?.PredictionResults?.estimatedValue || "Estimated market value"}
+                            </span>
+                            <div className="flex flex-wrap items-baseline gap-3">
+                                <span className="font-display text-6xl font-medium tabular-nums leading-[0.95] tracking-tight text-foreground md:text-7xl">
+                                    {prediction.predicted_price ? formatPrice(prediction.predicted_price) : "—"}
+                                </span>
+                                {prediction.predicted_price_per_sqm && (
+                                    <span className="text-sm text-muted-foreground tabular-nums">
+                                        {formatPrice(prediction.predicted_price_per_sqm)} / m²
+                                    </span>
+                                )}
+                            </div>
+                            {valuationBadge && <div>{valuationBadge}</div>}
+                            {prediction.location_raw && (
+                                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <MapPin className="h-3.5 w-3.5" />
+                                    {prediction.location_raw}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col justify-center gap-4 border-t border-border pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+                            {prediction.confidence_min && prediction.confidence_max && (
+                                <div>
+                                    <span className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                                        {languageData?.ConfidenceRange || "Confidence range"}
+                                    </span>
+                                    <p className="mt-1 font-display text-2xl tabular-nums tracking-tight">
+                                        {formatPrice(prediction.confidence_min)} — {formatPrice(prediction.confidence_max)}
+                                    </p>
+                                </div>
+                            )}
+                            {valuation?.market_avg_price_per_sqm && (
+                                <div>
+                                    <span className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                                        {languageData?.MarketAverage || "Market average (€/m²)"}
+                                    </span>
+                                    <p className="mt-1 font-display text-2xl tabular-nums tracking-tight">
+                                        {formatPrice(valuation.market_avg_price_per_sqm)}
+                                    </p>
+                                </div>
+                            )}
+                            {prediction.accuracy_pct !== null && prediction.accuracy_pct !== undefined && (
+                                <div>
+                                    <span className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
+                                        {languageData?.ModelAccuracy || "Model accuracy"}
+                                    </span>
+                                    <p className="mt-1 font-display text-2xl tabular-nums tracking-tight">
+                                        {prediction.accuracy_pct.toFixed(1)}%
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {prediction.warnings && prediction.warnings.length > 0 && (
+                        <div className="border-t border-border bg-[hsl(var(--warning))]/8 px-8 py-4">
+                            <ul className="flex flex-col gap-1.5 text-sm">
+                                {prediction.warnings.map((w, i) => (
+                                    <li
+                                        key={i}
+                                        className="flex items-start gap-2 text-[color:hsl(var(--warning))]"
+                                    >
+                                        <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                        <span>{w}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* Map + Similar listings */}
+            {prediction.similar_listings && prediction.similar_listings.length > 0 && (
+                <div className="grid gap-6 lg:grid-cols-2">
+                    {mapListings.length > 0 && (
+                        <Card className="overflow-hidden">
+                            <CardHeader className="border-b border-border">
+                                <CardTitle className="font-display text-xl font-medium">
+                                    {languageData?.MapView || "Where they are"}
+                                </CardTitle>
+                                <CardDescription>
+                                    {languageData?.MapViewHint ||
+                                        "Locations of the top matching comparables near the target property."}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <div className="h-[420px] w-full">
+                                    <MapLibre listings={mapListings} />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    <Card className="overflow-hidden">
+                        <CardHeader className="border-b border-border">
+                            <CardTitle className="font-display text-xl font-medium">
+                                {languageData?.PredictionResults?.similarProperties || "Similar properties"}
+                            </CardTitle>
+                            <CardDescription>
+                                {languageData?.SimilarHint ||
+                                    "Top 5 listings ranked by a multi-factor similarity score."}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="max-h-[420px] overflow-y-auto p-0">
+                            <ul className="divide-y divide-border">
+                                {prediction.similar_listings.map((l) => (
+                                    <li
+                                        key={l.external_id}
+                                        className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/40"
+                                    >
+                                        <div className="h-16 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+                                            <img
+                                                src="/images/property_placeholder.png"
+                                                alt={l.location_raw}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <div className="truncate text-sm font-medium">{l.location_raw}</div>
+                                            <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                                                <span>
+                                                    {l.num_rooms}{" "}
+                                                    {languageData?.PredictionResults?.propertySpecs?.rooms || "rooms"}
+                                                </span>
+                                                <span>·</span>
+                                                <span className="tabular-nums">{l.useful_area} m²</span>
+                                            </div>
+                                        </div>
+                                        <div className="shrink-0 text-right">
+                                            <div className="font-display text-base tabular-nums">
+                                                {formatPrice(l.total_price)}
+                                            </div>
+                                            <div className="text-[11px] tabular-nums text-muted-foreground">
+                                                {formatPrice(l.price_per_sqm)} / m²
+                                            </div>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-xs text-muted-foreground">
+                    {languageData?.ResultsFootnote ||
+                        "Estimate based on a stacking ensemble of XGBoost, LightGBM and RandomForest."}
+                </p>
+                <div className="flex gap-3">
+                    <Button variant="outline" size="lg" onClick={onReset}>
+                        <RefreshCw />
+                        {languageData?.NewPrediction || "New prediction"}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default PredictionComponent;

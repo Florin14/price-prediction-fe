@@ -1,358 +1,167 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { Lock, AlertCircle, CheckCircle2 } from "lucide-react";
 
-import { Card, Grid } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import ClearIcon from "@mui/icons-material/Clear";
+import { RootState } from "@/store";
+import { websiteActions } from "@/store/slices/website/website-slice";
+import { LanguageDataTypes } from "@/assets/language/ro";
 
-import { websiteActions } from "../../../store/slices/website/website-slice";
-import { RootState } from "../../../store";
-
-import FormLayout from "../../../containers/FormLayout";
-import StyledInput from "../../generic-components/StyledInput";
-import StyledButton from "../../generic-components/StyledButton";
-import useClasses from "../../../utils/useClasses";
-import { LanguageDataTypes } from "../../../assets/language/ro";
-
-interface StyleClasses {
-    contentWrapper: any;
-    wrapper: any;
-    input: any;
-    lastInput: any;
-    error: any;
-    confirmed: any;
-    unconfirmed: any;
-    button: any;
-    label: any;
-    title: any;
-    fieldInput: any;
-}
-
-const useStyles = (theme: any): StyleClasses => ({
-    contentWrapper: {
-        width: "100%",
-        height: "auto",
-        justifyContent: "center",
-        alignItems: "center",
-        display: "flex",
-    },
-    wrapper: {
-        display: "flex",
-        flexDirection: "column",
-        width: 400,
-        padding: "70px 40px 40px 40px",
-    },
-    input: {
-        width: "100%",
-        marginBottom: 10,
-    },
-    lastInput: {
-        width: "100%",
-        marginBottom: 32,
-    },
-    error: {
-        color: "red",
-        fontSize: 10,
-        lineHeight: "12px",
-        fontWeight: 500,
-        fontStyle: "normal",
-        marginBottom: 10,
-    },
-    confirmed: {
-        color: "green",
-        fontSize: 10,
-        fontWeight: 500,
-        fontStyle: "normal",
-    },
-    unconfirmed: {
-        color: "#000",
-        fontSize: 10,
-        fontWeight: 500,
-        fontStyle: "normal",
-    },
-    button: {
-        fontWeight: "bold",
-        fontSize: theme.typography.fs14,
-        lineHeight: "15px",
-        color: "white",
-        backgroundColor: theme.palette.secondary.main,
-        padding: "0px 15px 0px 15px",
-        height: "40px",
-        "&:hover": {
-            backgroundColor: "#04253E",
-        },
-        borderRadius: "3px",
-        marginTop: "20px",
-    },
-    label: {
-        fontStyle: "normal",
-        fontSize: theme.typography.fs10,
-        lineHeight: "15px",
-        color: "#000",
-    },
-    title: {
-        margin: "20px auto 20px",
-        fontFamily: "Inter",
-        fontStyle: "normal",
-        fontWeight: "600",
-        fontSize: "14px",
-        lineHeight: "17px",
-        color: theme.palette.grey.text,
-    },
-    fieldInput: {
-        height: 35,
-    },
-});
+import FormLayout from "@/containers/FormLayout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Field } from "@/components/ui/field";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { PasswordRequirements } from "@/components/layout/PasswordRequirements";
+import { allValid, validatePassword } from "@/lib/password";
+import { Container } from "@/components/ui/container";
 
 const ChangePassword: React.FC = () => {
-    const languageData = useSelector((state: RootState) => state.website.languageData);
-
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [password, setPassword] = useState("");
-    const [oldPassword, setOldPassword] = useState<string>("");
-    const [error, setError] = useState("");
-    const [responseError, setResponseError] = useState("");
-    const [validation, setValidation] = useState<any>(null);
-
-    const upperCaseRegex = new RegExp("(?=.*[A-Z])");
-    const lowerCaseRegex = new RegExp("(?=.*[a-z])");
-    const digitRegex = new RegExp("(?=.*[0-9])");
-    const specialCharRegex = new RegExp("(?=.*[~`!@#$%^&*()_\\-+={\\[}\\]|:;\"'<,>.?/])");
-
-    const classes = useClasses(useStyles, { name: "ChangePasswordStyles" }) as StyleClasses;
-
+    const languageData = useSelector((s: RootState) => s.website.languageData);
     const dispatch = useDispatch();
+
+    const [oldPassword, setOldPassword] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [responseError, setResponseError] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         dispatch(websiteActions.setTitle({ title: "ChangePassword" }));
     }, [dispatch]);
 
-    useEffect(() => {
-        setValidation({
-            upperCaseValidation: {
-                valid: false,
-                message: languageData?.UpperCaseMessage,
-            },
-            lowerCaseValidation: {
-                valid: false,
-                message: languageData?.LowerCaseMessage,
-            },
-            digitValidation: {
-                valid: false,
-                message: languageData?.DigitMessage,
-            },
-            specialCharValidation: {
-                valid: false,
-                message: languageData?.SpecialCharMessage,
-            },
-            lengthValidation: {
-                valid: false,
-                message: languageData?.LengthMessage,
-            },
-        });
-    }, [languageData]);
-
-    useEffect(() => {
-        const checkPasswords = () => {
-            setResponseError("");
-            if (password !== confirmPassword && password !== "" && confirmPassword !== "") setError(languageData?.PasswordsDontMatch || "");
-            else setError("");
-        };
-
-        if (confirmPassword) {
-            checkPasswords();
-        }
-    }, [password, confirmPassword, languageData]);
+    const rules = useMemo(() => validatePassword(password), [password]);
+    const rulesValid = allValid(rules);
+    const mismatch = confirmPassword.length > 0 && password !== confirmPassword;
+    const canSubmit = !!oldPassword && rulesValid && !!confirmPassword && !mismatch && !submitting;
 
     const handleSubmit = () => {
-        if (
-            validation &&
-            validation.upperCaseValidation.valid &&
-            validation.lowerCaseValidation.valid &&
-            validation.digitValidation.valid &&
-            validation.specialCharValidation.valid &&
-            validation.lengthValidation.valid
-        ) {
-            const data = {
-                currentPassword: oldPassword,
-                newPassword: password,
-            };
-            const options = {
-                url: "/account/change-password",
-                method: "POST",
-                data: data,
-            };
-            Axios(options)
-                .then(() => {
-                    setValidation({
-                        upperCaseValidation: {
-                            valid: false,
-                            message: languageData?.UpperCaseMessage,
-                        },
-                        lowerCaseValidation: {
-                            valid: false,
-                            message: languageData?.LowerCaseMessage,
-                        },
-                        digitValidation: {
-                            valid: false,
-                            message: languageData?.DigitMessage,
-                        },
-                        specialCharValidation: {
-                            valid: false,
-                            message: languageData?.SpecialCharMessage,
-                        },
-                        lengthValidation: {
-                            valid: false,
-                            message: languageData?.LengthMessage,
-                        },
-                    });
-                    setPassword("");
-                    setConfirmPassword("");
-                    setOldPassword("");
-                })
-                .catch((err: any) => {
-                    if (err?.response?.data?.message)
-                        setResponseError((languageData && (languageData[err?.response?.data?.message as keyof LanguageDataTypes] as string)) || "");
-                });
-        }
-    };
-
-    const onPasswordChange = (value: string) => {
-        setPassword(value);
-
-        let upperCaseState = false;
-        let lowerCaseState = false;
-        let digitState = false;
-        let specialCharState = false;
-        let lengthState = true;
-
-        if (upperCaseRegex.test(value)) {
-            upperCaseState = true;
-        }
-        if (lowerCaseRegex.test(value)) {
-            lowerCaseState = true;
-        }
-        if (digitRegex.test(value)) {
-            digitState = true;
-        }
-        if (specialCharRegex.test(value)) {
-            specialCharState = true;
-        }
-        if (value.length < 8) {
-            lengthState = false;
-        }
-
-        setValidation({
-            upperCaseValidation: {
-                valid: upperCaseState,
-                message: languageData?.UpperCaseMessage,
-            },
-            lowerCaseValidation: {
-                valid: lowerCaseState,
-                message: languageData?.LowerCaseMessage,
-            },
-            digitValidation: {
-                valid: digitState,
-                message: languageData?.DigitMessage,
-            },
-            specialCharValidation: {
-                valid: specialCharState,
-                message: languageData?.SpecialCharMessage,
-            },
-            lengthValidation: {
-                valid: lengthState,
-                message: languageData?.LengthMessage,
-            },
-        });
+        if (!canSubmit) return;
+        setSubmitting(true);
+        setResponseError("");
+        Axios({
+            url: "/account/change-password",
+            method: "POST",
+            data: { currentPassword: oldPassword, newPassword: password },
+        })
+            .then(() => {
+                setSuccess(true);
+                setPassword("");
+                setOldPassword("");
+                setConfirmPassword("");
+                setTimeout(() => setSuccess(false), 4000);
+            })
+            .catch((err) => {
+                const msg = err?.response?.data?.message;
+                if (msg) {
+                    setResponseError((languageData?.[msg as keyof LanguageDataTypes] as string) || msg);
+                } else {
+                    setResponseError(languageData?.SomethingWentWrong || "Something went wrong");
+                }
+            })
+            .finally(() => setSubmitting(false));
     };
 
     return (
-        <div className={classes.contentWrapper}>
-            <Card className={classes.wrapper}>
-                <FormLayout
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                    }}
-                >
-                    <StyledInput
-                        activeLabel
-                        label={languageData?.CurrentPassword}
-                        value={oldPassword}
-                        className={classes.input}
-                        onChange={(value: any) => setOldPassword(value)}
-                        inputName="password"
-                        type="password"
-                        required={true}
-                        inputClassName={classes.fieldInput}
-                    />
-                    <StyledInput
-                        activeLabel
-                        label={languageData?.NewPassword}
-                        value={password}
-                        className={classes.input}
-                        onChange={(value: any) => onPasswordChange(value)}
-                        inputName="password"
-                        type="password"
-                        required={true}
-                        inputClassName={classes.fieldInput}
-                    />
-                    <div style={{ marginBottom: 10 }}>
-                        {validation &&
-                            Object.keys(validation).map((key) => {
-                                return (
-                                    <Grid key={key} container direction="row" justifyContent="flex-start" alignItems="center">
-                                        <div style={{ width: "10%" }}>
-                                            {validation[key].valid === true ? (
-                                                <CheckIcon classes={{ root: classes.confirmed }} />
-                                            ) : (
-                                                <ClearIcon classes={{ root: classes.unconfirmed }} />
-                                            )}
-                                        </div>
-                                        <div className={validation[key].valid === true ? classes.confirmed : classes.unconfirmed} style={{ width: "90%" }}>
-                                            {validation[key].message}
-                                        </div>
-                                    </Grid>
-                                );
-                            })}
-                    </div>
-                    <StyledInput
-                        activeLabel
-                        label={languageData?.ConfirmNewPassword}
-                        value={confirmPassword}
-                        className={classes.input}
-                        onChange={(value: any) => setConfirmPassword(value)}
-                        inputName="password"
-                        type="password"
-                        required={true}
-                        inputClassName={classes.fieldInput}
-                    />
-                    {responseError && <div className={classes.error}>{responseError}</div>}
-                    {error && <div className={classes.error}>{error}</div>}
-                    <StyledButton
-                        disabled={
-                            Boolean(error) ||
-                            !Boolean(password) ||
-                            !Boolean(oldPassword) ||
-                            !Boolean(confirmPassword) ||
-                            validation === null ||
-                            !validation.upperCaseValidation.valid ||
-                            !validation.lowerCaseValidation.valid ||
-                            !validation.digitValidation.valid ||
-                            !validation.specialCharValidation.valid ||
-                            !validation.lengthValidation.valid
-                        }
-                        variant="contained"
-                        type="submit"
-                        fullWidth
-                        className={classes.button}
+        <Container size="sm" className="py-10 md:py-16">
+            <div className="mb-8 flex flex-col gap-2">
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">
+                    {languageData?.AccountKicker || "Account"}
+                </span>
+                <h1 className="font-display text-3xl font-medium tracking-tight md:text-[40px]">
+                    {languageData?.ChangePassword || "Change password"}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    {languageData?.ChangePasswordSubtitle ||
+                        "Update your password regularly. Use a unique combination you don't use elsewhere."}
+                </p>
+            </div>
+
+            <Card>
+                <CardHeader className="border-b border-border">
+                    <CardTitle className="text-base">{languageData?.SecuritySection || "Security"}</CardTitle>
+                    <CardDescription>
+                        {languageData?.ChangePasswordHint || "Minimum 8 characters · upper + lower + digit + symbol"}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent className="pt-6">
+                    <FormLayout
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSubmit();
+                        }}
+                        className="flex flex-col gap-5"
                     >
-                        {languageData?.ChangePassword.toLocaleUpperCase()}
-                    </StyledButton>
-                </FormLayout>
+                        <Field label={languageData?.CurrentPassword || "Current password"} htmlFor="current-password" required>
+                            <Input
+                                id="current-password"
+                                type="password"
+                                autoComplete="current-password"
+                                value={oldPassword}
+                                onChange={(e) => setOldPassword(e.target.value)}
+                                leftSlot={<Lock />}
+                                required
+                            />
+                        </Field>
+
+                        <Field label={languageData?.NewPassword || "New password"} htmlFor="new-password" required>
+                            <Input
+                                id="new-password"
+                                type="password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                leftSlot={<Lock />}
+                                required
+                            />
+                        </Field>
+
+                        <PasswordRequirements rules={rules} />
+
+                        <Field
+                            label={languageData?.ConfirmNewPassword || "Confirm new password"}
+                            htmlFor="confirm-password"
+                            required
+                            error={mismatch ? languageData?.PasswordsDontMatch || "Passwords don't match" : undefined}
+                        >
+                            <Input
+                                id="confirm-password"
+                                type="password"
+                                autoComplete="new-password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                leftSlot={<Lock />}
+                                invalid={mismatch}
+                                required
+                            />
+                        </Field>
+
+                        {responseError && (
+                            <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2.5 text-xs text-destructive">
+                                <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                <span>{responseError}</span>
+                            </div>
+                        )}
+
+                        {success && (
+                            <div className="flex items-start gap-2 rounded-md border border-[hsl(var(--success))]/30 bg-[hsl(var(--success))]/5 px-3 py-2.5 text-xs text-[hsl(var(--success))]">
+                                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                                <span>{languageData?.PasswordChanged || "Password updated successfully."}</span>
+                            </div>
+                        )}
+
+                        <div className="flex justify-end pt-2">
+                            <Button type="submit" size="lg" disabled={!canSubmit}>
+                                {submitting
+                                    ? languageData?.Loading || "Saving..."
+                                    : languageData?.ChangePassword || "Update password"}
+                            </Button>
+                        </div>
+                    </FormLayout>
+                </CardContent>
             </Card>
-        </div>
+        </Container>
     );
 };
 

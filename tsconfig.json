@@ -13,7 +13,14 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "jsx": "preserve"
+        "jsx": "preserve",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["*"],
+            "@/components/*": ["components/*"],
+            "@/lib/*": ["lib/*"],
+            "@/ui/*": ["components/ui/*"]
+        }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "assets/language/en.ts", "next.config.js", "pages/_document.js", "components/**/*"],
     "exclude": ["node_modules"]

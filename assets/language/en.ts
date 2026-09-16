@@ -563,7 +563,11 @@ const en: LanguageDataTypes = {
 
     // Prediction Loading
     PredictionLoading: {
-        title: "Price Prediction",
+        title: "Computing your estimate",
+        subtitle: "Cross-referencing 117K+ listings and running the ensemble model.",
+        AnalyzingData: "Analysing listings and market trends",
+        LocatingComparables: "Locating comparable properties nearby",
+        RunningModels: "Running the stacking ensemble",
         messages: {
             analyzing: "Analyzing market trends...",
             processing: "Processing property features...",
@@ -575,6 +579,48 @@ const en: LanguageDataTypes = {
     BaseAddress: "Base address",
     PricePerMeter: "Price/m²",
     TotalPrice: "Total price",
+
+    // Analytics Page
+    MarketAnalytics: "Market Analytics",
+    TotalListings: "Total Listings",
+    CitiesCovered: "Cities Covered",
+    AvgPricePerSqm: "Avg Price / sqm",
+    SaleVsRent: "Sale / Rent",
+    PricesByCity: "Prices by City",
+    PriceDistribution: "Price Distribution",
+    Listings: "listings",
+    AvgArea: "Avg area",
+    AvgPrice: "Avg price",
+    AIModelPerformance: "AI Model Performance",
+    LastTrained: "Last trained",
+    BestModel: "Best",
+    NoDataAvailable: "No data available yet",
+    PredictionSubtitle: "Get an AI-powered estimate for any property in Romania",
+    RequiredField: "indicates required field",
+    AddressInfo: "Address Information",
+    PropertyInfo: "Property Classification",
+    AreaDimensions: "Area & Dimensions",
+    AdditionalDetails: "Additional Details",
+    SelectPropertyType: "Select property type...",
+    PriceTrend: "Price Trend",
+    CompareZones: "Compare Zones",
+    ROIEstimation: "Investment ROI",
+    ValuationIndex: "Valuation Index",
+    Undervalued: "Undervalued",
+    Fair: "Fair",
+    Overvalued: "Overvalued",
+    AnnualYield: "Annual Yield",
+    PaybackYears: "Payback Period",
+    AvgSalePrice: "Avg Sale Price",
+    AvgMonthlyRent: "Avg Monthly Rent",
+    PricePerSqm: "Price per sqm",
+    HeatmapTitle: "Price Heatmap",
+    SelectCitiesToCompare: "Select cities to compare",
+    ConfidenceRange: "Confidence Range",
+    Warnings: "Warnings",
+    Years: "years",
+    ForSale: "For Sale",
+    PriceTrendOverTime: "Price Trend Over Time",
 
     ProfilePage: {
         title: "Profile",
@@ -678,6 +724,111 @@ const en: LanguageDataTypes = {
             },
         },
     },
+
+    // ============================================================
+    // Redesign 2026 — UI copy (warm-editorial redesign)
+    // ============================================================
+
+    // Auth
+    WelcomeBack: "Welcome back",
+    SignInTitle: "Sign in to your account",
+    SignInSubtitle: "Access your prediction history and save new estimates to your account.",
+    GetStarted: "Get started",
+    RegisterTitle: "Create your account",
+    RegisterSubtitle: "Save estimates, build a history and unlock analytics tailored to your searches.",
+    Recovery: "Password recovery",
+    ForgotPasswordTitle: "Forgot your password?",
+    ForgotPasswordSubtitle: "Enter the email associated with your account and we'll send a link to reset it.",
+    ResetPasswordSubtitle: "Choose a new, secure password. Follow the checklist below to keep your account protected.",
+    WaitingValidationHint: "If you don't see the email within a few minutes, check your spam folder or resend the verification link from the login page.",
+    AlmostThere: "Almost there",
+    AlreadyHaveAccount: "Already have an account?",
+    FieldRequired: "Required",
+    PasswordRulesMissing: "Password doesn't meet the requirements",
+    Unnamed: "Unnamed",
+
+    // Account / profile
+    AccountKicker: "Account",
+    ProfileSubtitle: "Manage your personal information and account preferences.",
+    ChangePasswordSubtitle: "Update your password regularly. Use a unique combination you don't use elsewhere.",
+    ChangePasswordHint: "Minimum 8 characters · upper + lower + digit + symbol",
+    PasswordChanged: "Password updated successfully.",
+    SecuritySection: "Security",
+    SecurityHint: "Update your password regularly to keep your account safe.",
+    Loading: "Loading...",
+
+    // Home / landing
+    HeroKicker: "Real estate intelligence — Romania",
+    StatListings: "Listings",
+    StatListingsHint: "Real sale & rent data",
+    StatCities: "Cities",
+    StatCitiesHint: "Across Romania",
+    StatModels: "Models",
+    StatModelsHint: "Stacking ensemble",
+    HeroCardLocation: "Cluj-Napoca · Gheorgheni",
+    HeroCardRooms: "rooms",
+    TrustedSources: "Built on public data from across Romania",
+    FeaturesKicker: "Why it works",
+    HowItWorksKicker: "Process",
+    HowItWorksSubtitle: "Three steps from address to a transparent, data-backed estimate.",
+    MethodKicker: "Methodology",
+    MethodTitle: "Grounded in data, not guesswork",
+    MethodData: "117K+ real listings",
+    MethodDataText: "Ingested from 10+ trusted sources, deduplicated and validated. Refreshed continuously.",
+    MethodModels: "Stacking ensemble",
+    MethodModelsText: "XGBoost, LightGBM and RandomForest combined in a meta-model, tracked with MAE, RMSE and R².",
+    MethodGeo: "Geospatial features",
+    MethodGeoText: "Distance to POIs via OSMnx, neighbourhood comparables, and land classification.",
+    TestimonialsKicker: "Voices",
+
+    // Dashboard / customer
+    DashboardKicker: "Your dashboard",
+    DashboardSubtitle: "Pick a path below — or run a new estimate right away.",
+    DashboardPredictionHint: "Estimate a property price in under a minute.",
+    DashboardHistoryHint: "Review your saved estimates over time.",
+    DashboardAnalyticsHint: "Explore market trends and city-level insights.",
+    Start: "Start",
+    Explore: "Explore",
+    HistoryGuestHint: "Sign in to view your saved estimates, compare them over time and track market shifts.",
+    HistoryKicker: "Your archive",
+
+    // Prediction flow
+    PredictionKicker: "Valuation",
+    StepLabel: "Step",
+    AddressHint: "Used to anchor the prediction on actual street-level comparables.",
+    ClassificationHint: "Type determines which comparables are considered.",
+    OptionalField: "Optional",
+    AreaHint: "Most important factor for the price estimate.",
+    AdditionalHint: "Optional — improves accuracy when available.",
+    MapView: "Where they are",
+    MapViewHint: "Locations of the top matching comparables near the target property.",
+    SimilarHint: "Top 5 listings ranked by a multi-factor similarity score.",
+    ResultsFootnote: "Estimate based on a stacking ensemble of XGBoost, LightGBM and RandomForest.",
+    MarketAverage: "Market average (€/m²)",
+    ModelAccuracy: "Model accuracy",
+
+    // Footer & navigation
+    HowItWorks: "How it works",
+    About: "About",
+    Contact: "Contact",
+    Terms: "Terms",
+    Privacy: "Privacy",
+    FooterTagline: "AI-powered real estate price estimates across Romania. Built from 117K+ real listings.",
+    Product: "Product",
+    Company: "Company",
+    Analytics: "Analytics",
+    AllRightsReserved: "All rights reserved.",
+    MadeIn: "Made in Romania",
+    DataPoints: "117,000+ data points",
+
+    // AuthShell
+    AuthAsideQuote: "Clarity in pricing is the quiet advantage. Every estimate grounded in the data of a whole market.",
+    AuthAsideAttrib: "The Domus Method",
+
+    // Misc
+    Or: "or",
+    NotFoundTitle: "This page drifted off the map",
+    GoHome: "Go home",
 };
 
 export default en;

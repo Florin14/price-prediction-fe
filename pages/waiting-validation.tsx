@@ -1,91 +1,41 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import { useSelector } from "react-redux";
+import { MailCheck } from "lucide-react";
 
-import { Theme } from "@mui/material/styles";
-import { useTheme, useMediaQuery } from "@mui/material";
-import { Box, Typography } from "@mui/material";
-
-import { RootState } from "../store";
-
-import StyledButton from "../components/generic-components/StyledButton";
-import useClasses from "../utils/useClasses";
-
-// Interface for the class names
-interface WaitingValidationStyle {
-    container: any;
-    contentBox: any;
-    imageContainer: any;
-    title: any;
-    message: any;
-    buttonContainer: any;
-}
-
-const useStyles = (theme: Theme): WaitingValidationStyle => ({
-    container: {
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
-    },
-    contentBox: {
-        maxWidth: "600px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-    },
-    imageContainer: {
-        marginBottom: "10px",
-    },
-    title: {
-        fontWeight: 700,
-        fontSize: 18,
-        color: "#313A47",
-        marginBottom: "13px",
-    },
-    message: {
-        fontWeight: 500,
-        fontSize: 12,
-        color: "#667085",
-        marginBottom: "40px",
-        maxWidth: "600px",
-    },
-    buttonContainer: {
-        width: "510px",
-    },
-    [theme.breakpoints.down(680)]: {
-        buttonContainer: {
-            width: "250px",
-        },
-    },
-});
+import { RootState } from "@/store";
+import { PLATFORM_NAME } from "@/assets/language/constants";
+import AuthShell from "@/components/layout/AuthShell";
+import { Button } from "@/components/ui/button";
 
 const WaitingValidation: React.FC = () => {
-    const languageData = useSelector((state: RootState) => state.website.languageData);
+    const languageData = useSelector((s: RootState) => s.website.languageData);
     const router = useRouter();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down(680));
-    const classes = useClasses(useStyles, { name: "WaitingValidation_page" }) as WaitingValidationStyle;
 
     return (
-        <Box className={classes.container}>
-            <Box className={classes.contentBox}>
-                <Box className={classes.imageContainer}>
-                    <Image src="/images/waiting-validation.png" alt="Waiting Validation" width={isMobile ? 300 : 433} height={isMobile ? 300 : 368} />
-                </Box>
-                <Typography className={classes.title}>{languageData?.WaitingValidationTitle}</Typography>
-                <Typography className={classes.message}>{languageData?.WaitingValidationMessage}</Typography>
-                <Box className={classes.buttonContainer}>
-                    <StyledButton id={"back-to-login-button"} color="primary" variant="contained" onClick={() => router.push("/login")}>
-                        {languageData?.BackToAuthentication}
-                    </StyledButton>
-                </Box>
-            </Box>
-        </Box>
+        <AuthShell
+            pageTitle={`${PLATFORM_NAME} | ${languageData?.WaitingValidationTitle || "Awaiting validation"}`}
+            kicker={languageData?.AlmostThere || "Almost there"}
+            title={languageData?.WaitingValidationTitle || "Check your inbox"}
+            subtitle={
+                languageData?.WaitingValidationMessage ||
+                "We've sent a verification email. Click the link inside to activate your account."
+            }
+        >
+            <div className="flex flex-col items-start gap-6">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <MailCheck className="h-7 w-7" />
+                </div>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                    {languageData?.WaitingValidationHint ||
+                        "If you don't see the email within a few minutes, check your spam folder or resend the verification link from the login page."}
+                </p>
+                <Button size="lg" className="w-full" onClick={() => router.push("/login")}>
+                    {languageData?.BackToAuthentication || "Back to sign in"}
+                </Button>
+            </div>
+        </AuthShell>
     );
 };
 
